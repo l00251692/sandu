@@ -1,0 +1,63 @@
+/* pages/mine/mine.wxss */
+
+.header {
+    padding: 15px 0;
+    text-align: center;
+    background-color: #5cd79a;
+    color: #fff;
+}
+
+.avatar {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 5rpx solid rgba(255, 255, 255, 0.6);
+}
+
+.weui-btn_plain {
+  background-color: #fff;
+}
+
+.zan-badge {
+  position: relative;
+}
+.zan-badge__count {
+  position: absolute;
+  top: 1rpx;
+  left: 6em;
+  height: 1.6em;
+  min-width: 1.6em;
+  line-height: 1.6;
+  padding: 0 .4em;
+  font-size: 10px;
+  font-family: tahoma;
+  border-radius: .8em;
+  background: #FF4444;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  transform: translateX(50%);
+  transform-origin: -10% center;
+  z-index: 10;
+  box-shadow: 0 0 0 1px #fff;
+  box-sizing: border-box;
+}
+
+.cs_button {
+  background-color: #fff;
+  border: 0px;
+  position: fixed;
+  right:12rpx;
+  margin-bottom:12rpx;
+  margin-top:12rpx;
+}
+
+.cs_button:after {
+  border: 0px;
+}
+
+.cs_image {
+  width: 60rpx;
+  height: 60rpx;
+}

@@ -1,0 +1,62 @@
+
+<!--pages/mine/mine.wxml-->
+<view class="header">
+  <view bindtap="onLogin">
+    <image class="avatar" src="{{loginInfo ? userInfo.avatarUrl: '/images/default-image.png'}}"></image>
+  </view>
+  <view>
+    {{loginInfo ? userInfo.nickName : '未登录'}}
+  </view>
+</view>
+<view wx:if="{{loginInfo}}" class="weui-cells">
+  <navigator wx:if="{{campus_id}}"url="/pages/mine/shoporder?id={{campus_id}}" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__bd">我的店铺</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+  <navigator url="/pages/project/mine" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__bd">我的发布</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+  <navigator  url="/pages/address/list" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__bd">收货地址</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+  <!--<navigator url="/pages/mine/coupon" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__bd">我的红包</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>-->
+  <navigator url="/pages/order/list" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__bd">我的订单</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+  <navigator  url="/pages/mine/message" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+    <view class="weui-cell__bd zan-badge">
+      <text>我的消息</text>
+      <view wx:if="{{count > 0}}"  class="zan-badge__count">{{count}}</view>
+    </view>
+    
+    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+  </navigator>
+</view>
+<view  wx:if="{{loginInfo}}" class="weui-cells">
+  <view data-phone="18261149716" bindtap="onPhoneTap" class="weui-cell weui-cell_access">
+    <view class="weui-cell__bd">客服热线</view>
+    <view class="weui-cell__ft weui-cell__ft_in-access">18261149716</view>
+  </view>
+  <view class="weui-cell weui-cell_access">
+    <view class="weui-cell__bd">客服留言</view>
+    <button class="cs_button" open-type="contact">
+      <image class="cs_image" src="/images/concat.png"></image>
+    </button>   
+  </view>
+  
+</view>
+
+<!--<view class="button-sp-area">
+  <button loading="{{loading}}" bindtap="onLogout" wx:if="{{loginInfo}}"  class="weui-btn weui-btn_plain" >
+    退出账号
+  </button>
+  <navigator url="/pages/login/login?callback=callback" wx:else class="weui-btn weui-btn_primary" hover-class="button-hover">
+    立即登录
+  </navigator>
+</view>-->

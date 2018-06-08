@@ -1,0 +1,37 @@
+{
+  "pages":[ 
+    
+    "pages/mine/mine",
+    "pages/logs/logs"
+  ],
+  "window":{
+    "backgroundColor": "#5cd79a",
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#5cd79a",
+    "navigationBarTitleText": "蜗牛",
+    "navigationBarTextStyle":"light"
+  },
+  "tabBar": {
+    "selectedColor": "#5cd79a",
+    "list": [
+      {
+        "pagePath": "pages/mine/mine",
+        "iconPath": "images/tabBar/Tabbar_Home_Empty.png",
+        "selectedIconPath": "images/tabBar/Tabbar_Home_Full.png",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "iconPath": "images/tabBar/Tabbar_Find_Empty.png",
+        "selectedIconPath": "images/tabBar/Tabbar_Find_Full.png",
+        "text": "逛一逛"
+      },
+      {
+        "pagePath": "pages/mine/mine",
+        "iconPath": "images/tabBar/Tabbar_My_Empty.png",
+        "selectedIconPath": "images/tabBar/Tabbar_My_Full.png",
+        "text": "我的"
+      }
+    ]
+  }
+}

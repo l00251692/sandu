@@ -41,7 +41,6 @@ App({
               ok() {
                 wx.openSetting({
                   success(res) {
-                    console.log(res)
                     if (res.authSetting['scope.userInfo']) 
                     {
                       getLoginInfo({
@@ -68,7 +67,6 @@ App({
     }
   },
   setLoginInfo(loginInfo) {
-    console.log("setLoginInfo:" + JSON.stringify(loginInfo))
     if (loginInfo.session_key) {
       wx.setStorageSync('session_3rd', loginInfo.session_key)
     }

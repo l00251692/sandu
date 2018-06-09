@@ -17,7 +17,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_66">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
@@ -27,14 +27,5 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="G:/aiduplat/JSONLibraries1/commons-beanutils-1.7.jar"/>
-	<classpathentry kind="lib" path="G:/aiduplat/JSONLibraries1/commons-collections.jar"/>
-	<classpathentry kind="lib" path="G:/aiduplat/JSONLibraries1/commons-lang.jar"/>
-	<classpathentry kind="lib" path="G:/aiduplat/JSONLibraries1/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="G:/aiduplat/JSONLibraries1/druid-1.0.20.jar"/>
-	<classpathentry kind="lib" path="G:/aiduplat/JSONLibraries1/ezmorph.jar"/>
-	<classpathentry kind="lib" path="G:/aiduplat/JSONLibraries1/json-lib-2.2.2-jdk15.jar"/>
-	<classpathentry kind="lib" path="G:/aiduplat/JSONLibraries1/mysql-connector-java-6.0.5.jar"/>
-	<classpathentry kind="lib" path="G:/aiduplat/JSONLibraries1/httpclient.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

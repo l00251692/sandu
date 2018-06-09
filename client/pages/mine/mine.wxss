@@ -7,10 +7,24 @@
     color: #fff;
 }
 
+.onlogin{
+  background-color: #5cd79a;
+}
+
+.userbutton{
+  display: inline-block;
+  background-color: #5cd79a;
+  width: 170rpx;
+  height: 170rpx;
+  border-radius: 50%;
+  padding-left:0;
+  padding-top:0;
+}
+
 .avatar {
     display: inline-block;
-    width: 80px;
-    height: 80px;
+    width: 160rpx;
+    height: 160rpx;
     border-radius: 50%;
     border: 5rpx solid rgba(255, 255, 255, 0.6);
 }

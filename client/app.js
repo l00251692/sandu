@@ -3,7 +3,7 @@ import {
   getLoginInfo, getUserAddrs
 } from './utils/api'
 import {
-  getCurrentAddress, getUserInfo,
+  getCurrentAddress, getUserInfo,alert,
   coordFormat, fetch, confirm
 } from './utils/util'
 import {
@@ -22,46 +22,54 @@ App({
     } 
     else 
     {
-      getLoginInfo({
-        success(data)
-        {
-          getApp().setLoginInfo(data)
-          cb && cb(data)
-        },
-        error(res) {
-          console.log("获取用户信息失败，请稍后...")
-          cb && cb(res)
-        },
-        fail(res){
-          if (res.errMsg == 'getUserInfo:fail auth deny' && wx.openSetting) {
-            confirm({
-              content: '若不授用户信息权限, 则无法正常显示用户头像和昵称以及发布相关信息, 请重新授权用户信息权限',
-              cancelText: '不授权',
-              confirmText: '授权',
-              ok() {
-                wx.openSetting({
-                  success(res) {
-                    if (res.authSetting['scope.userInfo']) 
-                    {
-                      getLoginInfo({
-                        success(data) {
-                          getApp().setLoginInfo(data)
-                          cb && cb(data)
+      wx.getSetting({
+        success: (res) => {
+          if (res.authSetting['scope.userInfo']) {
+            getLoginInfo({
+              success(data) {
+                getApp().setLoginInfo(data)
+                cb && cb(data)
+              },
+              error(res) {
+                console.log("获取用户信息失败，请稍后...")
+                cb && cb(res)
+              },
+              fail(res) {
+                if (res.errMsg == 'getUserInfo:fail auth deny' && wx.openSetting) {
+                  confirm({
+                    content: '若不授用户信息权限, 则无法正常显示用户头像和昵称以及发布相关信息, 请重新授权用户信息权限',
+                    cancelText: '不授权',
+                    confirmText: '授权',
+                    ok() {
+                      wx.openSetting({
+                        success(res) {
+                          if (res.authSetting['scope.userInfo']) {
+                            getLoginInfo({
+                              success(data) {
+                                getApp().setLoginInfo(data)
+                                cb && cb(data)
+                              }
+                            })
+                          }
+                          else {
+                            alert('获取用户信息失败')
+                          }
                         }
                       })
-                    } 
-                    else {
-                      alert('获取用户信息失败')
                     }
-                  }
-                })
+                  })
+
+                } else {
+                  console.log(res)
+                  alert('获取用户信息失败2')
+                }
+                cb && cb()
               }
             })
-
-          } else {
-            alert('获取用户信息失败')
           }
-          cb && cb()
+          else {
+            alert("请点击“我的”页面头像授权登录");
+          }
         }
       })
     }

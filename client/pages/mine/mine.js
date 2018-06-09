@@ -1,5 +1,5 @@
 // pages/mine/mine.js
-import { getUserInfo, makePhoneCall } from '../../utils/util'
+import { getUserInfo, makePhoneCall, alert } from '../../utils/util'
 import { logout, getMineInfo } from '../../utils/api'
 
 const app = getApp()
@@ -15,23 +15,32 @@ Page({
   },
   onShow:function(){
     var that = this
-    getApp().getLoginInfo(loginInfo => {
-      if (loginInfo != null && loginInfo.is_login) {
-        that.setData({
-          loginInfo: loginInfo,
-          userInfo: loginInfo.userInfo
-        })
+    //用户授权则登录，否则等用户点击授权
+    wx.getSetting({
+      success: (res) => {
+        if (res.authSetting['scope.userInfo'])
+        {
+          getApp().getLoginInfo(loginInfo => {
+            if (loginInfo != null && loginInfo.is_login) {
+              that.setData({
+                loginInfo: loginInfo,
+                userInfo: loginInfo.userInfo
+              })
 
-        getMineInfo({
-          success(data) {
-            that.setData({
-              campus_id: data.campus_id,
-              count: 0
-            })
-          }
-        })
+              getMineInfo({
+                success(data) {
+                  that.setData({
+                    campus_id: data.campus_id,
+                    count: data.unread_msg_count
+                  })
+                }
+              })
+            }
+          })
+        }
       }
     })
+    
   },
   onHide:function(){
     // 页面隐藏

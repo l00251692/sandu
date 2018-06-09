@@ -1,8 +1,11 @@
 
 <!--pages/mine/mine.wxml-->
 <view class="header">
-  <view bindtap="onLogin">
-    <image class="avatar" src="{{loginInfo ? userInfo.avatarUrl: '/images/default-image.png'}}"></image>
+  <view class="onlogin">
+    <button bindgetuserinfo="onLogin" open-type="getUserInfo" class="userbutton">
+      <image class="avatar" src="{{loginInfo ? userInfo.avatarUrl: '/images/default-image.png'}}"></image>
+    </button>
+    
   </view>
   <view>
     {{loginInfo ? userInfo.nickName : '未登录'}}

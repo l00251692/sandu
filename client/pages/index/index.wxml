@@ -22,14 +22,26 @@
         <view class="didi-time">出发时间:  现在  </view>
         
         <view class="circle-str"></view>
-             <view bindtap="onChooseFromLocation" > 
-                <view class="didi-input-str" style="color: #333333">{{address}}</view>
-             </view>
-             <view bindtap="onChooseDestLocation" >
-             <input type="text" class="didi-input-end" value="{{destination}}"  style="color: #333333" placeholder="你要去哪儿" placeholder-color="#ccccccc" focus="{{false}}"/>
-             </view>
-            <view class="circle-end"></view>
-        <button class="didi-btn"bindtap="toCast">叫把伞</button>
+        <view bindtap="onChooseFromLocation" > 
+          <view class="didi-input-str" style="color: #333333">{{address}}</view>
+        </view>
+        <view bindtap="onChooseDestLocation" >
+        <input type="text" class="didi-input-end" value="{{destination}}"  style="color: #333333" placeholder="你要去哪儿" placeholder-color="#ccccccc" focus="{{false}}"/>
+        </view>
+        <view class="circle-end"></view>
+
+        <view wx:if="{{callCart}}">
+          <button  class="didi-btn"bindtap="toDaSan">我要打伞</button>
+        </view>
+        <view wx:else class="cost">
+         <view class="cost-title" >
+            <view class="cost-item">
+            出发地道目的地大约相距{{distance}}公里</view>   
+          </view>
+          <button  class="cost-btn"bindtap="toWait">提交订单</button>
+        </view>
+        
+        
     </view>
 
     <view class="swiper">

@@ -222,7 +222,7 @@ page{
   background: #fff;
   width: 100%;
   border-radius: 5rpx;
- 
+  margin-top:120rpx;
 }
 .cost-title{
   display: flex;

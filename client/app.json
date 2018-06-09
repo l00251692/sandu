@@ -1,7 +1,12 @@
 {
   "pages":[ 
     "pages/index/index",
+    "pages/wait/wait",
     "pages/mine/mine",
+    "pages/service/service",
+    "pages/register/register",
+    "pages/wallet/wallet",
+    "pages/order/list",
     "pages/logs/logs"
   ],
   "window":{

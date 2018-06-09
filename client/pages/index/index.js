@@ -23,6 +23,7 @@ Page({
         isLoading: true,
         color:"#cccccc",
         callCart: true,
+        distance: 0,
         destination: '',
         bluraddress : '',
         index: '',
@@ -42,6 +43,7 @@ Page({
          }
          that.setData({
            address: address['title'],
+           address_detail:address
          })
        });
     },
@@ -62,10 +64,6 @@ Page({
         //   })
     },
     onShow(){
-        this.setData({
-            destination:app.globalData.destination,
-            currentTab:app.globalData.id,
-        })
     },
     requestWaitingtime(){
         // setTimeout(() => {
@@ -141,39 +139,42 @@ Page({
       })
     },
    
-    toCast(e){
+    toDaSan(e){
       const destination =this.data.destination
-      if(destination==''){
-        wx.showToast({
-            title: '目的地不能为空',
-            icon: 'fail',
-           mask: true,
-            duration: 1000
+      const address_detail = this.data.address_detail
+      const destination_detail = this.data.destination_detail
+      if(destination ==''){
+        wx.showModal({
+           title: '目的地不能为空',
+            content: '请填写或选择正确的目的地',
           })
       }else{
-
-        let {endLatitude,endLongitude} = app.globalData
+        //注意此接口的from和to的形式是不一样的，to是数组
         qqmapsdk.calculateDistance({
-            mode: 'driving',
-            to:[ {
-              latitude: endLatitude,
-              longitude:endLongitude
+          mode: 'walking',
+          from: address_detail.location,
+          to:[{
+            latitude: destination_detail.location.latitude,
+            longitude: destination_detail.location.longitude
           }],
           success: (res)=> {
             // console.log(res.result.elements[0].distance)
-            var num1 = 8+1.9*(res.result.elements[0].distance/1000)
-            var num2= 12+1.8*(res.result.elements[0].distance/1000)
-            var num3= 16+2.9*(res.result.elements[0].distance/1000)
-            var play1 = num1.toFixed(1)
-            var play2 = num2.toFixed(1)
-            var play3 = num3.toFixed(1)
-            this.setData({
-                play1:play1,
-                play2:play2,
-                play3:play3,
-            })
+            // var num1 = 8+1.9*(res.result.elements[0].distance/1000)
+            // var num2= 12+1.8*(res.result.elements[0].distance/1000)
+            // var num3= 16+2.9*(res.result.elements[0].distance/1000)
+            // var play1 = num1.toFixed(1)
+            // var play2 = num2.toFixed(1)
+            // var play3 = num3.toFixed(1)
+            if (res.result.elements[0].distance != -1)
+            {
+              this.setData({
+                distance: res.result.elements[0].distance / 1000,
+              })
+            }
           },
-         
+          fail: function (res) {
+            console.log(res);
+          }
           });
         this.setData({
         
@@ -189,8 +190,8 @@ Page({
         url:  "/pages/wait/wait",
     }),
     wx.setTopBarText({
-        text: '等待应答'
-        })
+        text: '等待接单'
+    })
   },
     switchNav(event){
      

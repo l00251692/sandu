@@ -11,6 +11,8 @@ import {
   getPrevPage
 } from '../../utils/util'
 
+import { getMineInfo, addOrder } from '../../utils/api'
+
 const app = getApp()
 Page({
     data: {
@@ -177,7 +179,6 @@ Page({
           }
           });
         this.setData({
-        
             callCart: false
         })
       }
@@ -185,12 +186,61 @@ Page({
        
     },
   toWait(e){
-   
-    wx.reLaunch({
-        url:  "/pages/wait/wait",
-    }),
-    wx.setTopBarText({
-        text: '等待接单'
+    var that = this
+    var address_detail  = this.data.address_detail
+    var destination_detail = this.data.destination_detail
+    //用户授权则登录，否则等用户点击授权
+    wx.getSetting({
+      success: (res) => {
+        if (res.authSetting['scope.userInfo']) {
+          getApp().getLoginInfo(loginInfo => {
+            if (loginInfo != null && loginInfo.is_login) {
+              that.setData({
+                loginInfo: loginInfo,
+                userInfo: loginInfo.userInfo
+              })
+
+              getMineInfo({
+                success(data) {
+                  console.log("getMineInfo :")
+                  console.log(data)
+                  if (data.phone != null && data.phone.length > 0) {
+                    //提交订单到后台
+                    addOrder({
+                      from_add: address_detail.title,
+                      from_add_detail: address_detail.address,
+                      from_add_longitude: address_detail.location.longitude,
+                      from_add_latitude: address_detail.location.latitude,
+                      to_add: destination_detail.title,
+                      to_add_detail: destination_detail.address,
+                      to_add_longitude: destination_detail.location.longitude,
+                      to_add_latitude: destination_detail.location.latitude,
+                      time:"now",
+                      success(data){
+                        wx.reLaunch({
+                          url: "/pages/wait/wait?orderId=" + data.orderId,
+                        }),
+                          wx.setTopBarText({
+                            text: '等待接单'
+                          })
+                      },
+                      error(data){
+                        alert("系统繁忙，请稍侯")
+                      }
+                    }) 
+                  }
+                  else {
+                    alert('请在"我的"页面绑定手机号')
+                  }
+                }
+              })
+            }
+          })
+        }
+        else{
+          alert('请在"我的"页面授权登录后使用')
+        }
+      }
     })
   },
     switchNav(event){

@@ -29,10 +29,13 @@ Page({
 
               getMineInfo({
                 success(data) {
-                  that.setData({
-                    campus_id: data.campus_id,
-                    count: data.unread_msg_count
-                  })
+                  console.log("getMineInfo :")
+                  console.log(data)
+                  if (data.phone != null && data.phone.length > 0) {
+                    that.setData({
+                      phone: data.phone.substr(0, 3) + '****' + data.phone.substr(7),
+                    })
+                  }
                 }
               })
             }
@@ -88,10 +91,13 @@ Page({
 
           getMineInfo({
             success(data) {
-              that.setData({
-                campus_id: data.campus_id,
-                count: data.unread_msg_count
-              })
+              console.log("getMineInfo :")
+              console.log(data)
+              if (data.phone != null && data.phone.length > 0){
+                that.setData({
+                  phone: data.phone.substr(0, 3) + '****' + data.phone.substr(7),
+                })
+              }  
             }
           })
         }

@@ -5,41 +5,23 @@
 	<resultMap id="BaseResultMap" type="com.changyu.foryou.model.Users">
 		<id column="user_id" property="userId" jdbcType="VARCHAR" />
 		<result column="phone" property="phone" jdbcType="VARCHAR" />
-		<result column="password" property="password" jdbcType="VARCHAR" />
 		<result column="type" property="type" jdbcType="SMALLINT" />
 		<result column="nickname" property="nickname" jdbcType="VARCHAR" />
 		<result column="img_url" property="imgUrl" jdbcType="VARCHAR" />
 		<result column="last_login_date" property="lastLoginDate"
 			jdbcType="DATE" />
 		<result column="create_time" property="createTime" jdbcType="DATE" />
-		<result column="default_address" property="defaultAddress"
-			jdbcType="DATE" />
-		<result column="token" property="token" jdbcType="VARCHAR" />
 		<result column="sex" property="sex" jdbcType="SMALLINT" />
 		<result column="academy" property="academy" jdbcType="VARCHAR" />
-		<result column="qq" property="qq" jdbcType="VARCHAR" />
-		<result column="weixin" property="weiXin" jdbcType="VARCHAR" />
-		<result column="campus_id" property="campusId" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		user_id,phone, password, type, nickname, img_url,
-		last_login_date,create_time,sex,academy,qq,weixin,campus_id
+		user_id,phone, type, nickname, img_url,
+		last_login_date,create_time,sex,academy
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
-		SELECT
-		users.user_id AS user_id,
-		PASSWORD,
-		type,
-		nickname,
-		img_url,
-		last_login_date,
-		create_time,
-		sex,
-		academy,
-		qq,
-		weixin,
-		users.campus_id
+		select
+		*
 		FROM
 		users
 		WHERE
@@ -59,9 +41,6 @@
 			</if>
 			<if test="phone != null">
 				phone,
-			</if>
-			<if test="password != null">
-				password,
 			</if>
 			<if test="type != null">
 				type,
@@ -89,9 +68,6 @@
 			<if test="phone != null">
 				#{phone,jdbcType=VARCHAR},
 			</if>
-			<if test="password != null">
-				#{password,jdbcType=VARCHAR},
-			</if>
 			<if test="type != null">
 				#{type,jdbcType=SMALLINT},
 			</if>
@@ -118,17 +94,8 @@
 			<if test="sex!=null">
 				sex=#{sex,jdbcType=SMALLINT},
 			</if>
-			<if test="qq!=null">
-				qq=#{qq,jdbcType=VARCHAR},
-			</if>
-			<if test="weiXin!=null">
-				weixin=#{weiXin,jdbcType=VARCHAR},
-			</if>
 			<if test="academy!=null">
 				academy=#{academy,jdbcType=VARCHAR},
-			</if>
-			<if test="password != null">
-				password = #{password,jdbcType=VARCHAR},
 			</if>
 			<if test="type != null">
 				type = #{type,jdbcType=SMALLINT},

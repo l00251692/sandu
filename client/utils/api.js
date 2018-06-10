@@ -63,14 +63,15 @@ export function getReviews(options) {
     success
   })
 }
-/*
+
 // 短信验证码
 export function getCode(options) {
   const {
     phone, success, error
   } = options
+
   fetch({
-    url: "index.php?m=Api&c=Common&a=checkMSG",
+    url: "user/getCheckCode",
     data: {
       phone,
       key: 'fast_login'
@@ -80,36 +81,26 @@ export function getCode(options) {
 }
 
 // 登录
-export function login(options) {
+export function bindPhone(options) {
   const {
-    phone, code,
+    phone,
     success, error
   } = options
-  wx.login({
-    success(res) {
-      getApp().getCurrentAddress(address => {
-        fetch({
-          url: 'index.php?m=Api&c=WeixinMall&a=login',
-          data: {
-            phone, code,
-            wx_code: res['code'],
-            session_3rd: wx.getStorageSync('session_3rd'),
-            city_id: address.city_id,
-            city_name: address.city,
-            district_id: address.district_id,
-            district_name: address.district,
-          },
-          success, error
-        })
-      })
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+  
+  fetch({
+    url: "user/bindPhone",
+    data: {
+      phone,
+      user_id,
+      key: 'fast_login'
     },
-    error(res) {
-      alert(res['errMsg'])
-      error && error(res['errMsg'])
-    }
+    success, error
   })
 
 }
+/*
 // 退出账号
 export function logout(options) {
   const {
@@ -300,44 +291,40 @@ export function deleteUserAddr(options) {
 }
 
  //添加准订单
-export function addQuasiOrder(options) {
+export function addOrder(options) {
   const {
-    seller_id,
-    totalPackingFee,
-    goods,
+    from_add,
+    from_add_detail,
+    from_add_longitude,
+    from_add_latitude,
+    to_add,
+    to_add_detail,
+    to_add_longitude,
+    to_add_latitude,
+    time,
     success, error
   } = options
 
-  var data = {
-    seller_id,
-    totalPackingFee,
-    goods: JSON.stringify(goods)
-  }
- 
-  if(!getApp().globalData.loginInfo.is_login){
-    //用户先登录
-    getApp().getLoginInfo(loginInfo=>{
-      var { user_id, user_token } = loginInfo.userInfo
-      fetch({
-        url: 'order/createOrderWx',
-        data: Object.assign({
-          user_id,
-        }, data),
-        success, error
-      })
-    })
-  } 
-  else
-  {
-    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-    fetch({
-      url: 'order/createOrderWx',
-      data: Object.assign({
-        user_id,
-      }, data),
-      success, error
-    })
-  } 
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'order/addOrderWx',
+    data: {
+      from_add,
+      from_add_detail,
+      from_add_longitude,
+      from_add_latitude,
+      to_add,
+      to_add_detail,
+      to_add_longitude,
+      to_add_latitude,
+      time,
+      user_id
+    },
+    success, error
+  })
+    
+
 }
 
 // 获取准订单
@@ -403,29 +390,7 @@ export function updateOrderCoupon(options) {
   })
 }
 */
-// 添加订单
-export function addOrder(options) {
-  var {
-    quasi_order_id, remark, addr_id,
-    success, error
-  } = options
-  
-  if (!getApp().globalData.loginInfo.is_login)
-  {
-    return alert('用户未登录')
-  }
-  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-  fetch({
-    url: 'order/submitOrder',
-    data: {
-      user_id, 
-      quasi_order_id, addr_id,
-      remark
-    },
-    success, error
-  })
 
-}
 
 // 取消订单
 export function cancelOrder(options) {

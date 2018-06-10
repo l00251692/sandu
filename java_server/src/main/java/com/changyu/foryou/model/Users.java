@@ -8,9 +8,7 @@ public class Users {
 	
     private String phone;
 
-    private String password;
-
-    private Short type;
+    private Short  type;
 
     private String nickname;
 
@@ -19,24 +17,14 @@ public class Users {
     private Date lastLoginDate;
 
     private Date createTime;
-    
-    private String defaultAddress;
-    
-    private String token;
-    
+          
     private Short sex;
     
     private String academy;
     
-    private String qq;
-    
-    private String weiXin;
-    
-    private String campusId;
      
-    public Users(String phone2, String password2, String nickname2) {
+    public Users(String phone2,  String nickname2) {
 		phone=phone2;
-		password=password2;
 		nickname=nickname2;
 		type=2;
 		createTime=new Date();
@@ -65,13 +53,6 @@ public class Users {
         this.phone = phone == null ? null : phone.trim();
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password == null ? null : password.trim();
-    }
 
     public Short getType() {
         return type;
@@ -114,22 +95,6 @@ public class Users {
 	}
 
 
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public String getDefaultAddress() {
-		return defaultAddress;
-	}
-
-	public void setDefaultAddress(String defaultAddress) {
-		this.defaultAddress = defaultAddress;
-	}
-
 	public Short getSex() {
 		return sex;
 	}
@@ -145,31 +110,6 @@ public class Users {
 	public void setAcademy(String academy) {
 		this.academy = academy;
 	}
-
-	public String getQq() {
-		return qq;
-	}
-
-	public void setQq(String qq) {
-		this.qq = qq;
-	}
-
-	public String getWeiXin() {
-		return weiXin;
-	}
-
-	public void setWeiXin(String weiXin) {
-		this.weiXin = weiXin;
-	}
-
-	public String getCampusId() {
-		return campusId;
-	}
-
-	public void setCampusId(String campusId) {
-		this.campusId = campusId;
-	}
-
 
 	public String getUserId() {
 		return userId;

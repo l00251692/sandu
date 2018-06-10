@@ -2,14 +2,16 @@
 import WxValidate from '../../utils/WxValidate'
 import Countdown from '../../utils/countdown'
 import { alert, getPrevPage } from '../../utils/util'
-import { getCode, login } from '../../utils/api'
+import { getCode, bindPhone } from '../../utils/api'
 var initCount = 60
 Page({
   data: {
     codeLabel: '获取验证码',
     phone: '',
+    codeNum: ''
   },
   onLoad: function (options) {
+    this.phone = options.phone
     // 页面初始化 options为页面跳转所带来的参数
     this.callback = options.callback || 'callback'
     this.countdown = new Countdown(this, 'count')
@@ -71,7 +73,8 @@ Page({
       phone,
       success(data) {
         that.setData({
-          codeLabel: '重新获取验证码'
+          codeLabel: '重新获取验证码',
+          codeNum: data.codeNumStr
         })
       },
       error() {
@@ -97,22 +100,41 @@ Page({
     })
 
     var {phone, code} = e.detail.value
-    login({
-      phone, code,
-      success(data) {
-        that.setData({
-          loading: false
-        })
-        getApp().setLoginInfo(data)
-        var cb = getPrevPage()[that.callback]
-        cb && cb(data)
-        wx.navigateBack()
-      },
-      error() {
-        that.setData({
-          loading: false
-        })
-      }
-    })
+    var { codeNum } = this.data
+
+    if (codeNum == code)
+    {
+      bindPhone({
+        phone,
+        success(data) {
+          that.setData({
+            loading: false
+          })
+          wx.showToast({
+            title: '绑定手机号成功成功',
+            icon: 'success',
+            duration: 1000
+          }) 
+          setTimeout(function () {
+            getPrevPage()[that.callback]()
+            wx.navigateBack()
+          }, 1000)
+        },
+        error() {
+          that.setData({
+            loading: false
+          })
+          wx.showToast({
+            title: '绑定手机号失败',
+            icon: 'fail',
+            duration: 2000
+          })
+        }
+      })
+    }
+    else{
+      alert("验证码不正确，请重新输入！")
+    }
+    
   }
 })

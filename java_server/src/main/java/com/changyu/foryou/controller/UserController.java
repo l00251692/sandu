@@ -29,7 +29,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-
+import com.aliyuncs.DefaultAcsClient;
+import com.aliyuncs.IAcsClient;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
+import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
+import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.profile.DefaultProfile;
+import com.aliyuncs.profile.IClientProfile;
 import com.changyu.foryou.model.Users;
 import com.changyu.foryou.model.WeChatContext;
 import com.changyu.foryou.service.UserService;
@@ -38,6 +44,7 @@ import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.HttpRequest;
 import com.changyu.foryou.tools.Md5;
 import com.google.gson.JsonObject;
+
 
 @Controller
 @RequestMapping("/user")
@@ -177,11 +184,123 @@ public class UserController {
 		}
 		
 		JSONObject obj = new JSONObject();
-		obj.put("campus_id", users.getCampusId());
-		obj.put("weixin", users.getWeiXin());
+		obj.put("phone", users.getPhone());
 			
 		map.put("State", "Success"); 
 		map.put("data", obj); 
+		return map;
+	}
+	
+	/**
+	 * 获取我的用户总信息
+	 * @param phone 用户id
+	 * @return
+	 * @throws ClientException 
+	 */
+	@RequestMapping(value="getCheckCode")
+	public @ResponseBody Map<String, Object> getCheckCodeWx(@RequestParam String phone) throws ClientException{
+		Map<String, Object> map = new HashMap<String, Object>();
+	
+		//可自助调整超时时间
+        System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
+        System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+        
+        String accessKeyId = "LTAI4CGPrpZbmFZx";
+        String accessKeySecret = "6BMA3kW58dUpwPOSpHW6Awy95K07Jf";
+        //短信API产品名称
+        String product="Dysmsapi";
+        //短信API产品域名
+        String domain="dysmsapi.aliyuncs.com";
+
+        //初始化acsClient,暂不支持region化
+        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", accessKeyId, accessKeySecret);
+        DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
+        IAcsClient acsClient = new DefaultAcsClient(profile);
+        
+        int codeNum = (int)(Math.random()*9999)+1000;  //每次调用生成一次四位数的随机数
+        System.out.println("phone code = " + codeNum);
+
+        //组装请求对象-具体描述见控制台-文档部分内容
+        SendSmsRequest request = new SendSmsRequest();
+        //必填:待发送手机号
+        request.setPhoneNumbers(phone);
+        //必填:短信签名-可在短信控制台中找到
+        request.setSignName("三度");
+        //必填:短信模板-可在短信控制台中找到
+        request.setTemplateCode("SMS_137180089");
+        //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+        request.setTemplateParam("{\"code\":\""+ codeNum + "\"}");
+
+        //选填-上行短信扩展码(无特殊需求用户请忽略此字段)
+        //request.setSmsUpExtendCode("90997");
+
+        //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
+        //request.setOutId("yourOutId");
+
+        //hint 此处可能会抛出异常，注意catch
+        //SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
+        
+        SendSmsResponse sendSmsResponse = new SendSmsResponse();
+        sendSmsResponse.setCode("OK");
+        
+        if(sendSmsResponse.getCode() != null && sendSmsResponse.getCode().equals("OK")) {
+
+        	System.out.println("发送成功！");
+        	JSONObject obj = new JSONObject();
+    		obj.put("codeNumStr", codeNum + "");
+    			
+    		map.put("State", "Success"); 
+    		map.put("data", obj);
+		}else {
+		    System.out.println("发送失败！code=" + sendSmsResponse.getCode());
+		    map.put("State", "Fail"); 
+    		map.put("data", "");
+		}
+        
+		 
+		return map;
+	}
+	
+	/**
+	 * 获取我的用户总信息
+	 * @param phone 用户id
+	 * @return
+	 */
+	@RequestMapping(value="bindPhone")
+	public @ResponseBody Map<String, Object> bindPhoneWx(@RequestParam String user_id,@RequestParam String phone){
+		Map<String, Object> map = new HashMap<String, Object>();
+	
+		if(user_id != null && phone != null)
+		{
+			Users users=userService.selectByUserId(user_id);
+			System.out.println("getMineInfoWx:" + user_id);
+			if(users == null)
+			{
+				map.put("State", "Fail"); 
+				map.put("info", "获得我的信息失败"); 
+				return map; 
+			}
+			
+			users.setPhone(phone);
+			int flag = userService.updateUserInfo(users);
+			if(flag !=0 && flag != -1)
+			{
+				map.put("State", "Success"); 
+				map.put("data", "OK"); 
+			}
+			else
+			{
+				map.put("State", "Fail"); 
+				map.put("info", "绑定手机号失败"); 
+			}	
+		}
+		else
+		{
+			map.put("State", "Fail"); 
+			map.put("data", "用户或手机号为空"); 
+		}
+		
+		
 		return map;
 	}
 }

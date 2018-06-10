@@ -9,5 +9,10 @@ public  class Constants {
 	public static final String localIp = "http://localhost/JiMuImage"; //存放上传的图片的服务器JiMuImage为上传图片时创建的目录
     public static String appId="app_La1y14yrPa10SeHS";
     public static String apiKey="sk_live_vBNcIdIOKPBJEU9YOq3C02PU";
+    
+    public static short orderNow=0;
+    public static short orderLater=0;
+    
+    public static short orderStatusCreate=0;
 	
 }

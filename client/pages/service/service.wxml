@@ -1,0 +1,32 @@
+<!--pages/order/list.wxml-->
+<import src="/templates/load-more.wxml" />
+<view >
+  <view wx:if="{{registRcv}}" class="order-logout">
+    <image class="order-logout__bg" src="/images/order-logout@2x.png"></image>
+    <view class="order-logout__tip">
+      请先注册有伞一组，才能查看附近的拼伞需求
+    </view>
+    <navigator url="/pages/login/login" class="weui-btn weui-btn_primary weui-btn_mini" hover-class="button-hover">登录       </navigator>
+  </view>
+  <view class="order-list" wx:else>
+    <view class="order-item" wx:for="{{list}}" wx:key="order_id">
+      <view class="order-item__hd">
+        <view class="order-item__shop">
+          {{item.passenger_name}}
+        </view>
+        <view class="order-item__status {{item.state==1? 'order-item__status_pay': ''}}">{{item.add_time_format}}</view>
+      </view>
+      <navigator url="/pages/order/orderService?id={{item.order_id}}" class="order-item__bd ">
+        <image class="order-item__pic" src="{{item.passenger_url}}"></image>
+        <view class="order-item__content weui-cell__ft_in-access">
+          <view class="circle-str"></view> <view class="order-item__price">{{item.from_addr}}</view>
+          <view class="circle-end"></view> <view class="order-item__price">{{item.to_addr}}</view>
+        </view>
+      </navigator>
+      <view  class="order-item__ft">
+        <button id="{{index}}" bindtap="onRecvOrderTap" class="weui-btn_primary weui-btn_mini">接单</button> 
+      </view>
+    </view>
+  </view>
+  <template is="load-more" data="{{hasMore: hasMore, loading: loading}}"></template>
+</view>

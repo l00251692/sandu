@@ -7,7 +7,8 @@
     "pages/service/service",
     "pages/register/register",
     "pages/wallet/wallet",
-    "pages/order/list",
+    "pages/order/myOrder",
+    "pages/order/orderService",
     "pages/logs/logs"
   ],
   "window":{

@@ -207,6 +207,8 @@ Page({
                   if (data.phone != null && data.phone.length > 0) {
                     //提交订单到后台
                     addOrder({
+                      city_name: address_detail.city,
+                      district_name: address_detail.district,
                       from_add: address_detail.title,
                       from_add_detail: address_detail.address,
                       from_add_longitude: address_detail.location.longitude,

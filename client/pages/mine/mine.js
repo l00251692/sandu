@@ -34,6 +34,7 @@ Page({
                   if (data.phone != null && data.phone.length > 0) {
                     that.setData({
                       phone: data.phone.substr(0, 3) + '****' + data.phone.substr(7),
+                      registRcv:true
                     })
                   }
                 }
@@ -96,6 +97,7 @@ Page({
               if (data.phone != null && data.phone.length > 0){
                 that.setData({
                   phone: data.phone.substr(0, 3) + '****' + data.phone.substr(7),
+                  registRcv: true
                 })
               }  
             }

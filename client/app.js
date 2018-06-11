@@ -111,16 +111,6 @@ App({
     getCurrentAddress(address => {
       address = that.setCurrentAddress(address)
       cb(address)
-      // this.getLoginInfo(loginInfo => {
-      //   if (loginInfo.is_login) {
-      //     this.findNearbyUserAddr(userAddress => {
-      //       if (!userAddress) {
-      //         return
-      //       }
-      //       that.setCurrentAddress(userAddress)
-      //     })
-      //   }
-      // })
     })
   },
   setCurrentAddress(address) {

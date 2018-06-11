@@ -293,6 +293,8 @@ export function deleteUserAddr(options) {
  //添加准订单
 export function addOrder(options) {
   const {
+    city_name,
+    district_name,
     from_add,
     from_add_detail,
     from_add_longitude,
@@ -310,6 +312,8 @@ export function addOrder(options) {
   fetch({
     url: 'order/addOrderWx',
     data: {
+      city_name,
+      district_name,
       from_add,
       from_add_detail,
       from_add_longitude,
@@ -328,22 +332,18 @@ export function addOrder(options) {
 }
 
 // 获取准订单
-export function getQuasiOrderInfo(options) {
+export function getOrderInfo(options) {
   var {
-    quasi_order_id,
+    order_id,
     success, error
   } = options
 
-  if (!getApp().globalData.loginInfo.is_login) {
-    return alert('用户未登录')
-  }
-  console.log("quasi_order_id:"+quasi_order_id)
   var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
   fetch({
-    url: 'order/getQuasiOrderInfoWx',
+    url: 'order/getOrderInfoWx',
     data: {
-      user_id, user_token,
-      quasi_order_id
+      user_id,
+      order_id
     },
     success, error
   })
@@ -399,10 +399,6 @@ export function cancelOrder(options) {
     success, error
   } = options
   
-  if (!getApp().globalData.loginInfo.is_login) {
-    return alert('用户未登录')
-  }
-  
   var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
   fetch({
     url: 'order/cancelOrderWx',
@@ -433,39 +429,23 @@ export function getOrders(options) {
 
 }
 
-export function getShopOrders(options) {
+export function getDistanceOrders(options) {
   var {
-    page,campus_id,
+    page, city_name, district_name, my_longitude, my_latitude,
     success, error
   } = options
-  console.log("getShopOrders:" + page)
+  
   fetch({
-    url: 'order/getShopOrdersWx',
+    url: 'order/getDistanceOrdersWx',
     data: {
-      campus_id,
-      page
+      page, 
+      city_name,
+      district_name,
+      my_longitude,
+      my_latitude,
     },
     success, error
-  })
-
-}
-
-// 获取订单详情
-export function getOrderInfo(options) {
-  var {
-    order_id,
-    success, error
-  } = options
-  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-  fetch({
-    url: 'order/getOrdersInfoWx',
-    data: {
-      user_id,
-      order_id
-    },
-    success, error
-  })
-
+  }) 
 }
 
 // 订单评论

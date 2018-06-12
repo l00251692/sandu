@@ -14,7 +14,7 @@
         <view class="order-item__shop">
           {{item.passenger_name}}
         </view>
-        <view class="order-item__status {{item.state==1? 'order-item__status_pay': ''}}">{{item.add_time_format}}</view>
+        <view class="order-item__status {{item.state==1? 'order-item__status_pay': ''}}">{{item.depart_time_format}}</view>
       </view>
       <navigator url="/pages/order/orderService?id={{item.order_id}}" class="order-item__bd ">
         <image class="order-item__pic" src="{{item.passenger_url}}"></image>

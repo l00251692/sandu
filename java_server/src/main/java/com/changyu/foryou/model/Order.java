@@ -5,6 +5,10 @@ import java.util.Date;
 public class Order {
 	private String orderId;
 	
+	private String cityName;
+	
+	private String DistrictName;
+	
     private String fromAddr;
     
     private String fromAddrDetai;
@@ -171,5 +175,21 @@ public class Order {
 
 	public void setReceiveUser(String receiveUser) {
 		this.receiveUser = receiveUser;
+	}
+
+	public String getCityName() {
+		return cityName;
+	}
+
+	public void setCityName(String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getDistrictName() {
+		return DistrictName;
+	}
+
+	public void setDistrictName(String districtName) {
+		DistrictName = districtName;
 	}
 }

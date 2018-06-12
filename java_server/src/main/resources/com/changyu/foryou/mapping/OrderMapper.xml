@@ -19,6 +19,8 @@
 		<result column="order_price" property="orderPrice" jdbcType="FLOAT" />
 		<result column="records" property="records" jdbcType="VARCHAR" />
 		<result column="receive_user" property="receiveUser" jdbcType="VARCHAR" />	
+		<result column="city_name" property="cityName" jdbcType="VARCHAR" />
+		<result column="district_name" property="districtName" jdbcType="VARCHAR" />	
 	</resultMap>
 	
 	<insert id="insertSelective" >
@@ -76,6 +78,12 @@
 			<if test="receiveUser != null">
 				receive_user,
 			</if>
+			<if test="cityName != null">
+				city_name,
+			</if>
+			<if test="districtName != null">
+				district_name,
+			</if>	
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="orderId != null">
@@ -129,6 +137,12 @@
 			<if test="receiveUser != null">
 				#{receiveUser,jdbcType=VARCHAR},
 			</if>
+			<if test="cityName != null">
+				#{cityName,jdbcType=VARCHAR},
+			</if>
+			<if test="districtName != null">
+				#{districtName,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
 	
@@ -147,9 +161,40 @@
 		<if test="records != null">
 			,records=#{records, jdbcType=VARCHAR}
 		</if>
+		<if test="orderStatus != null">
+			,order_status=#{orderStatus, jdbcType=SMALLINT}
+		</if>
 		<where>
 			order_id=#{orderId, jdbcType=VARCHAR}
 		</where> 
 	</update>
+	
+	<update id="updateOrderStatus">
+		 update orders set
+		<if test="orderStatus != null">
+			order_status=#{orderStatus, jdbcType=SMALLINT}
+		</if>
+		<if test="records != null">
+			,records=#{records, jdbcType=VARCHAR}
+		</if>
+		<where>
+			order_id=#{orderId, jdbcType=VARCHAR}
+		</where> 
+	</update>
+	
+	<select id="getNearByOrders" resultMap="BaseResultMap">
+		select
+		*
+		from orders
+		where city_name = #{cityName,jdbcType=VARCHAR} 
+		and district_name = #{districtName,jdbcType=VARCHAR}
+		and order_status = 0
+		order by
+		create_time DESC
+		<if test="limit !=null and offset !=null">
+			LIMIT #{limit,jdbcType=INTEGER} OFFSET
+			#{offset,jdbcType=INTEGER}
+		</if> 
+	</select>
 	
 </mapper>

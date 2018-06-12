@@ -36,8 +36,7 @@ Page({
     },
     onLoad: function(options) {
        var that = this;
-       this.requestCart();
-       this.requestWaitingtime();
+       
        app.getCurrentAddress(function(address){
          console.log(JSON.stringify(address))
          if (address.addr_id) {
@@ -49,43 +48,10 @@ Page({
          })
        });
     },
-    requestCart(e){
-        // util.request({
-        //     url: 'https://www.easy-mock.com/mock/5aded45053796b38dd26e970/comments#!method=get',
-        //     mock: false,
-        //   }).then((res)=>{
-       
-        //     const navData = res.data.navData;
-        //     const imgUrls = res.data.imgUrls;
-        //     const cost = res.data.cost
-        //     this.setData({
-        //         navData,
-        //         imgUrls,
-        //         cost
-        //     })
-        //   })
-    },
+    
     onShow(){
     },
-    requestWaitingtime(){
-        // setTimeout(() => {
-        //     util.request({
-        //         url: 'https://www.easy-mock.com/mock/5aded45053796b38dd26e970/comments#!method=get',
-        //         mock: false,
-        //         data: {
-        //         }
-        //       }).then((res)=>{
-        //       const arr = res.data.waitingTimes;
-        //     //   console.log(arr)
-        //         var index = Math.floor((Math.random()*arr.length));
-        //         // console.log(arr[index])
-        //         this.setData({
-        //         isLoading:false,
-        //         waitingTimes: arr[index]
-        //         })
-        //       })
-        // }, 1000);
-    },
+
 
     onChooseFromLocation(e) {
       var that = this
@@ -170,7 +136,7 @@ Page({
             if (res.result.elements[0].distance != -1)
             {
               this.setData({
-                distance: res.result.elements[0].distance / 1000,
+                distance: (res.result.elements[0].distance / 1000).toFixed(2),
               })
             }
           },
@@ -202,18 +168,17 @@ Page({
 
               getMineInfo({
                 success(data) {
-                  console.log("getMineInfo :")
-                  console.log(data)
                   if (data.phone != null && data.phone.length > 0) {
                     //提交订单到后台
+                    console.log("addOrder dest=" + destination_detail.title)
                     addOrder({
                       city_name: address_detail.city,
                       district_name: address_detail.district,
-                      from_add: address_detail.title,
+                      from_add: address_detail.title.replace('(', '[').replace(')', ']'),//对于括号会乱码暂时替换方法解决
                       from_add_detail: address_detail.address,
                       from_add_longitude: address_detail.location.longitude,
                       from_add_latitude: address_detail.location.latitude,
-                      to_add: destination_detail.title,
+                      to_add: destination_detail.title.replace('(', '[').replace(')', ']'),
                       to_add_detail: destination_detail.address,
                       to_add_longitude: destination_detail.location.longitude,
                       to_add_latitude: destination_detail.location.latitude,

@@ -1,6 +1,6 @@
 // pages/order/list.js
 import {
-  getOrders, getPayment, getDistanceOrders
+  getOrders, setRecvOrder, getDistanceOrders
 } from '../../utils/api'
 
 import {
@@ -80,7 +80,7 @@ Page({
             if(list != null)
             {
               list = list.map(item => {
-                item['add_time_format'] = datetimeFormat(item.create_time)
+                item['depart_time_format'] = datetimeFormat(item.depart_time)
                 return item
               })
             }
@@ -177,20 +177,24 @@ Page({
     setRecvOrder({
       order_id,
       success(data) {
-        wx.stopBackgroundAudio()
-        wx.showToast({
-          title: '订单已接单',
-        })
-        that.initData();
         that.setData({
           loading: false,
-          tip: '您已登录商家系统，请保持小程序不要关闭'
+        })
+
+        wx.showToast({
+          title: '接单成功',
+        })
+        wx.navigateTo({
+          url: '/pages/order/orderService?id=' + order_id,
         })
       },
       error() {
         that.setData({
           loading: false,
-          tip: '订单未成功接收，请联系管理员'
+        })
+
+        wx.showToast({
+          title: '接单失败，请联系客服处理',
         })
       }
     })

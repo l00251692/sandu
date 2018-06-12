@@ -9,6 +9,7 @@
     "pages/wallet/wallet",
     "pages/order/myOrder",
     "pages/order/orderService",
+    "pages/evaluation/evaluation",
     "pages/logs/logs"
   ],
   "window":{

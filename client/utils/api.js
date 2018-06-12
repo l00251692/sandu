@@ -527,6 +527,25 @@ export function setRecvOrder(options) {
 
 }
 
+export function finishOrderByDriver(options) {
+  var {
+    order_id,
+    success, error
+  } = options
+  
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+  console.log(order_id + "," + user_id)
+  fetch({
+    url: 'order/finishOrderByDriverWx',
+    data: {
+      order_id,
+      user_id
+    },
+    success, error
+  })
+
+}
+
 export function setRejectOrder(options) {
   var {
     order_id,

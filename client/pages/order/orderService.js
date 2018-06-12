@@ -4,10 +4,10 @@ qqmapsdk = new QQMapWX({
   key:'DHNBZ-2ZLKK-T7IJJ-AXSQW-WX5L6-A6FJZ'
 });
 import {
-  getOrderInfo
+  getOrderInfo, setRecvOrder
 } from '../../utils/api'
 
-import { alert } from '../../utils/util'
+import { alert, makePhoneCall } from '../../utils/util'
 
 const app = getApp();
 Page({
@@ -17,11 +17,28 @@ Page({
   },
   onLoad: function (options) {
     this.id = options.id
+    this.loadData()
+  },
+
+  onShow(){
+    this.mapCtx = wx.createMapContext("didiMap");
+    this.movetoPosition();
+  },
+
+  onReady(){
+   
+  },
+  movetoPosition: function(){
+    this.mapCtx.moveToLocation();
+  },
+ 
+  loadData(){
     var that = this
-    let { bluraddress,strLatitude,strLongitude,endLatitude,endLongitude} = app.globalData
+    var order_id = this.id
+
     getOrderInfo({
-      order_id:that.id,
-      success(data){
+      order_id,
+      success(data) {
         that.setData({
           markers: [{
             iconPath: "../../images/assets/str.png",
@@ -43,39 +60,21 @@ Page({
               longitude: data.order.strLongitude,
               latitude: data.order.strLatitude
             }, {
-                longitude: data.order.endLongitude,
-                latitude: data.order.endLatitude
+              longitude: data.order.endLongitude,
+              latitude: data.order.endLatitude
             }],
             color: "#FF0000DD",
             width: 4,
             dottedLine: true
           }],
-          driver:data.driver,
-          hiddenLoading:true
+          passenger: data.passenger,
+          hiddenLoading: true
         });
       },
-      error(data){
+      error(data) {
         alert("查看详细信息失败，请联系客服")
       }
     })
-  },
-
-  onShow(){
-    this.mapCtx = wx.createMapContext("didiMap");
-    this.movetoPosition();
-  },
-
-  onReady(){
-   
-  },
-  movetoPosition: function(){
-    this.mapCtx.moveToLocation();
-  },
- 
-  bindregionchange: (e)=>{
-
-    console.log("bindregionchange")
-
   },
 
   onScaleSub(e){
@@ -101,6 +100,9 @@ Page({
     this.mapCtx.moveToLocation();
   },
 
+  bindregionchange: (e) => {
+
+  },
   //点击merkers  
   bindmarkertap(e) {
     // console.log(e.markerId)
@@ -115,9 +117,37 @@ Page({
     // })
   }, 
 
-  toCancel(){
-    wx.redirectTo({
-      url: "/pages/cancel/cancel"
+  onPhoneTap(e) {
+    makePhoneCall(this.data.passenger.phone)
+  },
+
+  toRecv(){
+    var order_id = this.id
+    var that = this
+
+    setRecvOrder({
+      order_id,
+      success(data) {
+        
+        wx.showToast({
+          title: '接单成功',
+        })
+
+        that.setData({
+          hiddenLoading: false
+        })
+
+        that.loadData()
+      },
+      error() {
+        that.setData({
+          hiddenLoading: true,
+        })
+        
+        wx.showToast({
+          title: '接单失败，请联系客服处理',
+        })
+      }
     })
    
   },
@@ -130,7 +160,7 @@ Page({
   },
   toEvaluation(){
     wx.redirectTo({
-      url:"/pages/evaluation/evaluation",
+      url:"/pages/evaluation/evaluation?id=" + this.id,
     })
   },
   onReady: function () {

@@ -36,7 +36,20 @@
             </cover-view>
           
         </cover-view>
-        <cover-view class="total-prompt">请耐心等待有伞一族来接</cover-view>
+        <cover-view class="total-info">
+            <cover-view class="total-info-from">
+              <cover-view class="circle-str"></cover-view>
+              <cover-view class="info-from">{{order.fromAddr}}</cover-view>
+              <cover-view class="info-from-detail">{{order.fromAddrDetail}}</cover-view>
+            </cover-view>
+
+            <cover-view class="total-info-to">
+              <cover-view class="circle-end"></cover-view>
+              <cover-view class="info-to">{{order.toAddr}}</cover-view>
+              <cover-view class="info-to-detail">{{order.toAddrDetail}}</cover-view>
+            </cover-view>  
+        </cover-view>
+         <cover-view class="total-prompt">订单创建于{{order.createTime}}</cover-view>
     </cover-view>
     <cover-view class="sacle-plus">
           <cover-image bindtap='onScalePlus' style="width: 80rpx;height: 80rpx;" src="../../images/assets/plus.png"/>

@@ -8,9 +8,12 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,6 +59,8 @@ public class OrderControler {
     private DelayService delayService;  
     @Autowired  
     private RedisService redisServie; 
+    
+    private static final Logger logger = LoggerFactory.getLogger(OrderControler.class);
 	
 	/**
 	 * 生成订单
@@ -320,6 +325,11 @@ public class OrderControler {
 			obj_order.put("strLongitude", order.getFromAddrLongitude());
 			obj_order.put("endLatitude", order.getToAddrLatitude());
 			obj_order.put("endLongitude", order.getToAddrLongitude());
+			obj_order.put("fromAddr", order.getFromAddr());
+			obj_order.put("fromAddrDetail", order.getFromAddrDetai());
+			obj_order.put("toAddr", order.getToAddr());
+			obj_order.put("toAddrDetail", order.getToAddrDetai());
+			obj_order.put("createTime", order.getCreateTime());
 			
 			
 			data.put("driver", obj_driver);
@@ -449,5 +459,58 @@ public class OrderControler {
 		result.put("info", "结束订单失败");	
 
 		return result;
+	}
+	
+	/**
+	 * 获取订单具体信息
+	 * 
+	 * @param phoneId
+	 *            ,status
+	 * @return
+	 */
+	@RequestMapping("/getMineProcessingOrderWx")
+	public @ResponseBody Map<String, Object> getMineProcessingOrderWx( @RequestParam String  user_id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("userId",user_id);
+			Order order = orderService.getMineProcessingOrder(paramMap);
+			
+			//没有正在处理的订单
+			if (order == null)
+			{
+				map.put("State", "Success");
+				map.put("data", "没有正在处理的订单");	
+				return map;
+			}
+		
+			JSONObject data = new JSONObject();
+			data.put("orderId", order.getOrderId());
+			
+			if(order.getCreateUser().equals(user_id))
+			{
+				data.put("userType", 1);
+			}
+			else if(order.getReceiveUser().equals(user_id))
+			{
+				data.put("userType", 2);
+			}
+			else {
+				data.put("userType", 0);
+				logger.error("getMineProcessingOrder err:user_id" + user_id);
+			}
+			
+			map.put("State", "Success");
+			map.put("data", data);	
+			return map;
+
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+			map.put("State", "Fail");
+			map.put("info", null);	
+			return map;
+		}	
 	}
 }

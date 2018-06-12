@@ -7,7 +7,7 @@ import {
   getOrderInfo, setRecvOrder
 } from '../../utils/api'
 
-import { alert, makePhoneCall } from '../../utils/util'
+import { alert, makePhoneCall, datetimeFormat } from '../../utils/util'
 
 const app = getApp();
 Page({
@@ -39,6 +39,10 @@ Page({
     getOrderInfo({
       order_id,
       success(data) {
+
+        var order = data.order
+
+        order.createTime = datetimeFormat(order.createTime)
         that.setData({
           markers: [{
             iconPath: "../../images/assets/str.png",
@@ -68,6 +72,7 @@ Page({
             dottedLine: true
           }],
           passenger: data.passenger,
+          order: order,
           hiddenLoading: true
         });
       },

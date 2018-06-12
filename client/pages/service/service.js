@@ -23,7 +23,11 @@ Page({
   },
   onLoad: function (options) {
     // 页面初始化 options为页面跳转所带来的参数
-    this.registRcv = options.registRcv
+    this.registType = options.registType
+
+    this.setData({
+      registType: this.registType
+    })
     this.initData()
   },
   onReady: function () {

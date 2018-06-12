@@ -1,33 +1,63 @@
 @import '../../styles/loading.wxss';
-page{
+
+page {
   width: 100%;
   height: 100vh;
   background-color: #f4f6f8;
 }
-.container{
+
+.container {
   width: 100%;
   height: 100%;
   background-color: #f5f7f9;
-  padding: 200rpx 0; 
+  padding: 200rpx 0;
 }
-.section{
-  height:108rpx;
+
+.section {
+  height: 108rpx;
   width: 100%;
-  background: #ffffff;
+  background: #fff;
   position: fixed;
   top: 0;
   left: 0;
+}
+
+.horse {
   position: fixed;
+  width: 686rpx;
+  top: 140rpx;
+}
+
+.scrolltxt {
+  padding: 0 20rpx;
+  background: #fff;
+}
+
+.marquee_box {
+  position: relative;
+  height: 90rpx;
+  display: block;
+  overflow: hidden;
+  color:#5cd79a;
+}
+
+.marquee_text {
+  white-space: nowrap;
+  position: absolute;
+  top: 0;
+  font-size: 16px;
+  height: 90rpx;
+  line-height: 90rpx;
 }
 
 .nav {
-  height:108rpx;
+  height: 108rpx;
   width: 550rpx;
   position: fixed;
   box-sizing: border-box;
   overflow: hidden;
   line-height: 108rpx;
-  background: #ffffff;
+  background: #fff;
   font-size: 16px;
   white-space: nowrap;
   top: 0;
@@ -36,68 +66,75 @@ page{
   z-index: 99;
   margin-bottom: 32rpx;
 }
-.nav-all{
-  height:30rpx;
+
+.nav-all {
+  height: 30rpx;
   width: 30rpx;
   position: absolute;
   z-index: 999;
   right: 0rpx;
   top: 0;
   background-color: #fff;
-  transform: scale(.18);
+  transform: scale(0.18);
   margin-right: 80rpx;
 }
-.nav-me{
-  height:30rpx;
+
+.nav-me {
+  height: 30rpx;
   width: 30rpx;
   left: 0;
   margin-top: 10rpx;
   background-color: #fff;
   position: absolute;
-  transform: scale(.15);
+  transform: scale(0.15);
   z-index: 999;
 }
+
 .nav-item {
   margin-left: 20rpx;
   margin-right: 20rpx;
   display: inline-block;
   text-align: center;
 }
-.nav-item.active{
+
+.nav-item.active {
   color: #fc975c;
 }
-.container{
+
+.container {
   position: fixed;
   width: 686rpx;
   height: 438rpx;
   background-color: #fff;
-  margin-top:32rpx;
+  margin-top: 32rpx;
   margin-left: 32rpx;
-  top: 140rpx;
-  -moz-box-shadow:1px 1px 6px #f4f6f8;
-  -webkit-box-shadow:1px 1px 6px #f4f6f8;
-  box-shadow:1px 1px 6px #f4f6f8;
+  top: 200rpx;
+  -moz-box-shadow: 1px 1px 6px #f4f6f8;
+  -webkit-box-shadow: 1px 1px 6px #f4f6f8;
+  box-shadow: 1px 1px 6px #f4f6f8;
 }
-.container .didi-time{
+
+.container .didi-time {
   position: absolute;
   width: 100%;
   height: 92rpx;
   left: 40rpx;
-  top: 45rpx;
+  top: 55rpx;
   font-size: 30rpx;
-  color: rgba(0, 0, 0, .7)
+  color: rgba(0, 0, 0, 0.7);
 }
- .didi-input-str{
+
+.didi-input-str {
   position: absolute;
   top: 100rpx;
   left: 105rpx;
   border-bottom: 1px solid #f5f5f5;
   height: 120rpx;
   width: 100%;
-  line-height: 120rpx;  
- 
+  line-height: 120rpx;
 }
-.circle-str{
+
+.circle-str {
   position: absolute;
   height: 10px;
   width: 10px;
@@ -106,7 +143,8 @@ page{
   left: 40rpx;
   top: 150rpx;
 }
-.didi-input-end{
+
+.didi-input-end {
   position: absolute;
   height: 120rpx;
   width: 100%;
@@ -114,7 +152,7 @@ page{
   left: 105rpx;
 }
 
-.circle-end{
+.circle-end {
   position: absolute;
   height: 10px;
   width: 10px;
@@ -123,7 +161,8 @@ page{
   left: 40rpx;
   top: 250rpx;
 }
-.container .didi-btn{
+
+.container .didi-btn {
   position: absolute;
   width: 100%;
   height: 100rpx;
@@ -132,25 +171,27 @@ page{
   color: #fff;
   left: 0;
 }
-.swiper{
+
+.swiper {
   position: absolute;
   height: 144rpx;
   width: 686rpx;
   top: 600rpx;
- 
 }
-.swiper image{
+
+.swiper image {
   background-repeat: no-repeat;
   height: 144rpx;
   width: 686rpx;
 }
-.tab-box{
+
+.tab-box {
   height: 200rpx;
-  margin-top:500rpx;
- 
+  margin-top: 500rpx;
   margin-bottom: 70rpx;
 }
-.tab-express{
+
+.tab-express {
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -160,7 +201,7 @@ page{
   text-align: center;
 }
 
-.cost-content{
+.cost-content {
   position: absolute;
   top: 0;
   left: 0;
@@ -171,40 +212,21 @@ page{
   margin-top: -35rpx;
   background-color: #f4f6f8;
 }
-.cost-addr{
+
+.cost-addr {
   height: 360rpx;
   width: 100%;
   /* background: red; */
- 
 }
-.star-addr{
+
+.star-addr {
   position: absolute;
   left: 80rpx;
   top: 120rpx;
   width: 100%;
 }
-.star-addr::after{
-  content: " ";
-    display: inline-block;
-    height: 6px;
-    width: 6px;
-    border-width: 2px 2px 0 0;
-    border-color: #ccc;
-    border-style: solid;
-    transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
-    position: absolute;
-    top: 50%;
-    left: 580rpx;
-    margin-top: -4px;
-}
 
-.end-addr{
-  position: absolute;
-  left: 80rpx;
-  top: 230rpx;
-  width: 100%;
-}
-.end-addr::after{
+.star-addr::after {
   content: " ";
   display: inline-block;
   height: 6px;
@@ -218,13 +240,37 @@ page{
   left: 580rpx;
   margin-top: -4px;
 }
-.cost{
+
+.end-addr {
+  position: absolute;
+  left: 80rpx;
+  top: 230rpx;
+  width: 100%;
+}
+
+.end-addr::after {
+  content: " ";
+  display: inline-block;
+  height: 6px;
+  width: 6px;
+  border-width: 2px 2px 0 0;
+  border-color: #ccc;
+  border-style: solid;
+  transform: matrix(0.71, 0.71, -0.71, 0.71, 0, 0);
+  position: absolute;
+  top: 50%;
+  left: 580rpx;
+  margin-top: -4px;
+}
+
+.cost {
   background: #fff;
   width: 100%;
   border-radius: 5rpx;
-  margin-top:120rpx;
+  margin-top: 120rpx;
 }
-.cost-title{
+
+.cost-title {
   display: flex;
   text-align: center;
   justify-content: space-around;
@@ -232,26 +278,28 @@ page{
   line-height: 119rpx;
   border-bottom: 1px solid #f5f5f5;
   font-size: 30rpx;
-  color: #666666;
+  color: #666;
 }
 
-.cost-pic{
+.cost-pic {
   height: 263rpx;
   display: flex;
   text-align: center;
   justify-content: space-around;
   margin-top: 20rpx;
 }
-.carpooling{
+
+.carpooling {
   display: flex;
   flex-direction: column;
   text-align: center;
   justify-content: center;
   color: #333;
-  opacity: .5;
-  transform: scale(.7)
+  opacity: 0.5;
+  transform: scale(0.7);
 }
-.cost-btn{
+
+.cost-btn {
   width: 680rpx;
   height: 100rpx;
   background-color: #4a4c5b;
@@ -260,7 +308,8 @@ page{
   left: 0;
   bottom: 0;
 }
-.on{
+
+.on {
   opacity: 1;
-  transform: scale(1)
+  transform: scale(1);
 }

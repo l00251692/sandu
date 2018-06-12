@@ -11,6 +11,8 @@ public interface OrderMapper {
 	
 	Order selectByPrimaryKey(Map<String,Object> paramMap);
 	
+	Order getMineProcessingOrder(Map<String,Object> paramMap);
+	
 	public int updateOrderStatus(Map<String, Object> paramMap);
 	
 	public int updateOrderReceiver(Map<String, Object> paramMap);

@@ -11,11 +11,18 @@ import {
   getPrevPage
 } from '../../utils/util'
 
-import { getMineInfo, addOrder } from '../../utils/api'
+import { getMineInfo, addOrder, getMineProcessingOrder } from '../../utils/api'
 
 const app = getApp()
 Page({
     data: {
+        text: "您有订单正在进行中，请处理",
+        marqueePace: 1,//滚动速度
+        marqueeDistance: 0,//初始滚动距离
+        marquee_margin: 200,
+        size: 16, //与css中定义的字体大小一致，单位为px
+        rollinterval: 20, // 时间间隔
+        windowWidth: 686, //显示空间宽度，与css中定义一致
         currentTab: 1,
         currentCost: 0,
         cart: '快车',
@@ -38,7 +45,6 @@ Page({
        var that = this;
        
        app.getCurrentAddress(function(address){
-         console.log(JSON.stringify(address))
          if (address.addr_id) {
            address['title'] = `${address.addr} ${address.detail}`
          }
@@ -47,9 +53,69 @@ Page({
            address_detail:address
          })
        });
+       this.init();
     },
     
     onShow(){
+    },
+
+    init(){
+      var that = this 
+
+      wx.getSetting({
+        success: (res) => {
+          if (res.authSetting['scope.userInfo']) {
+            getApp().getLoginInfo(loginInfo => {
+              if (loginInfo != null && loginInfo.is_login) {
+
+                getMineProcessingOrder({
+                  success(data) {
+                    if (data.orderId != null && data.orderId.length > 0) {
+                      var length = that.data.text.length * that.data.size;//文字长度
+                      //var windowWidth = wx.getSystemInfoSync().windowWidth;// 屏幕宽度
+
+                      that.setData({
+                        length: length,
+                        orderingId: data.orderId,
+                        orderingUserType: data.userType
+                      });
+                      that.scrolltxt();// 第一个字消失后立即从右边出现
+                    }
+                  }
+                })
+              }
+            })
+          }
+        }
+      })
+    },
+
+    scrolltxt:function () {
+      var that = this;
+      var length = that.data.length;//滚动文字的宽度
+      var windowWidth = that.data.windowWidth;//屏幕宽度
+      // if (length > windowWidth) {
+        var interval = setInterval(function () {
+          var maxscrollwidth = length + that.data.marquee_margin;//滚动的最大宽度，文字宽度+间距，如果需要一行文字滚完后再显示第二行可以修改marquee_margin值等于windowWidth即可
+          var crentleft = that.data.marqueeDistance;
+          if (crentleft < maxscrollwidth) {//判断是否滚动到最大宽度
+            that.setData({
+              marqueeDistance: crentleft + that.data.marqueePace
+            })
+          }
+          else {
+            //console.log("替换");
+            that.setData({
+              marqueeDistance: 0 // 直接重新滚动
+            });
+            clearInterval(interval);
+            that.scrolltxt();
+          }
+        }, that.data.roolinterval);
+      // }
+      // else {
+      //   that.setData({ marquee_margin: "1000" });//只显示一条不滚动右边间距加大，防止重复显
+      // }
     },
 
 
@@ -116,6 +182,12 @@ Page({
            title: '目的地不能为空',
             content: '请填写或选择正确的目的地',
           })
+      }
+      else if (this.data.orderingId != null){
+        wx.showModal({
+          title: '您当前有订单在进行中',
+          content: '请先处理当前进行中的订单',
+        })
       }else{
         //注意此接口的from和to的形式是不一样的，to是数组
         qqmapsdk.calculateDistance({
@@ -184,7 +256,7 @@ Page({
                       to_add_latitude: destination_detail.location.latitude,
                       time:"now",
                       success(data){
-                        wx.reLaunch({
+                        wx.navigateTo({
                           url: "/pages/wait/wait?orderId=" + data.orderId,
                         }),
                           wx.setTopBarText({
@@ -259,6 +331,25 @@ Page({
         this.setData({
             currentCost
         })
+      
+    },
+    onProcessOrder(e){
+
+      var { orderingId, orderingUserType } = this.data
+
+      if (orderingUserType == 1){ //乘客
+        wx.navigateTo({
+          url: "/pages/order/orderService?id=" + orderingId,
+        })
+      }
+      else if (orderingUserType == 2){//司机
+        wx.navigateTo({
+          url: "/pages/order/orderService?id=" + orderingId,
+        })
+      }
+      else{
+        console.log("当前正在进行中的订单错误")
+      }
       
     }
 })

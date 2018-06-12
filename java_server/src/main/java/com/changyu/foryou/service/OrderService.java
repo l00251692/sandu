@@ -11,6 +11,8 @@ public interface OrderService {
 	
 	public Order getOrderByIdWx(Map<String, Object> paramMap);
 	
+	public Order getMineProcessingOrder(Map<String, Object> paramMap);
+	
 	public int updateOrderStatus(Map<String, Object> paramMap);
 	
 	public int updateOrderReceiver(Map<String, Object> paramMap);

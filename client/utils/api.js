@@ -448,6 +448,24 @@ export function getDistanceOrders(options) {
   }) 
 }
 
+export function getMineProcessingOrder(options) {
+  var {
+    success, error
+  } = options
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'order/getMineProcessingOrderWx',
+    data: {
+      user_id
+    },
+    success, error
+  })
+}
+
+
+
 // 订单评论
 export function reviewsOrder(options) {
   var {

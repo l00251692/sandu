@@ -290,7 +290,7 @@ export function hideLoading() {
 
 // 时间格式化
 export function datetimeFormat(unix_timestamp) {
-  return dateFormat(new Date(unix_timestamp), "mm月dd日 HH:MM")
+  return dateFormat(new Date(unix_timestamp), "yyyy/mm/dd HH:MM")
 }
 
 // 坐标格式化

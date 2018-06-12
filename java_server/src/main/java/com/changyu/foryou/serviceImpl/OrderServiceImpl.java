@@ -31,6 +31,10 @@ public class OrderServiceImpl implements OrderService {
 		return orderMapper.selectByPrimaryKey(paramMap);
 	}
 	
+	public Order getMineProcessingOrder(Map<String, Object> paramMap) {
+		return orderMapper.getMineProcessingOrder(paramMap);
+	}
+	
 	public int updateOrderStatus(Map<String, Object> paramMap) {
 		return orderMapper.updateOrderStatus(paramMap);
 	}

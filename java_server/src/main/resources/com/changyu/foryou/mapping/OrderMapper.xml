@@ -153,6 +153,22 @@
 		where order_id = #{orderId,jdbcType=VARCHAR} 
 	</select>
 	
+	<select id="getMineProcessingOrder" resultMap="BaseResultMap">
+		select
+		*
+		from orders
+		where (
+			create_user = #{userId,jdbcType=VARCHAR}
+			OR receive_user  = #{userId,jdbcType=VARCHAR}
+		)
+		and(
+			order_status = 0
+			OR order_status = 3
+		)
+		ORDER BY
+			create_time DESC LIMIT 1
+	</select>
+	
 	<update id="updateOrderReceiver">
 		 update orders set
 		<if test="receiveUser != null">

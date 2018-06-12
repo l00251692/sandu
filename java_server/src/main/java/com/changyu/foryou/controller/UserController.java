@@ -185,6 +185,8 @@ public class UserController {
 		
 		JSONObject obj = new JSONObject();
 		obj.put("phone", users.getPhone());
+		obj.put("registType", users.getType());
+	
 			
 		map.put("State", "Success"); 
 		map.put("data", obj); 

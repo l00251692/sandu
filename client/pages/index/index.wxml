@@ -17,6 +17,18 @@
     </view>
     </navigator> 
     </view>-->
+
+    <scroll-view class="horse" wx:if='{{orderingId}}' bindtap='onProcessOrder'>
+        <view class="scrolltxt weui-cell__ft_in-access" >
+          <view class="marquee_box">
+            <view class="marquee_text" style="transform: translateX(-{{marqueeDistance}}px)">
+              <text>{{text}}</text>
+              <text style="margin-right:{{marquee_margin}}px;"></text>
+              <text style="margin-right:{{marquee_margin}}px;">{{text}}</text>        
+            </view>
+          </view>
+        </view>
+    </scroll-view>
     
     <view class="content">
         <view class="didi-time">出发时间:  现在  </view>

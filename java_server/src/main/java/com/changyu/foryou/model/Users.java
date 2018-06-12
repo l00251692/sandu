@@ -40,7 +40,7 @@ public class Users {
 		nickname = nickname2;
 		imgUrl = imgUrl2;
 		sex = new Short(sex2);
-		type=2;
+		type=1;
 		createTime=new Date();
 		lastLoginDate=new Date();
 	}

@@ -22,6 +22,12 @@ public class Users {
     
     private String academy;
     
+    private String sanColor;
+    
+    private String sanStyle;
+    
+    private String sanFeature;
+    
      
     public Users(String phone2,  String nickname2) {
 		phone=phone2;
@@ -118,6 +124,36 @@ public class Users {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+
+	public String getSanColor() {
+		return sanColor;
+	}
+
+
+	public void setSanColor(String sanColor) {
+		this.sanColor = sanColor;
+	}
+
+
+	public String getSanStyle() {
+		return sanStyle;
+	}
+
+
+	public void setSanStyle(String sanStyle) {
+		this.sanStyle = sanStyle;
+	}
+
+
+	public String getSanFeature() {
+		return sanFeature;
+	}
+
+
+	public void setSanFeature(String sanFeature) {
+		this.sanFeature = sanFeature;
 	}
 
 }

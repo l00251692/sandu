@@ -38,6 +38,10 @@ public class UserServiceImpl implements UserService {
 		return usersMapper.updateByPrimaryKeySelective(users);
 	}
 	
+	public int updateUserSanInfo(Users users) {
+		return usersMapper.updateUserSanReg(users);
+	}
+	
 	@Override
 	public Users checkLogin(String user_id) {
 		return usersMapper.checkLogin(user_id);

@@ -1,0 +1,47 @@
+<!--login.wxml-->
+<view >
+  
+  <view class="weui-cells">
+    <view class="weui-cell weui-cell_input weui-cell_vcode">
+      <view class="weui-cell__hd">
+        <view class="weui-label">颜色</view>
+      </view>
+      <view class="weui-cell__bd">
+        <view class="weui-input">
+          <picker bindchange="bindPickerColor" value="{{color_index}}" range="{{color}}">
+            <view class="weui-input">
+              {{color[color_index]}}
+            </view>
+          </picker>
+        </view>
+      </view>
+    </view>
+
+    <view class="weui-cell weui-cell_input weui-cell_vcode">
+      <view class="weui-cell__hd">
+        <view class="weui-label">款式</view>
+      </view>
+      <view class="weui-cell__bd">
+        <view class="weui-input">
+          <picker bindchange="bindPickerStyle" value="{{style_index}}" range="{{style}}">
+            <view class="weui-input">
+              {{style[style_index]}}
+            </view>
+          </picker>
+        </view>
+      </view>
+    </view>
+    
+    <view class="weui-cell weui-cell_input weui-cell_vcode">
+      <view class="weui-cell__hd">
+        <view class="weui-label">特点</view>
+      </view>
+      <view class="weui-cell__bd">
+        <input type="text" class="weui-input" maxlength="20" bindinput="bindFeatureInput" placeholder="输入特点便于对方更好找到你" />
+      </view>
+    </view>
+  </view>
+  <view class="weui-btn-area">
+    <button class="weui-btn" loading="{{loading}}" type="primary" bindtap='registerSubmit'>绑定伞信息</button>
+  </view>
+</view>

@@ -13,10 +13,13 @@
 		<result column="create_time" property="createTime" jdbcType="DATE" />
 		<result column="sex" property="sex" jdbcType="SMALLINT" />
 		<result column="academy" property="academy" jdbcType="VARCHAR" />
+		<result column="san_color" property="sanColor" jdbcType="VARCHAR" />
+		<result column="san_style" property="sanStyle" jdbcType="VARCHAR" />
+		<result column="san_feature" property="sanFeature" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		user_id,phone, type, nickname, img_url,
-		last_login_date,create_time,sex,academy
+		last_login_date,create_time,sex,academy,san_color,san_style,san_feature
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
@@ -121,6 +124,25 @@
 		select * from users where
 		user_id=#{user_id,jdbcType=VARCHAR}
 	</select>
+	
+	<update id="updateUserSanReg" parameterType="com.changyu.foryou.model.Users">
+		update users
+		<set>
+			<if test="type != null">
+				type = #{type,jdbcType=SMALLINT},
+			</if>
+			<if test="sanColor !=null">
+				san_color=#{sanColor,jdbcType=VARCHAR},
+			</if>
+			<if test="sanStyle !=null">
+				san_style=#{sanStyle,jdbcType=VARCHAR},
+			</if>
+			<if test="sanFeature !=null">
+				san_feature=#{sanFeature,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where user_id = #{userId,jdbcType=VARCHAR}
+	</update>
 	
 	
 </mapper>

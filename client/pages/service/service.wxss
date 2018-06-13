@@ -11,6 +11,76 @@
   text-decoration:blink;
   font-weight:bold;
 }
+
+.section {
+  height: 108rpx;
+  width: 100%;
+  background: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.nav-me {
+  height: 30rpx;
+  width: 30rpx;
+  left: 0;
+  margin-top: 10rpx;
+  background-color: #fff;
+  position: absolute;
+  transform: scale(0.15);
+  z-index: 999;
+}
+
+.nav {
+  height: 108rpx;
+  width: 550rpx;
+  position: fixed;
+  box-sizing: border-box;
+  overflow: hidden;
+  line-height: 108rpx;
+  background: #fff;
+  font-size: 16px;
+  white-space: nowrap;
+  top: 0;
+  left: 100rpx;
+  right: 100rpx;
+  z-index: 99;
+  margin-bottom: 32rpx;
+}
+
+.nav-info {
+  margin-left: 20rpx;
+  margin-right: 20rpx;
+  display: inline-block;
+  text-align: center;
+}
+
+.nav-all {
+  height: 30rpx;
+  width: 30rpx;
+  position: absolute;
+  z-index: 999;
+  right: 0rpx;
+  top: 0;
+  background-color: #fff;
+  transform: scale(0.11);
+  margin-right: 80rpx;
+  margin-top:15rpx;
+}
+
+.nav-color {
+  margin-right: 20rpx;
+  display: inline-block;
+  text-align: center;
+}
+
+.nav-style {
+  margin-right: 20rpx;
+  display: inline-block;
+  text-align: center;
+}
+
 .order-logout {
   text-align: center;
   margin-top:500rpx;
@@ -27,7 +97,9 @@
   margin-bottom: 15rpx;
 }
 
-/* order-list */
+.order-list{
+  margin-top:150rpx;
+}
 
 .order-item {
   margin-top: 10px;

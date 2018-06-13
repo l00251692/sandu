@@ -1,0 +1,7 @@
+.weui-label {
+  width: 4em;
+}
+
+.weui-cell__bd{
+  padding-right: 30rpx;
+}

@@ -816,3 +816,25 @@ export function setProjectCommentRead(options) {
       success
     })
 }
+
+
+export function registerSan(options) {
+
+  var {
+    color_reg, style_reg, feature_reg, success, error
+  } = options
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'user/registerSanWx',
+    data: {
+      user_id,
+      color_reg,
+      style_reg,
+      feature_reg
+    },
+    success,
+    error
+  })
+}

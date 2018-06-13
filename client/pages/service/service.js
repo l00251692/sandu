@@ -64,9 +64,9 @@ Page({
       loading: true
     })
 
-    var registRcv = this.registRcv
+    var registType = this.registType
 
-    if (registRcv)
+    if (registType == 2)
     {
       getApp().getCurrentAddress(address => {
         var { title, location, city, district } = address

@@ -1,6 +1,21 @@
 <!--pages/order/list.wxml-->
 <import src="/templates/load-more.wxml" />
 <view >
+  <view class="section" wx:if="{{registType > 1}}">
+    <view class="nav-me" bindtap="showUser">
+      <image src="../../images/assets/nav-me.png"/>
+    </view>
+    <view class="nav">
+      <view class="nav-info">我的伞: </view>
+      <view class="nav-color">红色</view>
+      <view class="nav-style">长柄式</view>
+    </view>
+    <navigator url= "/pages/register/register" >
+     <view class="nav-all">
+      <image src="../../images/assets/setting.png"/>
+    </view>
+    </navigator>
+  </view>
   <view  wx:if="{{registType > 1}}" class="order-list" >
     <view class="order-item" wx:for="{{list}}" wx:key="order_id">
       <view class="order-item__hd">
@@ -26,6 +41,6 @@
     <view class="order-logout__tip">
       请先注册信息，让其他人更容易找到你
     </view>
-    <navigator url="/pages/login/login" class="weui-btn weui-btn_primary weui-btn_mini" hover-class="button-hover">绑定我的伞              </navigator>
+    <navigator url="/pages/register/register" class="weui-btn weui-btn_primary weui-btn_mini" hover-class="button-hover">绑定我的伞</navigator>
   </view>
 </view>

@@ -13,6 +13,8 @@ public interface UserService {
 	void addUsers(Users users);
 
 	int updateUserInfo(Users users);
+	
+	int updateUserSanInfo(Users users);
 
 	Users checkLogin(String user_id);
 

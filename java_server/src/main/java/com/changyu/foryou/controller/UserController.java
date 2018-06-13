@@ -305,4 +305,46 @@ public class UserController {
 		
 		return map;
 	}
+	
+	/**
+	 * 获取我的用户总信息
+	 * @param phone 用户id
+	 * @return
+	 */
+	@RequestMapping(value="registerSanWx")
+	public @ResponseBody Map<String, Object> registerSanWx(@RequestParam String user_id,@RequestParam String color_reg,
+			@RequestParam String style_reg, @RequestParam String feature_reg){
+		Map<String, Object> map = new HashMap<String, Object>();
+	
+
+		Users users=userService.selectByUserId(user_id);
+		System.out.println("getMineInfoWx:" + user_id);
+		if(users == null)
+		{
+			map.put("State", "Fail"); 
+			map.put("info", "获得我的信息失败"); 
+			return map; 
+		}
+		
+		users.setSanColor(color_reg);
+		users.setSanStyle(style_reg);
+		users.setType((short)2);
+		
+		if(!feature_reg.equals("no")){
+			users.setSanFeature(feature_reg);
+		}
+		int flag = userService.updateUserSanInfo(users);
+		if(flag !=0 && flag != -1)
+		{
+			map.put("State", "Success"); 
+			map.put("data", "OK"); 
+		}
+		else
+		{
+			map.put("State", "Fail"); 
+			map.put("info", "绑定信息失败"); 
+		}		
+		
+		return map;
+	}
 }

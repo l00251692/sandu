@@ -16,6 +16,8 @@ public interface UsersMapper {
     Users selectByPrimaryKey(String userId);
 
     int updateByPrimaryKeySelective(Users record);
+    
+    int updateUserSanReg(Users record);
 
 	Users checkLogin(String user_id);
 

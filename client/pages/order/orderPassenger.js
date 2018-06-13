@@ -3,11 +3,13 @@ var qqmapsdk;
 qqmapsdk = new QQMapWX({
   key:'DHNBZ-2ZLKK-T7IJJ-AXSQW-WX5L6-A6FJZ'
 });
+
+
 import {
-  getOrderInfo, setRecvOrder
+  getOrderInfo, payOrder, cancelOrder
 } from '../../utils/api'
 
-import { alert, makePhoneCall, datetimeFormat } from '../../utils/util'
+import { alert, makePhoneCall, datetimeFormat, confirm } from '../../utils/util'
 
 const app = getApp();
 Page({
@@ -71,7 +73,7 @@ Page({
             width: 4,
             dottedLine: true
           }],
-          passenger: data.passenger,
+          driver: data.driver,
           order: order,
           hiddenLoading: true
         });
@@ -126,36 +128,24 @@ Page({
     makePhoneCall(this.data.passenger.phone)
   },
 
-  toRecv(){
+  toCancel(){
     var order_id = this.id
-    var that = this
-
-    setRecvOrder({
-      order_id,
-      success(data) {
-        
-        wx.showToast({
-          title: '接单成功',
-        })
-
-        that.setData({
-          hiddenLoading: false
-        })
-
-        that.loadData()
-      },
-      error() {
-        that.setData({
-          hiddenLoading: true,
-        })
-        
-        wx.showToast({
-          title: '接单失败，请联系客服处理',
+    confirm({
+      content: `是否取消订单`,
+      confirmText: '取消订单',
+      ok() {
+        cancelOrder({
+          order_id,
+          success(data) {
+            wx.switchTab({
+              url: "/pages/index/index",
+            })
+          }
         })
       }
     })
-   
   },
+
   toApp(){
     wx.showToast({
       title: '暂不支持',
@@ -163,9 +153,10 @@ Page({
       duration: 1000
     })
   },
+
   toEvaluation(){
-    wx.redirectTo({
-      url:"/pages/evaluation/evaluationS?id=" + this.id,
+    wx.navigateTo({
+      url:"/pages/evaluation/evaluationP?id=" + this.id,
     })
   },
   onReady: function () {

@@ -7,8 +7,8 @@
     </view>
     <view class="nav">
       <view class="nav-info">我的伞: </view>
-      <view class="nav-color">红色</view>
-      <view class="nav-style">长柄式</view>
+      <view class="nav-color">{{san_color}}</view>
+      <view class="nav-style">{{san_style}}</view>
     </view>
     <navigator url= "/pages/register/register" >
      <view class="nav-all">
@@ -16,6 +16,19 @@
     </view>
     </navigator>
   </view>
+
+  <scroll-view class="horse" bindtap='onProcessOrder'>
+        <view class="scrolltxt weui-cell__ft_in-access" >
+          <view class="marquee_box">
+            <view class="marquee_text" style="transform: translateX(-{{marqueeDistance}}px)">
+              <text>{{text}}</text>
+              <text style="margin-right:{{marquee_margin}}px;"></text>
+              <text style="margin-right:{{marquee_margin}}px;">{{text}}</text>        
+            </view>
+          </view>
+        </view>
+  </scroll-view>
+
   <view  wx:if="{{registType > 1}}" class="order-list" >
     <view class="order-item" wx:for="{{list}}" wx:key="order_id">
       <view class="order-item__hd">
@@ -35,7 +48,7 @@
         <button id="{{index}}" bindtap="onRecvOrderTap" class="weui-btn_primary weui-btn_mini">接单</button> 
       </view>
     </view>
-    <template is="load-more" data="{{hasMore: hasMore, loading: loading}}"></template>
+    <!-- <template is="load-more" data="{{hasMore: hasMore, loading: loading}}"></template> -->
   </view>
   <view  class="order-logout" wx:else>
     <view class="order-logout__tip">

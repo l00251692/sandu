@@ -464,6 +464,22 @@ export function getMineProcessingOrder(options) {
   })
 }
 
+export function getMineProcessingOrderDriver(options) {
+  var {
+    success, error
+  } = options
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'order/getMineProcessingOrderDriverWx',
+    data: {
+      user_id
+    },
+    success, error
+  })
+}
+
 
 
 // 订单评论
@@ -547,6 +563,7 @@ export function setRecvOrder(options) {
 
 export function finishOrderByDriver(options) {
   var {
+    star,
     order_id,
     success, error
   } = options
@@ -556,7 +573,31 @@ export function finishOrderByDriver(options) {
   fetch({
     url: 'order/finishOrderByDriverWx',
     data: {
+      star,
       order_id,
+      user_id
+    },
+    success, error
+  })
+
+}
+
+export function finishOrderByPassenger(options) {
+  var {
+    star,
+    order_id,
+    prepay_id,
+    success, error
+  } = options
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+  console.log(order_id + "," + user_id)
+  fetch({
+    url: 'order/finishOrderByPassengerWx',
+    data: {
+      star,
+      order_id,
+      prepay_id,
       user_id
     },
     success, error
@@ -833,6 +874,24 @@ export function registerSan(options) {
       color_reg,
       style_reg,
       feature_reg
+    },
+    success,
+    error
+  })
+}
+
+export function getRegSanInfo(options) {
+
+  var {
+     success, error
+  } = options
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'user/getRegSanInfoWx',
+    data: {
+      user_id
     },
     success,
     error

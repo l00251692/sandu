@@ -1,6 +1,6 @@
 // pages/order/list.js
 import {
-  getOrders, setRecvOrder, getDistanceOrders
+  getOrders, setRecvOrder, getRegSanInfo, getDistanceOrders, getMineProcessingOrderDriver
 } from '../../utils/api'
 
 import {
@@ -15,7 +15,16 @@ var initData = {
   page: 0,
   hasMore: true,
   loading: false,
-  list: null
+  list: null,
+
+  text: "您有订单正在进行中，请处理",
+  marqueePace: 1,//滚动速度
+  marqueeDistance: 0,//初始滚动距离
+  marquee_margin: 200,
+  size: 16, //与css中定义的字体大小一致，单位为px
+  rollinterval: 20, // 时间间隔
+  windowWidth: 686, //显示空间宽度，与css中定义一致
+  orderingId: null
 }
 
 Page({
@@ -48,9 +57,38 @@ Page({
   },
   initData(cb) {
     this.setData(initData)
+    this.init()
     this.loadData(cb)
     //this.connectWebsocket()
   },
+
+  init() {
+    var that = this
+
+    getMineProcessingOrderDriver({
+      success(data) {
+        if (data.orderId != null && data.orderId.length > 0) {
+          var length = that.data.text.length * that.data.size;//文字长度
+          //var windowWidth = wx.getSystemInfoSync().windowWidth;// 屏幕宽度
+
+          that.setData({
+            length: length,
+            orderingId: data.orderId,
+            orderingUserType: data.userType,
+            orderingStatus: data.orderStatus
+          });
+          that.scrolltxt();// 第一个字消失后立即从右边出现
+        }
+        else{
+          that.setData({
+            text: "已根据您的位置为您推送附近订单",
+          })
+        }
+      }
+    })
+            
+  },
+
   loadData(cb) {
     var that = this
     var {
@@ -71,35 +109,75 @@ Page({
       getApp().getCurrentAddress(address => {
         var { title, location, city, district } = address
         console.log("getCurrentAddress:" + JSON.stringify(address))
-        //获取最新的需求单信息，最多10条
-        getDistanceOrders({
-          page,
-          city_name:city,
-          district_name:district,
-          my_longitude: location.longitude,
-          my_latitude: location.latitude,
-          success(data) {
-            var { list } = data
-            console.log("orderlist:" + JSON.stringify(data))
-            if(list != null)
-            {
-              list = list.map(item => {
-                item['depart_time_format'] = datetimeFormat(item.depart_time)
-                return item
-              })
-            }
 
+        getRegSanInfo({
+          success(data){
             that.setData({
-              loading: false,
-              address_title: title,
-              list:list,
-              hasMore: true, //修改为需要手工刷新
-              page: 0
+              san_color:data.color,
+              san_style: data.style,
+              san_feature: data.feature
             })
+
+            //获取最新的需求单信息，最多10条
+            getDistanceOrders({
+              page,
+              city_name: city,
+              district_name: district,
+              my_longitude: location.longitude,
+              my_latitude: location.latitude,
+              success(data) {
+                var { list } = data
+                console.log("orderlist:" + JSON.stringify(data))
+                if (list != null) {
+                  list = list.map(item => {
+                    item['depart_time_format'] = datetimeFormat(item.depart_time)
+                    return item
+                  })
+                }
+
+                that.setData({
+                  loading: false,
+                  address_title: title,
+                  list: list,
+                  hasMore: true, //修改为需要手工刷新
+                  page: 0
+                })
+              }
+            })
+
           }
         })
+        
       })
     }   
+  },
+
+  scrolltxt: function () {
+    var that = this;
+    var length = that.data.length;//滚动文字的宽度
+    var windowWidth = that.data.windowWidth;//屏幕宽度
+    // if (length > windowWidth) {
+    var interval = setInterval(function () {
+      var maxscrollwidth = length + that.data.marquee_margin;//滚动的最大宽度，文字宽度+间距，如果需要一行文字滚完后再显示第二行可以修改marquee_margin值等于windowWidth即可
+      var crentleft = that.data.marqueeDistance;
+      if (crentleft < maxscrollwidth) {//判断是否滚动到最大宽度
+        that.setData({
+          marqueeDistance: crentleft + that.data.marqueePace
+        })
+      }
+      else {
+        //console.log("替换");
+        that.setData({
+          marqueeDistance: 0 // 直接重新滚动
+        });
+        clearInterval(interval);
+        that.scrolltxt();
+      }
+    }, that.data.roolinterval);
+    // }
+    // else {
+    //   that.setData({ marquee_margin: "1000" });//只显示一条不滚动右边间距加大，防止重复显
+    // }
   },
 
   connectWebsocket: function () {
@@ -174,6 +252,14 @@ Page({
       return;
     }
 
+    if (this.data.orderingId != null) {
+      wx.showModal({
+        title: '您当前有订单在进行中',
+        content: '请先处理当前进行中的订单',
+      })
+      return
+    }
+
     this.setData({
       loading: true
     })
@@ -192,51 +278,28 @@ Page({
           url: '/pages/order/orderService?id=' + order_id,
         })
       },
-      error() {
+      error(data) {
         that.setData({
           loading: false,
         })
 
-        wx.showToast({
-          title: '接单失败，请联系客服处理',
-        })
+        that.initData()
       }
     })
   },
 
-  onRejectOrderTap(e) {
-    var { id } = e.currentTarget
-    var that = this
-    var { list, loading } = this.data
-    if (loading) {
-      return;
+  onProcessOrder(e) {
+
+    var { orderingId, orderingUserType, orderingStatus } = this.data
+
+    if (orderingId != null && orderingId.length > 0) {
+      wx.navigateTo({
+        url: "/pages/order/orderService?id=" + orderingId,
+      })
     }
-
-    this.setData({
-      loading: true
-    })
-    var { order_id } = list[id]
-    setRejectOrder({
-      order_id,
-      success(data) {
-        wx.stopBackgroundAudio()
-        wx.showToast({
-          title: '订单已拒绝',
-        })
-        that.initData();
-        that.setData({
-          loading: false,
-          tip: '您已登录商家系统，请保持小程序不要关闭'
-        })
-      },
-      error() {
-        that.setData({
-          loading: false,
-          tip: '订单未成功拒绝，请联系客服'
-        })
-      }
-    })
   },
+
+  
   onReachBottom(e) {
     var {
       hasMore, loading
@@ -262,11 +325,6 @@ Page({
     if (this.data.list) {
       this.onLoad()
     }
-  },
-  onShareAppMessage() {
-    return {
-      title: '我的订单',
-      path: '/pages/order/list'
-    }
   }
+  
 })

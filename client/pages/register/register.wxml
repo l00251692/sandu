@@ -37,7 +37,7 @@
         <view class="weui-label">特点</view>
       </view>
       <view class="weui-cell__bd">
-        <input type="text" class="weui-input" maxlength="20" bindinput="bindFeatureInput" placeholder="输入特点便于对方更好找到你" />
+        <input type="text" class="weui-input" maxlength="10" bindinput="bindFeatureInput" placeholder="一句话介绍，最多10个字" />
       </view>
     </view>
   </view>

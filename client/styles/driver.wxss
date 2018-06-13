@@ -59,7 +59,7 @@
   }
   .detailed-cart{
       margin-top: 17rpx;
-      font-size: 30rpx;
+      font-size: 26rpx;
       color: #666666;
   }
   .driver-message{
@@ -72,5 +72,9 @@
   }
   .driver-message .mas{
       margin-right: 24rpx;
+  }
+
+  .driver-img{
+    border-radius: 30%;
   }
   

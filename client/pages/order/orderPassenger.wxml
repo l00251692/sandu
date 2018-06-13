@@ -10,15 +10,21 @@
     show-location
     >
     <cover-view class="total">
-        <cover-view class="total-driver">
+        <!-- 订单已被接单 -->
+        <cover-view class="total-driver" wx:if="{{order.orderStatus == 2}}">
             <cover-view class="driver-info">
                 <cover-view class="driver-img">
-                    <cover-image style="width: 150rpx;height: 150rpx;"src="{{passenger.head}}"/>
+                    <cover-image style="width: 150rpx;height: 150rpx;"src="{{driver.head}}"/>
                 </cover-view>
                 <cover-view class="driver-detailed" >
-                    <cover-view class="detailed-name">{{passenger.name}}
+                    <cover-view class="detailed-name">{{driver.name}}
+                        <cover-image class="star" style="width: 35rpx;height: 35rpx;display: inline-block;" src="../../images/assets/star.png" ></cover-image>
+                        <cover-view class="orderTotal">{{driver.stars}}</cover-view>
                     </cover-view>
-                    <cover-view class="detailed-cart" ></cover-view>
+                   
+                    <cover-view class="detailed-Cartnumber">{{driver.color}} ☆ {{driver.style}}</cover-view>
+
+                    <cover-view class="detailed-cart" wx:if="{{driver.feature}}">{{driver.feature}}</cover-view>
                 </cover-view>
             </cover-view>
             <cover-view class="driver-message">
@@ -28,9 +34,22 @@
                         <cover-view class="phone">
                             <cover-image bindtap="onPhoneTap" style="width: 70rpx;height: 70rpx;" src="../../images/assets/phone.png"/>
                         </cover-view>
-            </cover-view>
-          
+            </cover-view>        
         </cover-view>
+
+        <!--订单创建等待接单  -->
+        <cover-view class="total-looking" wx:elif="{{order.orderStatus == 0}}">
+            <cover-image class="looking-img" style="width: 30rpx;height: 30rpx;" src="../../images/assets/looking.png"  ></cover-image>
+            <cover-view class="looking-desc">请耐心等待服务</cover-view>
+        </cover-view>
+
+        <!--等待支付  -->
+        <cover-view class="total-looking" wx:elif="{{order.orderStatus == 3}}">
+            <cover-image class="looking-img" style="width: 30rpx;height: 30rpx;" src="../../images/assets/looking.png"  ></cover-image>
+            <cover-view class="looking-desc">订单已完成的，等待支付</cover-view>
+        </cover-view>
+
+
         <cover-view class="total-info">
             <cover-view class="total-info-from">
               <cover-view class="circle-str"></cover-view>
@@ -44,8 +63,8 @@
               <cover-view class="info-to-detail">{{order.toAddrDetail}}</cover-view>
             </cover-view>  
         </cover-view>
-         <cover-view class="total-prompt">订单创建于{{order.createTime}}</cover-view>
-    </cover-view>
+        <cover-view class="total-prompt">订单创建于{{order.createTime}}</cover-view>
+        </cover-view>
     <cover-view class="sacle-plus">
           <cover-image bindtap='onScalePlus' style="width: 80rpx;height: 80rpx;" src="../../images/assets/plus.png"/>
     </cover-view>
@@ -56,8 +75,9 @@
           <cover-image bindtap='onRevert' style="width: 80rpx;height: 80rpx;" src="../../images/assets/location.png"/>
     </cover-view>
     <cover-view class="ft">
-        <cover-view class="ft-cancel"bindtap="toRecv" wx:if="{{order.orderStatus == 0}}">接单</cover-view>
-        <cover-view class="ft-finish" bindtap="toEvaluation" wx:elif="{{order.orderStatus == 2}}">结束行程</cover-view>
+        <cover-view class="ft-cancel" wx:if="{{order.orderStatus == 0}}" bindtap="toCancel">取消订单</cover-view>
+        <cover-view class="ft-cancel" wx:elif="{{order.orderStatus == 3}}" bindtap="toEvaluation">去支付</cover-view>
+        <cover-view class="ft-finish" wx:elif="{{order.orderStatus == 2}}" bindtap="toEvaluation">结束行程</cover-view>
         <cover-view class="ft-app" bindtap="toApp">下载APP</cover-view>
     </cover-view>
 </map>

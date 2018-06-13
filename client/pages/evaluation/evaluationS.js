@@ -6,7 +6,7 @@ import {
 
 Page({
   data: {
-      star: 0,
+      star: 5,
       starMap: [
          '','','','','',
       ],
@@ -47,9 +47,12 @@ Page({
     var that = this
     var order_id = this.id
 
+    var { star } = this.data
+
     console.log("toFinish:" + order_id)
         
     finishOrderByDriver({
+      star,
       order_id,
       success(data)
       {

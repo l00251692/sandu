@@ -9,7 +9,9 @@
     "pages/wallet/wallet",
     "pages/order/myOrder",
     "pages/order/orderService",
-    "pages/evaluation/evaluation",
+    "pages/order/orderPassenger",
+    "pages/evaluation/evaluationP",
+    "pages/evaluation/evaluationS",
     "pages/logs/logs"
   ],
   "window":{

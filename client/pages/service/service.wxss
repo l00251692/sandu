@@ -21,6 +21,33 @@
   left: 0;
 }
 
+.horse {
+  position: fixed;
+  top: 120rpx;
+}
+
+.scrolltxt {
+  padding: 0 20rpx;
+  background: #fff;
+}
+
+.marquee_box {
+  position: relative;
+  height: 90rpx;
+  display: block;
+  overflow: hidden;
+  color:#5cd79a;
+}
+
+.marquee_text {
+  white-space: nowrap;
+  position: absolute;
+  top: 0;
+  font-size: 16px;
+  height: 90rpx;
+  line-height: 90rpx;
+}
+
 .nav-me {
   height: 30rpx;
   width: 30rpx;
@@ -98,7 +125,7 @@
 }
 
 .order-list{
-  margin-top:150rpx;
+  margin-top:220rpx;
 }
 
 .order-item {

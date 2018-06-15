@@ -41,6 +41,7 @@ Page({
       success(data) {
         that.setData({
           driver: data.driver,
+          order:data.order
         });
       }
     })
@@ -52,17 +53,20 @@ Page({
     var order_id = this.id
     var { star } = this.data
 
+    var pay_money = this.data.order.orderPrice 
+
     console.log("toFinish:" + order_id)
 
     getPayment({
       order_id,
-      pay_money: 1,
+      pay_money,
       success(data) {
         requestPayment({
           data,
           success() {
             finishOrderByPassenger({
               order_id,
+              pay_money,
               star,
               prepay_id: data.prepay_id,
               success(data) {

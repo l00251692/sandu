@@ -59,7 +59,7 @@ Page({
     this.setData(initData)
     this.init()
     this.loadData(cb)
-    //this.connectWebsocket()
+    //this.connectWebsocket() 
   },
 
   init() {
@@ -81,7 +81,7 @@ Page({
         }
         else{
           that.setData({
-            text: "已根据您的位置为您推送附近订单",
+            text: "下拉刷新查看附近最新订单",
           })
         }
       }
@@ -128,7 +128,7 @@ Page({
               success(data) {
                 var { list } = data
                 console.log("orderlist:" + JSON.stringify(data))
-                if (list != null) {
+                if (list != null && list.length > 0) {
                   list = list.map(item => {
                     item['depart_time_format'] = datetimeFormat(item.depart_time)
                     return item
@@ -149,14 +149,19 @@ Page({
         })
         
       })
-    }   
+    } 
+    else{
+      this.setData({
+        loading: false
+      })
+    }  
   },
 
   scrolltxt: function () {
     var that = this;
     var length = that.data.length;//滚动文字的宽度
     var windowWidth = that.data.windowWidth;//屏幕宽度
-    // if (length > windowWidth) {
+
     var interval = setInterval(function () {
       var maxscrollwidth = length + that.data.marquee_margin;//滚动的最大宽度，文字宽度+间距，如果需要一行文字滚完后再显示第二行可以修改marquee_margin值等于windowWidth即可
       var crentleft = that.data.marqueeDistance;
@@ -174,10 +179,7 @@ Page({
         that.scrolltxt();
       }
     }, that.data.roolinterval);
-    // }
-    // else {
-    //   that.setData({ marquee_margin: "1000" });//只显示一条不滚动右边间距加大，防止重复显
-    // }
+
   },
 
   connectWebsocket: function () {
@@ -315,6 +317,7 @@ Page({
       this.initData(() => {
         wx.hideNavigationBarLoading()
         wx.stopPullDownRefresh()
+        console.log("stopPullDownRefresh")
       })
     } else {
       wx.stopPullDownRefresh()

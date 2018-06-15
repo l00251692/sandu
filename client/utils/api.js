@@ -480,7 +480,39 @@ export function getMineProcessingOrderDriver(options) {
   })
 }
 
+export function getDriverOrders(options) {
+  var {
+    page, success, error
+  } = options
 
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'order/getDriverOrdersWx',
+    data: {
+      page,
+      user_id
+    },
+    success, error
+  })
+}
+
+export function getPassengerOrders(options) {
+  var {
+    page, success, error
+  } = options
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'order/getPassengerOrdersWx',
+    data: {
+      page,
+      user_id
+    },
+    success, error
+  })
+}
 
 // 订单评论
 export function reviewsOrder(options) {
@@ -586,6 +618,7 @@ export function finishOrderByPassenger(options) {
   var {
     star,
     order_id,
+    pay_money,
     prepay_id,
     success, error
   } = options
@@ -597,6 +630,7 @@ export function finishOrderByPassenger(options) {
     data: {
       star,
       order_id,
+      pay_money,
       prepay_id,
       user_id
     },

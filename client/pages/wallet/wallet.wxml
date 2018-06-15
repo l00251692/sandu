@@ -1,0 +1,49 @@
+<import src="/templates/load-more.wxml" />
+
+<view class="header">
+  <view class="money">
+    <text class="money-b">{{ballance}}</text>
+    <text>元</text>
+  </view>
+  <button class="recharge-btn" type="default" bindtap='onBalanceBack'>提现</button>
+</view>
+<view class="wrapper">
+  <!-- <view class="tap">
+		<view class="tap-header">
+			<text class="item active">最近一周</text>
+			<text class="item">最近一月</text>
+			<text class="item">最近半年</text>
+		</view>
+	</view> -->
+  <view class="group">
+    <view class="group-item">
+
+      <view class="group-ul" wx:for="{{list}}" wx:key="order_id">
+        <navigator url="/pages/order/orderService?id={{item.order_id}}" class="group-li">
+          <view class="first">
+            <view class="left">
+              <text class="lt-h">【 打伞 】</text>
+              <text class="lt-time">{{ORDER_STATES[item.order_status]}}</text>
+            </view>
+            <view class="right">
+              <text class="rt-span"wx:if="{{item.order_status == 4}}">+{{item.order_price}}元</text>
+              <text class="rt-em">创建于{{item.create_time_format}}</text>
+            </view>
+          </view>
+          <view class="second">
+            <view>
+              <view class="circle-str"></view>
+              <view class="info-from">{{item.from_addr}}</view>
+            </view>
+            <view>
+              <view class="circle-end"></view>
+              <view class="info-to">{{item.to_addr}}</view>
+            </view>
+          </view>
+        </navigator>
+
+      </view>
+    </view>
+  </view>
+  <template is="load-more" data="{{hasMore: hasMore, loading: loading}}"></template>
+</view>

@@ -63,6 +63,7 @@ Page({
       rollinterval: 20, // 时间间隔
       windowWidth: 686, //显示空间宽度，与css中定义一致
       orderingId: null,
+      callCart:true
     })
   },
 

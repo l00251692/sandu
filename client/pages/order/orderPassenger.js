@@ -130,6 +130,16 @@ Page({
 
   toCancel(){
     var order_id = this.id
+
+    var rcvTime = this.data.order.rcvTime
+    var now = Date.parse(new Date())
+
+    if (now - rcvTime > 5 * 60 * 1000 && rcvTime > 0)
+    {
+      alert("订单已被接超过5min，不能取消")
+      return
+    }
+  
     confirm({
       content: `是否取消订单`,
       confirmText: '取消订单',

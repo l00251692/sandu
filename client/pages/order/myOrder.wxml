@@ -1,0 +1,34 @@
+<import src="/templates/load-more.wxml" />
+
+<view class="wrapper">
+  <view class="group">
+    <view class="group-item">
+
+      <view class="group-ul" wx:for="{{list}}" wx:key="order_id">
+        <navigator url="/pages/order/orderPassenger?id={{item.order_id}}" class="group-li">
+          <view class="first">
+            <view class="left">
+              <text class="lt-h">{{ORDER_STATES[item.order_status]}}</text>
+              <text class="lt-time">{{item.create_time_format}}</text>
+            </view>
+            <view class="right">
+              <text class="rt-span" >{{item.order_price}}元</text>
+            </view>
+          </view>
+          <view class="second">
+            <view>
+              <view class="circle-str"></view>
+              <view class="info-from">{{item.from_addr}}</view>
+            </view>
+            <view>
+              <view class="circle-end"></view>
+              <view class="info-to">{{item.to_addr}}</view>
+            </view>
+          </view>
+        </navigator>
+
+      </view>
+    </view>
+  </view>
+  <template is="load-more" data="{{hasMore: hasMore, loading: loading}}"></template>
+</view>

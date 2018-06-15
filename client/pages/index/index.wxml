@@ -47,8 +47,9 @@
         </view>
         <view wx:else class="cost">
          <view class="cost-title" >
+            <view class="cost-tip"> <image src="../../images/assets/remind.png"></image></view>
             <view class="cost-item">
-            出发地道目的地大约相距{{distance}}公里</view>   
+            目的地距离出发地大约{{distance}}公里</view>   
           </view>
           <button  class="cost-btn"bindtap="toWait">提交订单</button>
         </view>

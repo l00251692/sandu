@@ -1,56 +1,62 @@
-<!--pages/order/list.wxml-->
 <import src="/templates/load-more.wxml" />
-<view >
-  <view class="section" wx:if="{{registType > 1}}">
-    <view class="nav-me" bindtap="showUser">
-      <image src="../../images/assets/nav-me.png"/>
-    </view>
-    <view class="nav">
-      <view class="nav-info">我的伞: </view>
-      <view class="nav-color">{{san_color}}</view>
-      <view class="nav-style">{{san_style}}</view>
-    </view>
-    <navigator url= "/pages/register/register" >
-     <view class="nav-all">
-      <image src="../../images/assets/setting.png"/>
-    </view>
-    </navigator>
-  </view>
-
-  <scroll-view class="horse" bindtap='onProcessOrder'>
-        <view class="scrolltxt weui-cell__ft_in-access" >
-          <view class="marquee_box">
-            <view class="marquee_text" style="transform: translateX(-{{marqueeDistance}}px)">
-              <text>{{text}}</text>
-              <text style="margin-right:{{marquee_margin}}px;"></text>
-              <text style="margin-right:{{marquee_margin}}px;">{{text}}</text>        
-            </view>
-          </view>
-        </view>
-  </scroll-view>
-
-  <view  wx:if="{{registType > 1}}" class="order-list" >
-    <view class="order-item" wx:for="{{list}}" wx:key="order_id">
-      <view class="order-item__hd">
-        <view class="order-item__shop">
-          {{item.passenger_name}}
-        </view>
-        <view class="order-item__status {{item.state==1? 'order-item__status_pay': ''}}">{{item.depart_time_format}}</view>
+<loading hidden="{{!loading}}">数据加载中</loading>
+<view>
+  <view wx:if="{{registType > 1}}">
+    <view class="section">
+      <view class="nav-me" bindtap="showUser">
+        <image src="../../images/assets/nav-me.png" />
       </view>
-      <navigator url="/pages/order/orderService?id={{item.order_id}}" class="order-item__bd ">
-        <image class="order-item__pic" src="{{item.passenger_url}}"></image>
-        <view class="order-item__content weui-cell__ft_in-access">
-          <view class="circle-str"></view> <view class="order-item__price">{{item.from_addr}}</view>
-          <view class="circle-end"></view> <view class="order-item__price">{{item.to_addr}}</view>
+      <view class="nav">
+        <view class="nav-info">我的伞: </view>
+        <view class="nav-color">{{san_color}}</view>
+        <view class="nav-style">{{san_style}}</view>
+      </view>
+      <navigator url="/pages/register/register">
+        <view class="nav-all">
+          <image src="../../images/assets/setting.png" />
         </view>
       </navigator>
-      <view  class="order-item__ft">
-        <button id="{{index}}" bindtap="onRecvOrderTap" class="weui-btn_primary weui-btn_mini">接单</button> 
+    </view>
+
+    <scroll-view class="horse" bindtap='onProcessOrder'>
+      <view class="scrolltxt weui-cell__ft_in-access">
+        <view class="marquee_box">
+          <view class="marquee_text" style="transform: translateX(-{{marqueeDistance}}px)">
+            <text>{{text}}</text>
+            <text style="margin-right:{{marquee_margin}}px;"></text>
+            <text style="margin-right:{{marquee_margin}}px;">{{text}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view wx:if="{{list == null || list.length == 0}}">
+      <image src="../../images/assets/noList.png" class="no_list"></image>
+    </view>
+    <view class="order-list" wx:else>
+      <view class="order-item" wx:for="{{list}}" wx:key="order_id">
+        <view class="order-item__hd">
+          <view class="order-item__shop">
+            {{item.passenger_name}}
+          </view>
+          <view class="order-item__status {{item.state==1? 'order-item__status_pay': ''}}">{{item.depart_time_format}}</view>
+        </view>
+        <navigator url="/pages/order/orderService?id={{item.order_id}}" class="order-item__bd ">
+          <image class="order-item__pic" src="{{item.passenger_url}}"></image>
+          <view class="order-item__content weui-cell__ft_in-access">
+            <view class="circle-str"></view>
+            <view class="order-item__price">{{item.from_addr}}</view>
+            <view class="circle-end"></view>
+            <view class="order-item__price">{{item.to_addr}}</view>
+          </view>
+        </navigator>
+        <view class="order-item__ft">
+          <button id="{{index}}" bindtap="onRecvOrderTap" class="weui-btn_primary weui-btn_mini">接单</button>
+        </view>
       </view>
     </view>
-    <!-- <template is="load-more" data="{{hasMore: hasMore, loading: loading}}"></template> -->
   </view>
-  <view  class="order-logout" wx:else>
+  <view class="order-logout" wx:else>
     <view class="order-logout__tip">
       请先注册信息，让其他人更容易找到你
     </view>

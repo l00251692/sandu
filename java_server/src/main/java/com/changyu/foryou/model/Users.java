@@ -28,7 +28,12 @@ public class Users {
     
     private String sanFeature;
     
-     
+    private Float passengerStar;
+    
+    private Float driverStar;
+    
+    private Float ballance;
+    
     public Users(String phone2,  String nickname2) {
 		phone=phone2;
 		nickname=nickname2;
@@ -154,6 +159,36 @@ public class Users {
 
 	public void setSanFeature(String sanFeature) {
 		this.sanFeature = sanFeature;
+	}
+
+
+	public Float getPassengerStar() {
+		return passengerStar;
+	}
+
+
+	public void setPassengerStar(Float passengerStar) {
+		this.passengerStar = passengerStar;
+	}
+
+
+	public Float getDriverStar() {
+		return driverStar;
+	}
+
+
+	public void setDriverStar(Float driverStar) {
+		this.driverStar = driverStar;
+	}
+
+
+	public Float getBallance() {
+		return ballance;
+	}
+
+
+	public void setBallance(Float ballance) {
+		this.ballance = ballance;
 	}
 
 }

@@ -17,6 +17,8 @@ public interface UsersMapper {
 
     int updateByPrimaryKeySelective(Users record);
     
+    int updateUserBallance(Map<String, Object> paramMap);
+    
     int updateUserSanReg(Users record);
 
 	Users checkLogin(String user_id);

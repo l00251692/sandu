@@ -13,9 +13,19 @@ public interface OrderMapper {
 	
 	Order getMineProcessingOrder(Map<String,Object> paramMap);
 	
+	Order getMineProcessingOrderDriver(Map<String,Object> paramMap);
+	
 	public int updateOrderStatus(Map<String, Object> paramMap);
+	
+	public int updatePassengerStar(Map<String, Object> paramMap);
+	
+	public int updateDriverStar(Map<String, Object> paramMap);
 	
 	public int updateOrderReceiver(Map<String, Object> paramMap);
 	
 	public List<Order> getNearByOrders(Map<String, Object> paramMap);
+	
+	public List<Order> getDriverOrders(Map<String, Object> paramMap);
+	
+	public List<Order> getPassengerOrders(Map<String, Object> paramMap);
 }

@@ -3,6 +3,7 @@ package com.changyu.foryou.controller;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.UUIDSerializer;
 import com.changyu.foryou.service.DelayService;
 import com.changyu.foryou.service.OrderService;
 import com.changyu.foryou.service.PayService;
@@ -22,6 +24,7 @@ import com.changyu.foryou.service.UserService;
 import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.PayUtil;
 import com.changyu.foryou.tools.StringUtil;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators.UUIDGenerator;
 
 @Controller
 @RequestMapping("/pay")
@@ -139,5 +142,31 @@ public class PayController {
         }  
         return null;	
 	}
+	
+	/**
+     * @return
+	 * @throws Exception 
+     */
+	@RequestMapping("/ballanceBackWx")
+    public @ResponseBody Map<String, Object> ballanceBackWx(@RequestParam String user_id,@RequestParam String money) throws Exception {
+          Map<String,Object> result = new HashMap<String,Object>();
+          
+          String orderId = UUID.randomUUID().toString();
+          
+          boolean flag = PayUtil.enterprisePayment(user_id, orderId,"xxxdefined","100","提现","192.145.23.2");
+          
+          if(flag)
+          {
+        	  result.put("State", "Success");
+              result.put("data", "提现成功");
+          }
+          else
+          {
+        	  result.put("State", "Fail");
+              result.put("info", "提现失败，请联系客服");
+          }
+          
+          return result;
+    }
 
 }

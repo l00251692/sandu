@@ -14,6 +14,7 @@
 		<result column="to_addr_latitude" property="toAddrLatitude" jdbcType="VARCHAR" />
 		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
 		<result column="depart_time" property="departTime" jdbcType="TIMESTAMP" />
+		<result column="rcv_time" property="rcvTime" jdbcType="TIMESTAMP" />
 		<result column="order_type" property="orderType" jdbcType="SMALLINT" />
 		<result column="order_status" property="orderStatus" jdbcType="SMALLINT" />
 		<result column="order_price" property="orderPrice" jdbcType="FLOAT" />
@@ -21,6 +22,8 @@
 		<result column="receive_user" property="receiveUser" jdbcType="VARCHAR" />	
 		<result column="city_name" property="cityName" jdbcType="VARCHAR" />
 		<result column="district_name" property="districtName" jdbcType="VARCHAR" />	
+		<result column="star_by_passenger" property="startByPassenger" jdbcType="SMALLINT" />
+		<result column="star_by_driver" property="starByDriver" jdbcType="SMALLINT" />
 	</resultMap>
 	
 	<insert id="insertSelective" >
@@ -157,13 +160,26 @@
 		select
 		*
 		from orders
-		where (
+		where 
 			create_user = #{userId,jdbcType=VARCHAR}
-			OR receive_user  = #{userId,jdbcType=VARCHAR}
-		)
 		and(
 			order_status = 0
+			OR order_status = 2
 			OR order_status = 3
+		)
+		ORDER BY
+			create_time DESC LIMIT 1
+	</select>
+	
+	<select id="getMineProcessingOrderDriver" resultMap="BaseResultMap">
+		select
+		*
+		from orders
+		where 
+			receive_user = #{userId,jdbcType=VARCHAR}
+		and(
+			order_status = 0
+			OR order_status = 2
 		)
 		ORDER BY
 			create_time DESC LIMIT 1
@@ -176,6 +192,9 @@
 		</if>
 		<if test="records != null">
 			,records=#{records, jdbcType=VARCHAR}
+		</if>
+		<if test="rcvTime != null">
+			,rcv_time=#{rcvTime, jdbcType=TIMESTAMP}
 		</if>
 		<if test="orderStatus != null">
 			,order_status=#{orderStatus, jdbcType=SMALLINT}
@@ -198,6 +217,27 @@
 		</where> 
 	</update>
 	
+	
+	<update id="updatePassengerStar">
+		 update orders set
+		<if test="startByPassenger != null">
+			star_by_passenger=#{startByPassenger, jdbcType=SMALLINT}
+		</if>
+		<where>
+			order_id=#{orderId, jdbcType=VARCHAR}
+		</where> 
+	</update>
+	
+	<update id="updateDriverStar">
+		 update orders set
+		<if test="starByDriver != null">
+			star_by_driver=#{starByDriver, jdbcType=SMALLINT}
+		</if>
+		<where>
+			order_id=#{orderId, jdbcType=VARCHAR}
+		</where> 
+	</update>
+	
 	<select id="getNearByOrders" resultMap="BaseResultMap">
 		select
 		*
@@ -212,5 +252,35 @@
 			#{offset,jdbcType=INTEGER}
 		</if> 
 	</select>
+	
+	<select id="getDriverOrders" resultMap="BaseResultMap">
+		select
+		*
+		from orders
+		where 
+		receive_user = #{userId,jdbcType=VARCHAR}
+		order by
+		create_time DESC
+		<if test="limit !=null and offset !=null">
+			LIMIT #{limit,jdbcType=INTEGER} OFFSET
+			#{offset,jdbcType=INTEGER}
+		</if> 
+	</select>
+	
+	<select id="getPassengerOrders" resultMap="BaseResultMap">
+		select
+		*
+		from orders
+		where 
+		create_user = #{userId,jdbcType=VARCHAR}
+		order by
+		create_time DESC
+		<if test="limit !=null and offset !=null">
+			LIMIT #{limit,jdbcType=INTEGER} OFFSET
+			#{offset,jdbcType=INTEGER}
+		</if> 
+	</select>
+	
+	
 	
 </mapper>

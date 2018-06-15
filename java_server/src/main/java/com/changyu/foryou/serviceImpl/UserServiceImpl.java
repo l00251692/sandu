@@ -38,6 +38,10 @@ public class UserServiceImpl implements UserService {
 		return usersMapper.updateByPrimaryKeySelective(users);
 	}
 	
+	public int updateUserBallance(Map<String, Object> paramMap) {
+		return usersMapper.updateUserBallance(paramMap);
+	}
+	
 	public int updateUserSanInfo(Users users) {
 		return usersMapper.updateUserSanReg(users);
 	}

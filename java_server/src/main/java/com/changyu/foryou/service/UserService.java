@@ -15,7 +15,10 @@ public interface UserService {
 	int updateUserInfo(Users users);
 	
 	int updateUserSanInfo(Users users);
+	
+	int updateUserBallance(Map<String, Object> paramMap);
 
 	Users checkLogin(String user_id);
+	
 
 }

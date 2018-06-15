@@ -31,6 +31,8 @@ public class Order {
     
     private Date departTime;
     
+    private Date rcvTime;
+    
     private short orderType;
     
     private short orderStatus;
@@ -40,6 +42,10 @@ public class Order {
     private String records;
     
     private String receiveUser;
+    
+    private short startByPassenger;
+    
+    private short starByDriver;
 
 	public String getOrderId() {
 		return orderId;
@@ -192,4 +198,29 @@ public class Order {
 	public void setDistrictName(String districtName) {
 		DistrictName = districtName;
 	}
+
+	public short getStartByPassenger() {
+		return startByPassenger;
+	}
+
+	public void setStartByPassenger(short startByPassenger) {
+		this.startByPassenger = startByPassenger;
+	}
+
+	public short getStarByDriver() {
+		return starByDriver;
+	}
+
+	public void setStarByDriver(short starByDriver) {
+		this.starByDriver = starByDriver;
+	}
+
+	public Date getRcvTime() {
+		return rcvTime;
+	}
+
+	public void setRcvTime(Date rcvTime) {
+		this.rcvTime = rcvTime;
+	}
+
 }

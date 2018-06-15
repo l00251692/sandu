@@ -186,6 +186,7 @@ public class UserController {
 		JSONObject obj = new JSONObject();
 		obj.put("phone", users.getPhone());
 		obj.put("registType", users.getType());
+		obj.put("ballance", users.getBallance());
 	
 			
 		map.put("State", "Success"); 
@@ -333,6 +334,7 @@ public class UserController {
 		if(!feature_reg.equals("no")){
 			users.setSanFeature(feature_reg);
 		}
+		
 		int flag = userService.updateUserSanInfo(users);
 		if(flag !=0 && flag != -1)
 		{
@@ -345,6 +347,50 @@ public class UserController {
 			map.put("info", "绑定信息失败"); 
 		}		
 		
+		return map;
+	}
+	
+	/**
+	 * 获取我的用户总信息
+	 * @param phone 用户id
+	 * @return
+	 */
+	@RequestMapping(value="getRegSanInfoWx")
+	public @ResponseBody Map<String, Object> getRegSanInfoWx(@RequestParam String user_id){
+		Map<String, Object> map = new HashMap<String, Object>();
+	
+
+		Users users=userService.selectByUserId(user_id);
+		
+		if(users == null)
+		{
+			map.put("State", "Fail"); 
+			map.put("info", "获得我的信息失败"); 
+			return map; 
+		}
+		
+		JSONObject obj = new JSONObject();
+		obj.put("color", users.getSanColor());
+		obj.put("style", users.getSanStyle());
+		obj.put("feature", users.getSanFeature());
+		
+		map.put("State", "Success"); 
+		map.put("data", obj); 
+		
+		return map;
+	}
+	
+	/**
+	 * 获取我的用户总信息
+	 * @param phone 用户id
+	 * @return
+	 */
+	@RequestMapping(value="updateUserBallanceWx")
+	public @ResponseBody Map<String, Object> updateUserBallanceWx(@RequestParam String user_id){
+		Map<String, Object> map = new HashMap<String, Object>();
+	
+		map.put("State", "Success"); 
+		map.put("data", ""); 	
 		return map;
 	}
 }

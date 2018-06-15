@@ -1,5 +1,6 @@
 package com.changyu.foryou.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -31,6 +32,8 @@ import com.changyu.foryou.service.OrderService;
 import com.changyu.foryou.service.RedisService;
 import com.changyu.foryou.service.UserService;
 import com.changyu.foryou.tools.Constants;
+import com.changyu.foryou.tools.HttpRequest;
+import com.changyu.foryou.tools.PayUtil;
 import com.changyu.foryou.tools.ThreadPoolUtil;
 import com.changyu.foryou.tools.ToolUtil;
 
@@ -149,7 +152,7 @@ public class OrderControler {
 		}
 		
 		map.put("State", "Fail");
-		map.put("data", null);	
+		map.put("info", "提交订单失败");	
 
 		return map;
 	}
@@ -167,7 +170,7 @@ public class OrderControler {
 			if(order == null)
 			{
 				result.put("State", "Fail");
-				result.put("info", "生成订单失败");	
+				result.put("info", "读取订单信息失败");	
 
 				return result;
 			}
@@ -193,7 +196,7 @@ public class OrderControler {
 			else 
 			{
 				result.put("State", "Fail");
-				result.put("info", null);	
+				result.put("info", "更新订单信息失败");	
 				return result;
 			}
 				
@@ -202,7 +205,7 @@ public class OrderControler {
 		}
 		
 		result.put("State", "Fail");
-		result.put("info", null);	
+		result.put("info", "取消订单失败");	
 
 		return result;
 	}
@@ -275,6 +278,122 @@ public class OrderControler {
 	}
 	
 	/**
+	 * 获取下达的所有订单
+	 * 
+	 * @param phoneId
+	 *            ,status
+	 * @return
+	 */
+	@RequestMapping("/getDriverOrdersWx")
+	public @ResponseBody Map<String, Object> getDriverOrdersWx(@RequestParam String user_id, @RequestParam Integer page) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			
+			paramMap.put("userId", user_id);//默认一次5条
+			paramMap.put("limit", 5);
+			paramMap.put("offset", page * 5);//默认一次5条
+	
+			List<Order> ordersList =orderService.getDriverOrders(paramMap);
+				
+			JSONArray orderArray = new JSONArray();
+			
+			for(Order order:ordersList)
+			{
+				JSONObject obj = new JSONObject();
+
+				Users user = userService.selectByUserId(order.getCreateUser());
+				obj.put("create_time", order.getCreateTime());
+				obj.put("depart_time", order.getDepartTime());
+				obj.put("order_price", order.getOrderPrice());
+				obj.put("order_status", order.getOrderStatus());
+				obj.put("order_id", order.getOrderId());
+				obj.put("from_addr", order.getFromAddr());
+				obj.put("to_addr", order.getToAddr());
+				
+				orderArray.add(obj);
+				
+			}
+			
+			JSONObject data = new JSONObject();
+			data.put("list2",orderArray);
+			data.put("count",ordersList.size());
+			data.put("page",page);
+
+			map.put("State", "Success");
+			map.put("data", data);	
+			return map;
+
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		map.put("State", "Fail");
+		map.put("data", "读取订单记录失败");	
+		return map;
+	}
+	
+	/**
+	 * 获取下达的所有订单
+	 * 
+	 * @param phoneId
+	 *            ,status
+	 * @return
+	 */
+	@RequestMapping("/getPassengerOrdersWx")
+	public @ResponseBody Map<String, Object> getPassengerOrdersWx(@RequestParam String user_id, @RequestParam Integer page) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			
+			paramMap.put("userId", user_id);//默认一次5条
+			paramMap.put("limit", 5);
+			paramMap.put("offset", page * 5);//默认一次5条
+	
+			List<Order> ordersList =orderService.getPassengerOrders(paramMap);
+				
+			JSONArray orderArray = new JSONArray();
+			
+			for(Order order:ordersList)
+			{
+				JSONObject obj = new JSONObject();
+
+				Users user = userService.selectByUserId(order.getCreateUser());
+				obj.put("create_time", order.getCreateTime());
+				obj.put("depart_time", order.getDepartTime());
+				obj.put("order_price", order.getOrderPrice());
+				obj.put("order_status", order.getOrderStatus());
+				obj.put("order_id", order.getOrderId());
+				obj.put("from_addr", order.getFromAddr());
+				obj.put("to_addr", order.getToAddr());
+				
+				orderArray.add(obj);
+				
+			}
+			
+			JSONObject data = new JSONObject();
+			data.put("list2",orderArray);
+			data.put("count",ordersList.size());
+			data.put("page",page);
+
+			map.put("State", "Success");
+			map.put("data", data);	
+			return map;
+
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+		}
+		map.put("State", "Fail");
+		map.put("data", "读取订单记录失败");	
+		return map;
+	}
+	
+	
+	
+	/**
 	 * 获取订单具体信息
 	 * 
 	 * @param phoneId
@@ -310,8 +429,9 @@ public class OrderControler {
 				obj_driver.put("head", driver.getImgUrl());
 				obj_driver.put("phone", driver.getPhone());
 				obj_driver.put("stars", 5);
-				obj_driver.put("tip", "这个人还没有介绍");
-				obj_driver.put("cart", "蓝色*透明");
+				obj_driver.put("feature", driver.getSanFeature());
+				obj_driver.put("color", driver.getSanColor());
+				obj_driver.put("style", driver.getSanStyle());
 			}
 			
 			Users passenger = userService.selectByUserId(order.getCreateUser());
@@ -330,6 +450,10 @@ public class OrderControler {
 			obj_order.put("toAddr", order.getToAddr());
 			obj_order.put("toAddrDetail", order.getToAddrDetai());
 			obj_order.put("createTime", order.getCreateTime());
+			obj_order.put("rcvTime", order.getRcvTime());
+			obj_order.put("departTime", order.getDepartTime());
+			obj_order.put("orderStatus", order.getOrderStatus());
+			obj_order.put("orderPrice", order.getOrderPrice());
 			
 			
 			data.put("driver", obj_driver);
@@ -364,20 +488,36 @@ public class OrderControler {
 		Order order = orderService.getOrderByIdWx(paramMap);
 		if (order == null)
 		{
-			map.put("State", "False");
-			map.put("data", "查询订单详细信息失败");	
+			map.put("State", "Fail");
+			map.put("info", "查询订单详细信息失败");	
 			return map;
 		}
 		
+		//TODO:合理性处理先注释掉
+		/*if(user_id.equals(order.getCreateUser())){
+			map.put("State", "Fail");
+			map.put("info", "您不能接单自己创建的订单");
+			return map;		
+		}*/
+		
+		if(order.getReceiveUser() != null && order.getReceiveUser().length() > 0)
+		{
+			map.put("State", "Fail");
+			map.put("info", "该订单已被接，请选择其他订单");
+			return map;
+		}
+		
+		Date date = new Date();
 		JSONArray records = JSON.parseArray(order.getRecords());
 		JSONObject record = new JSONObject();
 		record.put("status",Constants.orderStatusRecv);
-		record.put("time", new Date());
+		record.put("time", date);
 		records.add(record);
 		
 		paramMap.put("records",records.toJSONString());
 		paramMap.put("orderStatus",Constants.orderStatusRecv);
 		paramMap.put("receiveUser",user_id);
+		paramMap.put("rcvTime",date);
 		
 		int flage = orderService.updateOrderReceiver(paramMap);
 		if(flage != -1 && flage !=0)
@@ -403,8 +543,8 @@ public class OrderControler {
 		}
 		else
 		{
-			map.put("State", "False");
-			map.put("data", null);	
+			map.put("State", "Fail");
+			map.put("info", "接单失败");	
 		}
 		
 		return map;
@@ -412,12 +552,13 @@ public class OrderControler {
 	
 	@RequestMapping("/finishOrderByDriverWx")
 	public @ResponseBody Map<String, Object> finishOrderByDriverWx(
-			@RequestParam String user_id,  @RequestParam String order_id){
+			@RequestParam String user_id,  @RequestParam String order_id, @RequestParam int star){
 		Map<String,Object> result = new HashMap<String, Object>();
 
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			paramMap.put("orderId",order_id);
+			
 			Order order = orderService.getOrderByIdWx(paramMap);
 			if(order == null || !order.getReceiveUser().equals(user_id))
 			{
@@ -440,8 +581,137 @@ public class OrderControler {
 			int flag = orderService.updateOrderStatus(paramMap);
 			if (flag != -1 && flag != 0)
 			{
+
+				paramMap.put("starByDriver",star);
+				orderService.updateOrderStarByDriver(paramMap);
+				
 				result.put("State", "Success");
 				result.put("data", "结束订单成功");	
+				return result;
+			} 
+			else 
+			{
+				result.put("State", "Fail");
+				result.put("info", "结束订单失败");	
+				return result;
+			}
+				
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+
+		result.put("State", "Fail");
+		result.put("info", "结束订单失败");	
+
+		return result;
+	}
+	
+	@RequestMapping("/finishOrderByPassengerWx")
+	public @ResponseBody Map<String, Object> finishOrderByPassengerWx(
+			@RequestParam String user_id,  @RequestParam int star, @RequestParam String order_id ,@RequestParam float pay_money, @RequestParam String prepay_id){
+		Map<String,Object> result = new HashMap<String, Object>();
+
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("orderId",order_id);
+			Order order = orderService.getOrderByIdWx(paramMap);
+			if(order == null || !order.getCreateUser().equals(user_id))
+			{
+				result.put("State", "Fail");
+				result.put("info", "结束订单失败[订单信息错误]");	
+				return result;
+			}
+			
+			
+			
+
+			paramMap.put("orderStatus",Constants.orderStatusDone);
+			
+			JSONArray recordes = JSON.parseArray(order.getRecords());
+			JSONObject record = new JSONObject();
+			record.put("status",Constants.orderStatusDone);
+			record.put("time", new Date());
+			recordes.add(record);
+
+			paramMap.put("records",recordes.toString());
+			
+			int flag = orderService.updateOrderStatus(paramMap);
+			if (flag != -1 && flag != 0)
+			{
+				
+				//更新用户对司机的评价
+				paramMap.put("startByPassenger", star);
+				orderService.updateOrderStarByPassenger(paramMap);
+				
+				//更新司机账户余额信息
+				Users user = userService.selectByUserId(order.getCreateUser());
+				
+				if(user != null )
+				{
+					Map<String, Object> paramMap2 = new HashMap<String, Object>();
+					paramMap2.put("userId",user_id);
+					
+					float balance = user.getBallance() + pay_money;
+					paramMap2.put("ballance",balance);
+					
+					int flag2 = userService.updateUserBallance(paramMap2);
+					
+					if (flag != -1 && flag != 0)
+					{
+						result.put("State", "Success");
+						result.put("data", "结束订单成功");	
+					}
+					else
+					{
+						result.put("State", "Fail");
+						result.put("info", "结束订单失败[结算失败]");	
+					}
+				}
+				else
+				{
+					result.put("State", "Fail");
+					result.put("info", "结束订单失败[司机信息错误]");	
+				}
+				
+				
+				//向消费用户发送模板消息                                    1
+				String url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send";
+
+				String access_token = (String) PayUtil.getAccessToken().get("access_token");
+				//取access_token
+		    
+				url = url + "?access_token=" + access_token;
+				String touser = user_id;
+				//选取的模板消息id，进入小程序公众后台可得
+				String template_id = Constants.TemplateIdPaySuccess;
+				//支付时下单而得的prepay_id
+				
+				SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式  
+				String curDateStr = df.format(new Date());
+				
+				StringBuffer buffer = new StringBuffer();
+				//按照官方api的要求提供params
+				buffer.append("{");
+				buffer.append(String.format("\"touser\":\"%s\"", touser)).append(",");
+				buffer.append(String.format("\"template_id\":\"%s\"", template_id)).append(",");
+				buffer.append(String.format("\"page\":\"%s\"", "pages/course/course")).append(",");
+				buffer.append(String.format("\"form_id\":\"%s\"", prepay_id)).append(",");
+				buffer.append("\"data\":{");
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"},","keyword1", curDateStr, "#173177"));
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"},","keyword2", order_id, "#173177"));
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"}","keyword3", "蜗牛系列商品", "#173177"));
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"}","keyword3", order.getOrderPrice(), "#173177"));
+				buffer.append("}");
+				buffer.append("}");
+				String params = "";
+				try {
+					params = new String(buffer.toString().getBytes("UTF-8"));
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				};
+				
+				String sr = HttpRequest.sendPost(url,params);
+				
 				return result;
 			} 
 			else 
@@ -487,6 +757,7 @@ public class OrderControler {
 		
 			JSONObject data = new JSONObject();
 			data.put("orderId", order.getOrderId());
+			data.put("orderStatus", order.getOrderStatus());
 			
 			if(order.getCreateUser().equals(user_id))
 			{
@@ -509,8 +780,107 @@ public class OrderControler {
 		{
 			e.printStackTrace();
 			map.put("State", "Fail");
-			map.put("info", null);	
+			map.put("info", "获取进行中的订单失败");	
 			return map;
 		}	
 	}
+	
+	/**
+	 * 获取订单具体信息
+	 * 
+	 * @param phoneId
+	 *            ,status
+	 * @return
+	 */
+	@RequestMapping("/getMineProcessingOrderDriverWx")
+	public @ResponseBody Map<String, Object> getMineProcessingOrderDriverWx( @RequestParam String  user_id) {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		try {
+			Map<String, Object> paramMap = new HashMap<String, Object>();
+			paramMap.put("userId",user_id);
+			Order order = orderService.getMineProcessingOrderDriver(paramMap);
+			
+			//没有正在处理的订单
+			if (order == null)
+			{
+				map.put("State", "Success");
+				map.put("data", "没有正在处理的订单");	
+				return map;
+			}
+		
+			JSONObject data = new JSONObject();
+			data.put("orderId", order.getOrderId());
+			data.put("orderStatus", order.getOrderStatus());
+			
+			if(order.getCreateUser().equals(user_id))
+			{
+				data.put("userType", 1);
+			}
+			else if(order.getReceiveUser().equals(user_id))
+			{
+				data.put("userType", 2);
+			}
+			else {
+				data.put("userType", 0);
+				logger.error("getMineProcessingOrder err:user_id" + user_id);
+			}
+			
+			map.put("State", "Success");
+			map.put("data", data);	
+			return map;
+
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+			map.put("State", "Fail");
+			map.put("info", "获取进行中的订单失败");	
+			return map;
+		}	
+	}
+	
+	/**
+     * 申请退款
+     * @return
+     */
+	@RequestMapping("/refundWx")
+    public @ResponseBody Map<String, Object> refundWx(@RequestParam String order_id,String user_id,Float fee) {
+          Map<String,Object> result = new HashMap<String,Object>();
+          
+          /*String resultStr = payService.refund(order_id, String.valueOf(fee*100));
+          
+          System.out.println("调试模式_统一下单接口 返回XML数据：" + result);  
+            
+          //解析结果
+          try {
+              Map map =  PayUtil.doXMLParse(resultStr);
+              String returnCode = map.get("return_code").toString();
+              if(returnCode.equals("SUCCESS")){
+                  String resultCode = map.get("result_code").toString();
+                  if(resultCode.equals("SUCCESS")){
+                      JSONObject node = new JSONObject();
+                      node.put("totalFee", fee);
+                      result.put("State", "Success");
+                      result.put("data", node);	
+          			return result;
+                  }
+                  else
+                  {
+                      result.put("State", "Fail");
+                  }
+              }
+              else
+              {
+                  result.put("State", "Fail");
+              }
+          } 
+          catch (Exception e) 
+          {
+              e.printStackTrace();
+              result.put("State", "Fail");
+          }*/
+          result.put("State", "Success");
+          result.put("data", null);	
+          return result;
+    }
 }

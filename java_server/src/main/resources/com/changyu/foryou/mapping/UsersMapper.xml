@@ -16,10 +16,13 @@
 		<result column="san_color" property="sanColor" jdbcType="VARCHAR" />
 		<result column="san_style" property="sanStyle" jdbcType="VARCHAR" />
 		<result column="san_feature" property="sanFeature" jdbcType="VARCHAR" />
+		<result column="passenger_star" property="passengerStar" jdbcType="REAL" />
+		<result column="driver_star" property="driverStar" jdbcType="REAL" />
+		<result column="ballance" property="ballance" jdbcType="REAL" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		user_id,phone, type, nickname, img_url,
-		last_login_date,create_time,sex,academy,san_color,san_style,san_feature
+		last_login_date,create_time,sex,academy,san_color,san_style,san_feature,passenger_star,driver_star,ballance
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
 		parameterType="java.lang.String">
@@ -114,6 +117,17 @@
 			</if>
 			<if test="lastLoginDate != null">
 				last_login_date = #{lastLoginDate,jdbcType=DATE},
+			</if>
+		</set>
+		where user_id = #{userId,jdbcType=VARCHAR}
+	</update>
+	
+	
+	<update id="updateUserBallance">
+		update users
+		<set>
+			<if test="ballance != null">
+				ballance = #{ballance,jdbcType=REAL},
 			</if>
 		</set>
 		where user_id = #{userId,jdbcType=VARCHAR}

@@ -1,29 +1,60 @@
 package com.changyu.foryou.tools;
 
 import java.io.BufferedReader;  
-import java.io.ByteArrayInputStream;  
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;  
 import java.io.InputStream;  
 import java.io.InputStreamReader;  
 import java.io.OutputStream;  
 import java.io.UnsupportedEncodingException;  
 import java.net.HttpURLConnection;  
-import java.net.URL;  
-import java.security.SignatureException;  
+import java.net.URL;
+import java.security.KeyStore;
+import java.security.SignatureException;
+
+import java.text.MessageFormat;
 import java.util.ArrayList;  
-import java.util.Collections;  
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;  
-import java.util.Iterator;  
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;  
-import java.util.Map;  
-  
-import org.apache.commons.codec.digest.DigestUtils;  
+import java.util.Map;
+
+import javax.net.ssl.SSLContext;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
+import org.apache.http.util.EntityUtils;
+import org.dom4j.DocumentHelper;
 import org.jdom.Document;  
 import org.jdom.Element;  
 import org.jdom.JDOMException;  
-import org.jdom.input.SAXBuilder;  
-  
+import org.jdom.input.SAXBuilder;
+
+
+import com.alibaba.fastjson.JSONObject;
+import com.changyu.foryou.model.WeChatContext;
+
+
 public class PayUtil {  
+	
+	public static long ACCESS_TOKEN_TIME = 0;
+	
+	public static Map<String,String> tempData = new HashMap<String, String>();
+	
+	private static WeChatContext context = WeChatContext.getInstance();
+	
      /**   
      * 签名字符串   
      * @param text需要签名的字符串   
@@ -152,7 +183,8 @@ public class PayUtil {
             e.printStackTrace();     
         }  
         return buffer.toString();  
-    }       
+    }  
+    
     public static String urlEncodeUTF8(String source){     
         String result=source;     
         try {     
@@ -229,4 +261,260 @@ public class PayUtil {
     public static InputStream String2Inputstream(String str) {  
         return new ByteArrayInputStream(str.getBytes());  
     }  
+    
+    /**
+	 * 获取接口acessToken
+	 * @return
+	 */
+	public  static Map<String,Object> getAccessToken()throws Exception{
+		Map<String,Object> resultMap = new HashMap<String, Object>();
+		Long nowTime = new Date().getTime();
+		//判断accessToken是否缓存 且是否过期
+		if(ACCESS_TOKEN_TIME < nowTime){
+			//请求接口地址
+			String requestUrl = "https://api.weixin.qq.com/cgi-bin/token";
+
+			
+			//请求参数
+			String parameters = MessageFormat.format(
+				"grant_type=client_credential&appid={0}&secret={1}",context.getAppId(), context.getAppSecrct());
+			
+			String sr = HttpRequest.sendGet(requestUrl, parameters); 
+			//解析相应内容（转换成json对象） 
+			JSONObject json = JSONObject.parseObject(sr);
+			 
+			//获取新的有效时间 单位秒
+			Long newExpiresTime = Long.valueOf(json.get("expires_in").toString()) ;
+			//将access_token的有效时间更新（有效时间默认减少5分钟，避免意外）
+			ACCESS_TOKEN_TIME = newExpiresTime*1000+nowTime-30000;
+			//将access_token更新
+			tempData.put("access_token", json.get("access_token").toString());
+			resultMap.put("access_token", json.get("access_token").toString());
+		}else{
+			resultMap.put("access_token", tempData.get("access_token"));
+		}
+		return resultMap;
+	}
+	
+	public static String refundpost(String url, String xmlParam)
+	{
+		StringBuilder sb = new StringBuilder();
+     	try 
+     	{
+	        KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+	        FileInputStream instream = new FileInputStream(new File(Constants.REFUND_KEY_PATH));
+	        try 
+	        {
+	        	keyStore.load(instream, Constants.mchId.toCharArray());
+	        } 
+	        finally 
+	        {
+	        	instream.close();
+	        }
+  
+	        // 证书
+	        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, Constants.mchId.toCharArray()).build();
+	        // 只允许TLSv1协议
+	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,new String[] { "TLSv1" },null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+	        //创建基于证书的httpClient,后面要用到
+	        CloseableHttpClient client = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+         
+	        HttpPost httpPost = new HttpPost(url);//退款接口
+	        StringEntity  reqEntity  = new StringEntity(xmlParam);
+	        // 设置类型
+	        reqEntity.setContentType("application/x-www-form-urlencoded");
+	        httpPost.setEntity(reqEntity);
+	        CloseableHttpResponse response = client.execute(httpPost);
+	        try 
+	        {
+	        	HttpEntity entity = response.getEntity();
+	        	System.out.println(response.getStatusLine());
+	        	if (entity != null) {
+	        		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(entity.getContent(),"UTF-8"));
+	        		String text="";
+	        		while ((text = bufferedReader.readLine()) != null) {
+		                 sb.append(text);
+	        		}
+		         }
+		         EntityUtils.consume(entity);
+	        }
+	        catch(Exception e)
+	        {
+		         e.printStackTrace();
+	        }
+	        finally 
+	        {
+	         	try
+	         	{
+		            response.close();
+		        } catch (IOException e) 
+	         	{
+		            e.printStackTrace();
+		        }
+	        }
+     	} 
+     	catch (Exception e)
+     	{
+		     e.printStackTrace();
+		}
+     	
+     	return sb.toString();
+     	
+	}
+	
+	/**
+     * 企业付款 参考https://blog.csdn.net/shaomiaojava/article/details/50562550
+     * 
+     * @description
+     * @param openid
+     * @param appid
+     * @param mchid 商户id
+     * @param nonce_str
+     * @param partner_trade_no
+     * @param re_user_name
+     * @param jine
+     * @param desc
+     * @param spbill_create_ip
+     * @param check_name
+     * @return
+     * @author Jobs
+     * @throws IOException
+     * @throws ClientProtocolException
+     */
+    public static boolean enterprisePayment(String openId, String orderId,
+            String userName, String jine, String desc, String spbill_create_ip) throws Exception
+    {
+        boolean getSuccess = true;
+        if (null != openId)
+        {
+
+            Map<String, String> packageParams = new HashMap<String, String>();
+            
+            String nonce_str = StringUtil.getRandomStringByLength(32);
+            // appid
+            packageParams.put("mch_appid" ,Constants.appId);
+            // 商户id
+            packageParams.put("mchid=", Constants.mchId);
+            // 随机字符串
+            packageParams.put("nonce_str" ,nonce_str);
+            // 订单号自定义
+            packageParams.put("partner_trade_no" ,orderId);
+
+            packageParams.put("openid" ,openId);
+            // 校验用户姓名选项
+            /**
+             * NO_CHECK：不校验真实姓名
+             * FORCE_CHECK：强校验真实姓名（未实名认证的用户会校验失败，无法转账）
+             * OPTION_CHECK：针对已实名认证的用户才校验真实姓名（未实名认证用户不校验，可以转账成功）
+             */
+            packageParams.put("check_name" ,"NO_CHECK");
+            // 收款用户姓名
+            packageParams.put("re_user_name" , userName);
+            // 金额
+            packageParams.put("amount" , jine);
+            // 企业付款描述信息
+            packageParams.put("desc" , desc);
+            // Ip地址
+            packageParams.put("spbill_create_ip" , spbill_create_ip);
+            
+            String prestr = PayUtil.createLinkString(packageParams);
+
+            String mysign = PayUtil.sign(prestr, Constants.mchKey, "utf-8").toUpperCase();
+  
+          //拼接统一下单接口使用的xml数据，要将上一步生成的签名一起拼接进去  
+            String xml = "<xml>" + "<mch_appid>" + Constants.appId + "</mch_appid>"      
+                    + "<mch_id>" + Constants.mchId + "</mch_id>"   
+                    + "<nonce_str>" + nonce_str + "</nonce_str>"   
+                    + "<partner_trade_no>" + orderId + "</partner_trade_no>"   
+                    + "<openid>" + openId + "</openid>"   
+                    + "<check_name>" + "NO_CHECK" + "</check_name>"   
+                    + "<re_user_name>" + userName + "</re_user_name>"   
+                    + "<amount>" + jine + "</amount>"  
+                    + "<desc>" + desc + "</desc>"   
+                    + "<spbill_create_ip>" + spbill_create_ip + "</spbill_create_ip>"  
+                    + "<sign>" + mysign + "</sign>"  
+                    + "</xml>"; 
+            
+            // ZHENGSHU
+            CloseableHttpClient httpclient = certificateValidation(Constants.CERTPATH,
+            		Constants.mchId);
+
+            HttpPost httppost = new HttpPost(
+                    "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers");
+            StringEntity myEntity = new StringEntity(xml, "UTF-8");
+            httppost.setEntity(myEntity);
+            System.out.println("executing request" + httppost.getRequestLine());
+
+            CloseableHttpResponse response = httpclient.execute(httppost);
+            System.out.println(response.getStatusLine());
+
+            HttpEntity resEntity = response.getEntity();
+            InputStreamReader reader = new InputStreamReader(
+                    resEntity.getContent(), "UTF-8");
+            char[] buff = new char[1024];
+            int length = 0;
+            StringBuffer strhuxml = new StringBuffer();
+            while ((length = reader.read(buff)) != -1)
+            {
+                strhuxml.append(new String(buff, 0, length));
+                System.out.println(new String(buff, 0, length));
+            }
+            // httpclient.close();
+            httpclient.getConnectionManager().shutdown();
+            
+            Map map = PayUtil.doXMLParse(strhuxml.toString()); 
+            
+            String return_code = (String) map.get("return_code");//返回状态码  
+            //TODO:微信商户申请下来后需要再调试
+            if(return_code=="SUCCESS"||return_code.equals(return_code)){ 
+            	getSuccess = true;
+            }
+            else
+            {
+            	getSuccess = false;
+            }
+        }
+        return getSuccess;
+    }
+    
+    /**
+     * 验证证书公共方法
+     * 
+     * @description
+     * @param zfpath 证书的路径
+     * @param mchid 商户id
+     * @return
+     * @throws Exception
+     * @author Jobs
+     */
+    // shanghuid
+    // 验证证书
+    @SuppressWarnings("deprecation")
+    public static CloseableHttpClient certificateValidation(String zfpath,
+            String mchid) throws Exception
+    {
+        // 指定读取证书格式为PKCS12
+        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+        // 证书地址
+        FileInputStream instream = new FileInputStream(new File(zfpath));
+        try
+        {
+            keyStore.load(instream, mchid.toCharArray());
+        }
+        finally
+        {
+            instream.close();
+        }
+
+        // Trust own CA and all self-signed certs
+        SSLContext sslcontext = SSLContexts.custom()
+                .loadKeyMaterial(keyStore, mchid.toCharArray()).build();
+        // Allow TLSv1 protocol only
+        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                sslcontext, new String[] { "TLSv1" }, null,
+                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+        CloseableHttpClient httpclient = HttpClients.custom()
+                .setSSLSocketFactory(sslsf).build();
+        return httpclient;
+    }
 }  

@@ -9,6 +9,18 @@ public  class Constants {
 	public static final String localIp = "http://localhost/JiMuImage"; //存放上传的图片的服务器JiMuImage为上传图片时创建的目录
     public static String appId="app_La1y14yrPa10SeHS";
     public static String apiKey="sk_live_vBNcIdIOKPBJEU9YOq3C02PU";
+    public static String mchId="1900000109";
+    public static String mchKey="JIMU";
+    public static String notifyUrl = "http://localhost/pay/payNotify";
+    public static String WeChatToken="wuwz";
+    public static String TemplateIdPaySuccess="uiMllFHPUjLtHsev3flkYx9zzAM21HCsjAK3CPIfu9A";
+    public static String TemplateIdPayFail="qA_2yDLB6hlTKzsv9dY-SsFIC6QJChjTiii-kR2f-ms";
+    public static String TemplateIdPayCancel="qA_2yDLB6hlTKzsv9dY-SsFIC6QJChjTiii-kR2f-ms";
+    
+    public static String QQMAPKEY = "NJIBZ-FDNLD-3754C-HYIBR-J3NV7-UIBHI";
+    
+    public static final String REFUND_KEY_PATH = "classpath:apiclient_cert.p12";
+    public static final String CERTPATH = "classpath:apiclient_cert.p12";
     
     public static final String REDISPREFIX = "orderId=";
     public static final int COUNTDELAY = 10; //服务器返回给前台的剩余时间增加10s防止前台时间计数器到了后后端还未及时更细数据
@@ -26,5 +38,6 @@ public  class Constants {
     public static short orderStatusCancel=1;
     public static short orderStatusRecv=2;
     public static short orderStatusFinish=3;
+    public static short orderStatusDone=4;
 	
 }

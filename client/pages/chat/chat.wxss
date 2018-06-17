@@ -1,0 +1,309 @@
+.page{
+  height: 100%;
+}
+
+.right-Avatar{
+    float:right;
+    width: 85rpx;
+    height: 85rpx;
+}
+.right-Triangle{
+    float:right;
+    margin-top: 35rpx;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-left: 12px solid yellowgreen;
+    border-bottom: 8px solid transparent;
+}
+.right-message{
+    float: right;
+    margin-top: 10rpx;
+    line-height: 65rpx;
+    background: yellowgreen;
+    border-radius: 10rpx;
+    font-size: 12px;
+    max-width:70%;
+}
+
+.left-Avatar{
+    float:left;
+    width: 85rpx;
+    height: 85rpx;
+}
+.left-Triangle{
+    float:left;
+    margin-top: 35rpx;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-right: 12px solid yellowgreen;
+    border-bottom: 8px solid transparent;
+}
+.left-message{
+    float: left;
+    margin-top: 10rpx;
+    line-height: 65rpx;
+    background: yellowgreen;
+    border-radius: 10rpx;
+    font-size: 12px;
+    max-width:70%;
+}
+
+.clearfix{
+  overflow: hidden;
+}
+
+.padding{
+  padding:20rpx;
+}
+.padding_half{
+  padding: 10rpx;
+}
+
+.item-avatar .text_box,.item-avatar-lg .text_box{
+  display: flex;
+  flex-direction: column
+}
+.flex-row{
+  display: flex;
+  flex-direction: row;
+}
+.flex-column{
+  display: flex;
+  flex-direction: column
+}
+.flex-center{
+  display: flex;
+  justify-content: center;
+}
+.flex{
+  display: flex;
+}
+.title{
+  font-family: "微软雅黑";
+  font-size: 32rpx;
+}
+.message{
+  font-size: 30rpx;
+}
+
+
+
+
+.comment-fixed {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #fff;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.cf-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: transparent;
+  z-index: 99;
+}
+
+.cf-box {
+  padding: 8px 5px;
+  display: flex;
+  justify-content: center;
+}
+
+.t-info textarea {
+  background: red;
+  padding: 8px 5px;
+  height: 30px;
+  box-sizing: border-box;
+  width: 100%;
+  display: block;
+}
+
+.cf-content {
+  background-color: #f2f2f2;
+  padding: 8px 5px;
+  font-size: 12px;
+  height: 30px;
+  max-height: 40px;
+  width: 100%;
+}
+
+.cf-send {
+  width: 50px;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 5px;
+  border-radius: 2px;
+  text-align: center;
+  padding: 0 2px !important;
+  font-size: 12px;
+  background-color: #5cd79a;
+  color: #fff;
+}
+
+.cf-send.touch-active:active {
+  background-color: #5ddfc9;
+}
+
+.emoji {
+  background-color: #fff;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  padding-top: 2px;
+  box-sizing: border-box;
+  font-size: 20px;
+}
+
+.emoji-box {
+  position: relative;
+  height: 200px;
+  padding: 5px 0;
+  box-sizing: border-box;
+  margin-bottom: -200px;
+}
+
+.emoji-cell {
+  width: 9.09%;
+  height: 33px;
+  display: inline-block;
+}
+
+.emoji-cell image {
+  width: 23px;
+  height: 23px;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.emoji-move-in {
+  -webkit-animation: emoji-move-in 0.3s forwards;
+  animation: emoji-move-in 0.3s forwards;
+}
+
+.emoji-move-out {
+  -webkit-animation: emoji-move-out 0.3s forwards;
+  animation: emoji-move-out 0.3s forwards;
+}
+
+.no-emoji-move {
+  -webkit-animation: none;
+  animation: none;
+}
+
+@-webkit-keyframes emoji-move-in {
+  0% {
+    margin-bottom: -200px;
+  }
+
+  100% {
+    margin-bottom: 0;
+  }
+}
+
+@keyframes emoji-move-in {
+  0% {
+    margin-bottom: -200px;
+  }
+
+  100% {
+    margin-bottom: 0;
+  }
+}
+
+@-webkit-keyframes emoji-move-out {
+  0% {
+    margin-bottom: 0;
+  }
+
+  100% {
+    margin-bottom: -200px;
+  }
+}
+
+@keyframes emoji-move-out {
+  0% {
+    margin-bottom: 0;
+  }
+
+  100% {
+    margin-bottom: -200px;
+  }
+}
+
+@-webkit-keyframes pd-left-move {
+  0% {
+    padding-left: 5px;
+  }
+
+  100% {
+    padding-left: 15px;
+  }
+}
+
+@keyframes pd-left-move {
+  0% {
+    padding-left: 5px;
+  }
+
+  100% {
+    padding-left: 15px;
+  }
+}
+
+
+@font-face {font-family: "iconfont";
+  src: url('//at.alicdn.com/t/font_4n1crpa4urpv6lxr.eot?t=1482133471430'); /* IE9*/
+  src: url('//at.alicdn.com/t/font_4n1crpa4urpv6lxr.eot?t=1482133471430#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('//at.alicdn.com/t/font_4n1crpa4urpv6lxr.woff?t=1482133471430') format('woff'), /* chrome, firefox */
+  url('//at.alicdn.com/t/font_4n1crpa4urpv6lxr.ttf?t=1482133471430') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('//at.alicdn.com/t/font_4n1crpa4urpv6lxr.svg?t=1482133471430#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family:"iconfont" !important;
+  font-size:16px;
+  font-style:normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-xiazai:before { content: "\e62c"; }
+
+.icon-svg35:before { content: "\e848"; }
+
+.icon-pinglun:before { content: "\e612"; }
+
+.icon-biaoqing:before { content: "\e60d"; }
+
+.icon-my:before { content: "\e63e"; }
+
+.icon-ku:before { content: "\e60e"; }
+
+.icon-pinglun1:before { content: "\e606"; }
+
+.icon-8:before { content: "\e60a"; }
+
+.icon-iconfontfasong:before { content: "\e61d"; }
+
+.icon-shoucangyishoucang-copy:before { content: "\e600"; }
+
+.icon-send:before { content: "\e6a6"; }
+
+.icon-liulan:before { content: "\e613"; }
+
+.icon-shouyeshouye:before { content: "\e631"; }
+
+.icon-emoji:before { content: "\e614"; }
+
+.icon-xihuan:before { content: "\e6bd"; }
+
+.icon-liulan1:before { content: "\e67b"; }

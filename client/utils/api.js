@@ -931,3 +931,41 @@ export function getRegSanInfo(options) {
     error
   })
 }
+
+
+export function getMessageList(options) {
+
+  var {
+     success, error
+  } = options
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'chat/getMessageListWx',
+    data: {
+      user_id
+    },
+    success,
+    error
+  })
+}
+
+export function getMessage(options) {
+
+  var {
+     fromid,success, error
+  } = options
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'chat/getMessageWx',
+    data: {
+      user_id,
+      from_id:fromid
+    },
+    success,
+    error
+  })
+}

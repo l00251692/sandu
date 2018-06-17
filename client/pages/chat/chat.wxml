@@ -1,0 +1,38 @@
+<scroll-view scroll-y="true" scroll-top="100000000000000000" animation="{{animation_2}}">
+  <view wx:for="{{message}}" wx:for-item="i">
+    <view class="padding clearfix" wx:if="{{i.me}}">
+      <image class="right-Avatar padding_half" src="{{i.img}}"></image>
+      <view class="right-Triangle"></view>
+      <view class="right-message padding_half">
+        <text wx:if="{{i.text}}">{{i.text}}</text>
+        <image wx:if="{{i.imgList}}" style="max-width:150px;max-height:120px" src="{{i.imgList}}"></image>
+      </view>
+    </view>
+    <view class="padding clearfix" wx:if="{{!i.me}}">
+      <image class="left-Avatar padding_half" src="{{i.img}}"></image>
+      <view class="left-Triangle"></view>
+      <view class="left-message padding_half">
+        <text>{{i.text}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="weui-icon_success"></view>
+</scroll-view>
+<view class="cf-bg" catchtap="cemojiCfBg" style="display:{{cfBg ? 'block' : 'none'}}"></view>
+<view class="comment-fixed">
+  <view class="cf-box">
+    <view class="emoji iconfont icon-emoji" catchtap="emojiShowHide"></view>
+    <textarea class="cf-content" bindinput="onCommentInput" bindfocus="textAreaFocus" maxlength="200" auto-height value="{{content}}" />
+    <text class="cf-send touch-active" bindtap="send">发送</text>
+  </view>
+
+  <view class="emoji-box {{isShow ? 'emoji-move-in' : 'emoji-move-out'}} {{isLoad ? 'no-emoji-move' : ''}}">
+    <scroll-view scroll-y="true" bindscroll="emojiScroll" style="height:200px">
+      <block wx:for="{{emojis}}" wx:for-item="e" wx:key="">
+        <view class="emoji-cell">
+          <image class="touch-active" catchtap="emojiChoose" src="http://soupu.oss-cn-shanghai.aliyuncs.com/emoji/{{e.emoji}}.png" data-emoji="{{e.char}}" data-oxf="{{e.emoji}}"></image>
+        </view>
+      </block>
+    </scroll-view>
+  </view>
+</view>

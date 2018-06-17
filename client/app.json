@@ -4,6 +4,8 @@
     "pages/login/login",
     "pages/wait/wait",
     "pages/mine/mine",
+    "pages/message/message",
+    "pages/chat/chat",
     "pages/service/service",
     "pages/register/register",
     "pages/wallet/wallet",
@@ -29,6 +31,12 @@
         "iconPath": "images/tabBar/Tabbar_Home_Empty.png",
         "selectedIconPath": "images/tabBar/Tabbar_Home_Full.png",
         "text": "首页"
+      },
+      {
+        "pagePath": "pages/message/message",
+        "iconPath": "images/tabBar/Tabbar_Home_Empty.png",
+        "selectedIconPath": "images/tabBar/Tabbar_Home_Full.png",
+        "text": "消息"
       },
       {
         "pagePath": "pages/mine/mine",

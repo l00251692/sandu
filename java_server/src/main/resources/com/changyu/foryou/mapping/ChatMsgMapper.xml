@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.changyu.foryou.mapper.ChatMapper">
+	<resultMap id="BaseResultMap" type="com.changyu.foryou.model.ChatMsg">
+		<id column="from_id" property="fromId" jdbcType="VARCHAR" />
+		<id column="to_id" property="toId" jdbcType="VARCHAR" />
+		<result column="from_head_url" property="fromHeadUrl" jdbcType="VARCHAR" />
+		<result column="to_head_url" property="toHeadUrl" jdbcType="VARCHAR" />
+		<result column="msg" property="msg" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="TIMESTAMP" />
+		<result column="is_read" property="isRead" jdbcType="SMALLINT" />
+		<result column="relative_order_id" property="relativeOrderId" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="ConcatResultMap" type="com.changyu.foryou.model.ConcatMsg">
+		<id column="concat" property="concat" jdbcType="VARCHAR" />
+		<result column="from_id" property="fromId" jdbcType="VARCHAR" />
+		<result column="to_id" property="toId" jdbcType="VARCHAR" />
+		<result column="msg" property="msg" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="TIMESTAMP" />
+		<result column="unread_num" property="unReadNum" jdbcType="SMALLINT" />
+	</resultMap>
+	
+	<insert id="insertSelective" >
+		insert into chatmsg
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="fromId != null">
+				from_id,
+			</if>
+			<if test="toId != null">
+				to_id,
+			</if>
+			<if test="msg != null">
+				msg,
+			</if>
+			<if test="time != null">
+				time,
+			</if>
+			<if test="isRead != null">
+				is_read,
+			</if>
+			<if test="relativeOrderId != null">
+				relative_order_id,
+			</if>	
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="fromId != null">
+				#{fromId,jdbcType=VARCHAR},
+			</if>
+			<if test="toId != null">
+				#{toId,jdbcType=VARCHAR},
+			</if>
+			<if test="msg != null">
+				#{msg,jdbcType=VARCHAR},
+			</if>
+			<if test="time != null">
+				#{time,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isRead != null">
+				#{isRead,jdbcType=SMALLINT},
+			</if>
+			<if test="relativeOrderId != null">
+				#{relativeOrderId,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	
+
+	
+	<select id="getChatMsg" resultMap="BaseResultMap" flushCache="true" useCache="false">
+		select
+		*
+		from msg_user
+		where 
+			from_id = #{userId,jdbcType=VARCHAR}
+		and(
+			to_id = #{concatId,jdbcType=VARCHAR}
+		)
+		UNION
+		(
+			select
+			*
+			from msg_user
+			where 
+				from_id = #{concatId,jdbcType=VARCHAR}
+			and(
+				to_id = #{userId,jdbcType=VARCHAR}
+			)
+		)
+		ORDER BY
+			time DESC 
+		<if test="limit !=null and offset !=null">
+			LIMIT #{limit,jdbcType=INTEGER} OFFSET
+			#{offset,jdbcType=INTEGER}
+		</if> 
+	</select>
+	
+	
+	<select id="getRecentConcat" resultMap="ConcatResultMap" flushCache="true" useCache="false">
+		SELECT
+		*
+		FROM
+		(
+			SELECT
+				*, to_id AS concat_id
+			FROM
+				msg_user
+			WHERE
+				from_id = #{userId,jdbcType=VARCHAR}
+			UNION
+				(
+					SELECT
+						*, from_id AS concat_id
+					FROM
+						msg_user
+					WHERE
+						to_id  = #{userId,jdbcType=VARCHAR}
+				)
+			ORDER BY
+				time DESC
+		) AS A
+		GROUP BY
+		concat_id
+		<if test="limit !=null and offset !=null">
+			LIMIT #{limit,jdbcType=INTEGER} OFFSET
+			#{offset,jdbcType=INTEGER}
+		</if> 
+	</select>
+	
+	
+	<select id="getUnReadMsgNum" resultType="java.lang.Integer" flushCache="true" useCache="false">
+		SELECT
+			COUNT(is_read = 0)
+		FROM
+			chatmsg
+		WHERE
+			from_id = #{concatId,jdbcType=VARCHAR}
+		AND
+			to_id = #{userId,jdbcType=VARCHAR}
+	</select>
+	
+	<update id="updateMsgRead">
+		 update chatmsg set
+		<if test="isRead != null">
+			is_read=#{isRead, jdbcType=SMALLINT}
+		</if>
+		<where>
+			from_id = #{fromId,jdbcType=VARCHAR}
+		and
+			to_id = #{toId,jdbcType=VARCHAR}
+		</where> 
+	</update>
+	
+</mapper>

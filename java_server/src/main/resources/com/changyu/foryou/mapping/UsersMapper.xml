@@ -25,7 +25,7 @@
 		last_login_date,create_time,sex,academy,san_color,san_style,san_feature,passenger_star,driver_star,ballance
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
-		parameterType="java.lang.String">
+		parameterType="java.lang.String" flushCache="true" useCache="false">
 		select
 		*
 		FROM

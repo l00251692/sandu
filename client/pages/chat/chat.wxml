@@ -1,18 +1,24 @@
-<scroll-view scroll-y="true" scroll-top="100000000000000000" animation="{{animation_2}}">
-  <view wx:for="{{message}}" wx:for-item="i">
-    <view class="padding clearfix" wx:if="{{i.me}}">
+<template name="msgItem">
+  <view wx:for="{{contents}}" style="display:inline-block;white-space:pre-line">
+    <text wx:if="item.type=='text'" style="padding:0;margin:0;width:auto;" selectable>{{item.text}}</text>
+    <image wx:if="item.type=='image'" style="width:42rpx;height:42rpx;vertical-align:middle;margin:0 6rpx;" src="{{item.url}}"></image>
+  </view>
+</template>
+<scroll-view scroll-y style="height:{{scrollHeight}}rpx;background:#eee" scroll-into-view="{{toView}}">
+  <view wx:for="{{messages}}" wx:for-item="i">
+    <view id="{{i.id}}" class="padding clearfix" wx:if="{{i.me}}">
       <image class="right-Avatar padding_half" src="{{i.img}}"></image>
       <view class="right-Triangle"></view>
       <view class="right-message padding_half">
         <text wx:if="{{i.text}}">{{i.text}}</text>
-        <image wx:if="{{i.imgList}}" style="max-width:150px;max-height:120px" src="{{i.imgList}}"></image>
       </view>
+      
     </view>
-    <view class="padding clearfix" wx:if="{{!i.me}}">
-      <image class="left-Avatar padding_half" src="{{i.img}}"></image>
+    <view id="{{i.id}}" class="padding clearfix" wx:if="{{!i.me}}">
+      <image class="left-Avatar padding_half" src="{{i.avatar}}"></image>
       <view class="left-Triangle"></view>
       <view class="left-message padding_half">
-        <text>{{i.text}}</text>
+          <text>{{i.text}}</text>
       </view>
     </view>
   </view>
@@ -22,7 +28,7 @@
 <view class="comment-fixed">
   <view class="cf-box">
     <view class="emoji iconfont icon-emoji" catchtap="emojiShowHide"></view>
-    <textarea class="cf-content" bindinput="onCommentInput" bindfocus="textAreaFocus" maxlength="200" auto-height value="{{content}}" />
+    <textarea class="cf-content" bindinput="onMsgInput" bindfocus="textAreaFocus" maxlength="200" auto-height value="{{msg}}" />
     <text class="cf-send touch-active" bindtap="send">发送</text>
   </view>
 

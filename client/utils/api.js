@@ -936,7 +936,7 @@ export function getRegSanInfo(options) {
 export function getMessageList(options) {
 
   var {
-     success, error
+     page, success, error
   } = options
 
   var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
@@ -944,7 +944,8 @@ export function getMessageList(options) {
   fetch({
     url: 'chat/getMessageListWx',
     data: {
-      user_id
+      user_id,
+      page
     },
     success,
     error
@@ -954,7 +955,7 @@ export function getMessageList(options) {
 export function getMessage(options) {
 
   var {
-     fromid,success, error
+     page,fromid,success, error
   } = options
 
   var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
@@ -963,7 +964,28 @@ export function getMessage(options) {
     url: 'chat/getMessageWx',
     data: {
       user_id,
-      from_id:fromid
+      from_id:fromid,
+      page
+    },
+    success,
+    error
+  })
+}
+
+export function sendMsg(options) {
+
+  var {
+    to_id, msg, success, error
+  } = options
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'chat/sendMsgWx',
+    data: {
+      user_id,
+      to_id,
+      msg
     },
     success,
     error

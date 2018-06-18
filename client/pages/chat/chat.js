@@ -1,18 +1,22 @@
+import { getMessage, sendMsg } from '../../utils/api'
 
-import { getMessage } from '../../utils/api'
+var initData = {
+  page: 0,
+  hasMore: true,
+  messages: [],
+  loading: false,
+}
+
 Page({
   data: {
-    text: "这是消息页面，研发中。。。",
-    title: "标题",
-    userInfo: {},
-    message: [],
-    animation: {},
-    animation_2: {},
-    tap: "tapOff",
-    disabled: true,
-    content: "",
+    isSpeech: false,
+    scrollHeight: 0,
+    toView: '',
+    windowHeight: 0,
+    windowWidth: 0,
+    pxToRpx: 2,
+    msg: '',
     cfBg: false,
-    _index: 0,
     emojiChar: "😃-😋-😌-😍-😏-😜-😝-😞-😔-😪-😭-😁-😂-😃-😅-😆-👿-😒-😓-😔-😏-😖-😘-😚-😒-😡-😢-😣-😤-😢-😨-😳-😵-😷-😸-😻-😼-😽-😾-😿-🙊-🙋-🙏-✈-🚇-🚃-🚌-🍄-🍅-🍆-🍇-🍈-🍉-🍑-🍒-🍓-🐔-🐶-🐷-👦-👧-👱-👩-👰-👨-👲-👳-💃-💄-💅-💆-💇-🌹-💑-💓-💘-🚲",
     //0x1f---
     emoji: [
@@ -29,34 +33,31 @@ Page({
       "466", "467", "468", "469", "470", "471", "472", "473",
       "483", "484", "485", "486", "487", "490", "491", "493", "498", "6b4"
     ],
-    emojis: [] //qq、微信原始表情
-
+    emojis: []
   },
-  onLoad: function (options) {
-    // 页面初始化 options为页面跳转所带来的参数
-    this.init()
+
+
+  onLoad(options) {
     this.fromid = options.fromid
-  },
-  onReady: function () {
-    // 页面渲染完成
+
     var that = this
-    wx.setNavigationBarTitle({
-      title: that.data.title
+    this.initEmoji()
+    
+    wx.getSystemInfo({
+      success: (res) => {
+        this.setData({
+          windowHeight: res.windowHeight,
+          pxToRpx: 750 / res.screenWidth,
+          scrollHeight: (res.windowHeight - 50) * 750 / res.screenWidth
+        })
+
+        that.initData()
+        that.loadMsg() 
+      }
     })
-    this.animation = wx.createAnimation();
-    this.animation_2 = wx.createAnimation()
-  },
-  onShow: function () {
-    // 页面显示
-  },
-  onHide: function () {
-    // 页面隐藏
-  },
-  onUnload: function () {
-    // 页面关闭
   },
 
-  init(cb) {
+  initEmoji() {
     var that = this
 
     var emojis = []
@@ -73,13 +74,40 @@ Page({
     that.setData({
       emojis: emojis
     })
+  },
+
+  initData() {
+    this.setData(initData)
+  },
+
+  loadMsg(cb) {
+    var that = this
+
+    var fromid = this.fromid
+    var { page } = this.data
 
     getMessage({
-      fromid: this.fromid,
+      page,
+      fromid,
       success(data) {
+        console.log("getMessage:" + JSON.stringify(data))
+        var { messages } = that.data
+        var { list, count, page } = data
+        messages = messages ? messages.concat(list) : list
         that.setData({
-          title: data.from_name,
-          message:data.message
+          messages,
+          title: data.concat_name,
+          hasMore: count == 10,
+          loading: false,
+          page: page + 1
+        })
+
+        wx.setNavigationBarTitle({
+          title: that.data.title
+        })
+
+        that.setData({
+          toView: "ID_9"
         })
       },
       error(data) {
@@ -89,8 +117,6 @@ Page({
 
   },
 
-
-  //文本域获得焦点事件处理
   textAreaFocus: function () {
     this.setData({
       isShow: false,
@@ -109,7 +135,7 @@ Page({
   emojiChoose: function (e) {
     //当前输入内容和表情合并
     this.setData({
-      content: this.data.content + e.currentTarget.dataset.emoji
+      msg: this.data.msg + e.currentTarget.dataset.emoji
     })
   },
   //点击emoji背景遮罩隐藏emoji盒子
@@ -120,38 +146,50 @@ Page({
     })
   },
 
-  onCommentInput(e) {
-    var { value: content } = e.detail
+  onMsgInput(e) {
+    var { value: msg } = e.detail
     this.setData({
-      content
+      msg
     })
   },
-  //发送评论评论 事件处理
+
+  onShareAppMessage: function () {
+    return {
+      title: '伙伴小Q',
+      path: '/pages/index/index'
+    }
+  },
+
   send: function () {
     var that = this
-    if (that.data.content.trim().length > 0) {
-      sendProjdectComment({
-        project_id: this.id,
-        comment: that.data.content,
+    if (that.data.msg.trim().length > 0) {
+      sendMsg({
+        to_id: this.fromid,
+        msg: that.data.msg,
         success(data) {
           that.setData({
-            content: "",//清空文本域值
+            msg: "",//清空文本域值
             isShow: false,
-            cfBg: false
+            cfBg: false,
+            scrollTop: that.data.scrollTop + 1000,
           })
-          that.initComment()
-          that.loadReview()
-          getPrevPage()[that.callback]()
+          that.initData()
+          that.loadMsg()
+          that.setData({
+            toView: "ID_9"
+          })
         },
         error(data) {
-          alert("提交评论失败，请稍后")
+          console.log("提交评论失败，请稍后")
         }
       })
 
     } else {
       that.setData({
-        content: ""//清空文本域值
+        msg: ""//清空文本域值
       })
     }
   }
+  
 })
+

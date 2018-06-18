@@ -225,8 +225,8 @@ public class OrderControler {
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			
-			paramMap.put("limit", 10);
-			paramMap.put("offset", page * 10);//默认一次5条
+			paramMap.put("limit", 5);
+			paramMap.put("offset", page * 5);//默认一次5条
 			paramMap.put("cityName", city_name);
 			paramMap.put("districtName", district_name);
 	

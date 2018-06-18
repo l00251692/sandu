@@ -25,7 +25,7 @@
                 <text class="title">{{i.name}}</text>
               </view>
               <view class="flex">
-                <text class="message">{{i.message}}</text>
+                <text class="message-msg" max-length="20">{{i.message}}</text>
               </view>
             </view>
           </view>

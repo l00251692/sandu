@@ -149,14 +149,14 @@
 		</trim>
 	</insert>
 	
-	<select id="selectByPrimaryKey" resultMap="BaseResultMap">
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" flushCache="true" useCache="false">
 		select
 		*
 		from orders
 		where order_id = #{orderId,jdbcType=VARCHAR} 
 	</select>
 	
-	<select id="getMineProcessingOrder" resultMap="BaseResultMap">
+	<select id="getMineProcessingOrder" resultMap="BaseResultMap" flushCache="true" useCache="false">
 		select
 		*
 		from orders
@@ -171,7 +171,7 @@
 			create_time DESC LIMIT 1
 	</select>
 	
-	<select id="getMineProcessingOrderDriver" resultMap="BaseResultMap">
+	<select id="getMineProcessingOrderDriver" resultMap="BaseResultMap" flushCache="true" useCache="false">
 		select
 		*
 		from orders
@@ -238,7 +238,7 @@
 		</where> 
 	</update>
 	
-	<select id="getNearByOrders" resultMap="BaseResultMap">
+	<select id="getNearByOrders" resultMap="BaseResultMap" flushCache="true" useCache="false">
 		select
 		*
 		from orders
@@ -253,7 +253,7 @@
 		</if> 
 	</select>
 	
-	<select id="getDriverOrders" resultMap="BaseResultMap">
+	<select id="getDriverOrders" resultMap="BaseResultMap" flushCache="true" useCache="false">
 		select
 		*
 		from orders
@@ -267,7 +267,7 @@
 		</if> 
 	</select>
 	
-	<select id="getPassengerOrders" resultMap="BaseResultMap">
+	<select id="getPassengerOrders" resultMap="BaseResultMap" flushCache="true" useCache="false">
 		select
 		*
 		from orders

@@ -9,8 +9,8 @@
 	},
 	"compileType": "miniprogram",
 	"libVersion": "1.6.6",
-	"appid": "wxcc5ecb17be242087",
-	"projectname": "default",
+	"appid": "touristappid",
+	"projectname": "sandu2",
 	"condition": {
 		"search": {
 			"current": -1,

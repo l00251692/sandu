@@ -425,6 +425,7 @@ public class OrderControler {
 			Users driver = userService.selectByUserId(order.getReceiveUser());
 			if(driver != null)
 			{
+				obj_driver.put("driverId", order.getReceiveUser());
 				obj_driver.put("name", driver.getNickname());
 				obj_driver.put("head", driver.getImgUrl());
 				obj_driver.put("phone", driver.getPhone());
@@ -435,6 +436,7 @@ public class OrderControler {
 			}
 			
 			Users passenger = userService.selectByUserId(order.getCreateUser());
+			obj_passenger.put("passengerId", order.getCreateUser());
 			obj_passenger.put("name", passenger.getNickname());
 			obj_passenger.put("head", passenger.getImgUrl());
 			obj_passenger.put("phone", passenger.getPhone());

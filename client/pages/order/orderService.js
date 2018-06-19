@@ -126,6 +126,16 @@ Page({
     makePhoneCall(this.data.passenger.phone)
   },
 
+  onMsgTap(e) {
+    var { passenger } = this.data
+
+    console.log("onMsgTap:" + JSON.stringify(passenger))
+
+    wx.navigateTo({
+      url: '../chat/chat?fromid=' + passenger.passengerId
+    })
+  },
+
   toRecv(){
     var order_id = this.id
     var that = this

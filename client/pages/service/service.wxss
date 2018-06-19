@@ -97,6 +97,17 @@
   margin-top:15rpx;
 }
 
+.nav-setting{
+  z-index: 999;
+  right:30rpx;
+  position:fixed;
+  margin-top:20rpx;
+}
+.nav-setting image{
+  width:60rpx;
+  height:60rpx;
+}
+
 .nav-color {
   margin-right: 20rpx;
   display: inline-block;

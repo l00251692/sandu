@@ -1,5 +1,5 @@
 <scroll-view scroll-y style="height:{{scrollHeight}}rpx;background:#eee" bindscrolltoupper="scrollUpper"  scroll-into-view="{{toView}}">
-  <view wx:for="{{messages}}" wx:for-item="i">
+  <view wx:for="{{messages}}" wx:for-item="i" wx:key="">
     <view id="{{i.id}}" class="padding clearfix" wx:if="{{i.me}}">
       <image class="right-Avatar padding_half" src="{{i.img}}"></image>
       <view class="right-Triangle"></view>

@@ -125,7 +125,15 @@ Page({
   }, 
 
   onPhoneTap(e) {
-    makePhoneCall(this.data.passenger.phone)
+    makePhoneCall(this.data.driver.phone)
+  },
+  
+  onMsgTap(e) {
+    var { driver} = this.data
+
+    wx.navigateTo({
+      url: '../chat/chat?fromid=' + driver.driverId
+    })
   },
 
   toCancel(){

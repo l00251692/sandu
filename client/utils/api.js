@@ -991,3 +991,22 @@ export function sendMsg(options) {
     error
   })
 }
+
+export function setMsgRead(options) {
+
+  var {
+    concat_id, success, error
+  } = options
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'chat/setMsgReadWx',
+    data: {
+      user_id,
+      concat_id,
+    },
+    success,
+    error
+  })
+}

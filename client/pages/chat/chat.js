@@ -1,4 +1,4 @@
-import { getMessage, sendMsg } from '../../utils/api'
+import { getMessage, sendMsg, setMsgRead } from '../../utils/api'
 
 import { connectWebsocket } from '../../utils/util'
 
@@ -69,8 +69,14 @@ Page({
         that.initConnectWebSocket()
         that.initData()
         that.loadMsg()
+        that.setMsgRead()
       }
     })
+  },
+
+  onUnload(){
+    this.setMsgRead()
+    console.log("setMsgRead")
   },
 
   initEmoji() {
@@ -116,13 +122,24 @@ Page({
     })
 
     wx.onSocketMessage(function (res) {
-      console.log("收到socket 信息" + res.data)
+
       var  tmp = JSON.parse(res.data)
       var { user_id } = getApp().globalData.loginInfo.userInfo
+
       if (tmp.type == "userMsg" && tmp.toId == user_id) {
-        console.log('收到给我的消息')
+    
+        var { messages } = that.data
+        var msgTmp = { id: tmp.id, time: tmp.time, img: tmp.fromHeadUrl, text: tmp.msg }
+        messages.push(msgTmp)
+
+        that.setData({
+          messages: messages
+        })
+
+        that.setData({
+          toView: tmp.id
+        })
       }
-      
     })
   },
 
@@ -149,7 +166,6 @@ Page({
         page,
         fromid,
         success(data) {
-          console.log("getMessage:" + JSON.stringify(data))
           var { messages } = that.data
           var { list, count, page, newId } = data
           messages = messages ? list.concat(messages) : list
@@ -176,6 +192,17 @@ Page({
     }
 
 
+  },
+
+  setMsgRead(cb){
+    var concat_id = this.fromid
+
+    setMsgRead({
+      concat_id,
+      success(data){
+        //
+      }
+    })
   },
 
   textAreaFocus: function () {

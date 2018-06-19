@@ -18,7 +18,10 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.changyu.foryou.model.Users;
 import com.changyu.foryou.service.ChatService;
+import com.changyu.foryou.service.UserService;
+import com.changyu.foryou.tools.TimeUtil;
 
 @Component
 public class WebSocketPushHandler implements WebSocketHandler {
@@ -26,6 +29,9 @@ public class WebSocketPushHandler implements WebSocketHandler {
     
     @Autowired
 	private ChatService chatService;
+    
+    @Autowired
+	private UserService userService;
 
     // 用户进入系统监听
     @Override
@@ -35,7 +41,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
         String userId = session.getAttributes().get("user_id").toString();
 
         //sendMessagesToUsers(new TextMessage("今天晚上服务器维护,请注意"));
-        sendMessageToUser(userId, new TextMessage("连接成功"));
+        //sendMessageToUser(userId, new TextMessage("连接成功"));
     }
 
     //
@@ -63,18 +69,19 @@ public class WebSocketPushHandler implements WebSocketHandler {
         	String id = obj.getString("id");
         	String from_id = obj.getString("me");
         	String to_id = obj.getString("to");
-        	String time = obj.getString("time");
         	String msg = obj.getString("text");
         	
         	//Date date = new Date(time);
         	
         	Map<String, Object> paramMap = new HashMap<String, Object>();
+        	
+        	Date date = new Date();
     		
     		paramMap.put("id", id);
     		paramMap.put("fromId", from_id);
     		paramMap.put("toId", to_id);
     		paramMap.put("msg", msg);
-    		paramMap.put("time", new Date());
+    		paramMap.put("time", date);
     		
     		System.out.println("handleMessage2");
     		int flag =chatService.addMsg(paramMap);	
@@ -88,11 +95,17 @@ public class WebSocketPushHandler implements WebSocketHandler {
     			to.put("msg", msg);
     			to.put("fromId", from_id);
     			to.put("toId", to_id);
-    			to.put("time", time);
+    			
+    			to.put("time", TimeUtil.DateformatTime(date));
+    			
+    			Users user =  userService.selectByUserId(from_id);
+    			if(user != null)
+    			{
+    				to.put("fromHeadUrl", user.getImgUrl());
+    			}
     			
     			TextMessage toMsg = new TextMessage(to.toString());
     			
-    			System.out.println("handleMessage send begin");
     			sendMessageToUser(to_id, toMsg);
     		}
     	}

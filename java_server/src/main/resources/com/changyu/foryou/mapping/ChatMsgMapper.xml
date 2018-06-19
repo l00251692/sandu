@@ -139,13 +139,15 @@
 	
 	<select id="getUnReadMsgNum" resultType="java.lang.Integer" flushCache="true" useCache="false">
 		SELECT
-			COUNT(is_read = 0)
+			COUNT(1)
 		FROM
 			chatmsg
 		WHERE
 			from_id = #{concatId,jdbcType=VARCHAR}
 		AND
 			to_id = #{userId,jdbcType=VARCHAR}
+		AND
+			is_Read = 0
 	</select>
 	
 	<update id="updateMsgRead">

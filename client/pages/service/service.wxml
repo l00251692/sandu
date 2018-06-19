@@ -12,8 +12,8 @@
         <view class="nav-style">{{san_style}}</view>
       </view>
       <navigator url="/pages/register/register">
-        <view class="nav-all">
-          <image src="../../images/assets/setting.png" />
+        <view class="nav-setting">
+          <image src="../../images/assets/setting.png" mode='aspectFile' />
         </view>
       </navigator>
     </view>

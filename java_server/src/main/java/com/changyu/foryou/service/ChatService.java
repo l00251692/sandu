@@ -14,6 +14,8 @@ public interface ChatService {
 	
 	public int getUnReadMsgNum(Map<String, Object> paramMap);
 	
+	public int setMsgRead(Map<String, Object> paramMap);
+	
 	public List<ChatMsg> getChatMsg(Map<String, Object> paramMap);
 
 }

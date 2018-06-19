@@ -52,11 +52,22 @@
   right: 20rpx;
 }
 
+.message-title{
+  padding-bottom:4rpx；
+}
+
 .message-msg{
   display:block;
   overflow:hidden;
   max-width:500rpx;
   white-space:nowrap;
   text-overflow:ellipsis;
+  font-size:26rpx;
+  opacity:.5;
+}
+
+.no_msg{
+  margin-top:200rpx;
+  padding-left:50rpx;
 }
 

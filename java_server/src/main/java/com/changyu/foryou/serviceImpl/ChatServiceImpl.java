@@ -37,5 +37,9 @@ public class ChatServiceImpl implements ChatService {
 	public List<ChatMsg> getChatMsg(Map<String, Object> paramMap){
 		return chatMapper.getChatMsg(paramMap);
 	}
+	
+	public int setMsgRead(Map<String, Object> paramMap){
+		return chatMapper.updateMsgRead(paramMap);
+	}
 
 }

@@ -1,7 +1,7 @@
-<scroll-view scroll-y="true">
+<!-- <text  bindtap="send">发送</text> -->
+<scroll-view scroll-y="true" >
   <view wx:if="{{!list}}">
-    请检查服务器，设置IP地址为无线下IP
-    <view>下载本小程序server例子获取数据https://github.com/liujians/weApp-server</view>
+    <image src="../../images/assets/noMsg.png" mode='aspectFile' class="no_msg"></image>
   </view>
   <view class="item-avatar-md" wx:for="{{list}}" wx:key="{{i.id}}" wx:for-item="i" wx:for-index="index" data-index="{{index}}" data-name="{{i.name}}" data-id="{{i.id}}" bindtap="goPage">
           <view class="marks" wx:if="{{i.count}}">
@@ -11,7 +11,7 @@
           <view class="item-text">
             <view class="text_box">
               <view class="flex">
-                <text class="title">{{i.name}}</text>
+                <text class="message-title">{{i.name}}</text>
               </view>
               <view class="flex">
                 <text class="message-msg" max-length="20">{{i.message}}</text>

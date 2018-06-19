@@ -20,7 +20,7 @@
     "backgroundColor": "#5cd79a",
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#5cd79a",
-    "navigationBarTitleText": "蜗牛",
+    "navigationBarTitleText": "2333",
     "navigationBarTextStyle":"light"
   },
   "tabBar": {
@@ -34,8 +34,8 @@
       },
       {
         "pagePath": "pages/message/message",
-        "iconPath": "images/tabBar/Tabbar_Home_Empty.png",
-        "selectedIconPath": "images/tabBar/Tabbar_Home_Full.png",
+        "iconPath": "images/tabBar/Tabbar_Msg_Empty.png",
+        "selectedIconPath": "images/tabBar/Tabbar_Msg_Full.png",
         "text": "消息"
       },
       {

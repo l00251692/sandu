@@ -23,7 +23,7 @@
             </cover-view>
             <cover-view class="driver-message">
                     <cover-view class="mas">
-                            <cover-image style="width: 70rpx;height: 70rpx;" src="../../images/assets/msm.png"/>
+                            <cover-image bindtap="onMsgTap" style="width: 70rpx;height: 70rpx;" src="../../images/assets/msm.png"/>
                         </cover-view>
                         <cover-view class="phone">
                             <cover-image bindtap="onPhoneTap" style="width: 70rpx;height: 70rpx;" src="../../images/assets/phone.png"/>

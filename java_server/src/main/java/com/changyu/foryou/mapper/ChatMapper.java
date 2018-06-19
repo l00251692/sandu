@@ -18,4 +18,6 @@ public interface ChatMapper {
 	public int getUnReadMsgNum(Map<String, Object> paramMap);
 
 	public List<ChatMsg> getChatMsg(Map<String, Object> paramMap);
+	
+	public int updateMsgRead(Map<String, Object> paramMap);
 }

@@ -26,6 +26,7 @@ import com.changyu.foryou.service.UserService;
 import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.PayUtil;
 import com.changyu.foryou.tools.StringUtil;
+import com.changyu.foryou.tools.TimeUtil;
 
 @Controller
 @RequestMapping("/chat")
@@ -85,22 +86,12 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 			int num = chatService.getUnReadMsgNum(paramMap2);	
 			
 			node.put("message", concat.getMsg());
-			node.put("time", "22:00");
+			node.put("time", TimeUtil.DateformatTime(concat.getTime()));
 			node.put("count", num);
 			node.put("id", concat.getConcatId());//设置消息fromid
 			
 			array.add(node);
 		}
-		
-		JSONObject node2 = new JSONObject();
-		node2.put("img", "https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83epuibz5Qwf2IYwnGBLwbWsn8aRHXcrYKvQoVqS5Ls3fnksQfiaQMz9nJLIwJLzpBFoIPMYDKLQdDaPg/132");
-		node2.put("name", "xxxdefined2");
-		node2.put("message", "你好啊的考拉合法拉好地方");
-		node2.put("time", "21:00");
-		node2.put("count", "2");
-		node2.put("id", "1");
-		
-		array.add(node2);
 		
 		data.put("list2", array);
 		data.put("page", page);
@@ -149,14 +140,14 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 				node.put("img", msg.getFromHeadUrl());
 				node.put("me", user_id);
 				node.put("text", msg.getMsg());
-				node.put("time", msg.getTime());
+				node.put("time", TimeUtil.DateformatTime(msg.getTime()));
 				node.put("id", id);
 			}
 			else if(msg.getFromId().equals(from_id) && msg.getToId().equals(user_id))
 			{
 				node.put("img", msg.getFromHeadUrl());
 				node.put("text", msg.getMsg());
-				node.put("time", msg.getTime());
+				node.put("time", TimeUtil.DateformatTime(msg.getTime()));
 				node.put("id", id);
 			}
 	
@@ -208,6 +199,28 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 			result.put("State", "Fail");
 	        result.put("info", "消息发送失败");
 		}
+		return result;	
+	}
+	
+	
+	@RequestMapping("/setMsgReadWx")
+	public @ResponseBody Map<String, Object> setMsgReadWx(@RequestParam String user_id, @RequestParam String concat_id){
+
+		Map<String,Object> result = new HashMap<String, Object>();
+		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		
+		paramMap.put("fromId", concat_id);
+		paramMap.put("toId", user_id);
+		paramMap.put("isRead", 1);
+		
+
+
+		int flag =chatService.setMsgRead(paramMap);
+
+		result.put("State", "Success");
+	    result.put("data", "ok");
+
 		return result;	
 	}
 

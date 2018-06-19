@@ -154,7 +154,7 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 			}
 			else if(msg.getFromId().equals(from_id) && msg.getToId().equals(user_id))
 			{
-				node.put("img", msg.getToHeadUrl());
+				node.put("img", msg.getFromHeadUrl());
 				node.put("text", msg.getMsg());
 				node.put("time", msg.getTime());
 				node.put("id", id);
@@ -174,6 +174,7 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 		data.put("list", array);
 		data.put("count", array.size());
 		data.put("page", page);
+		data.put("newId", "ID_" + String.valueOf(page * 10 + msgList.size()-1));
 	
       	result.put("State", "Success");
         result.put("data", data);
@@ -195,7 +196,6 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 		paramMap.put("toId", to_id);
 		paramMap.put("msg", msg);//默认一次5条
 		paramMap.put("time", new Date());
-		paramMap.put("toId", to_id);
 
 		int flag =chatService.addMsg(paramMap);
 		

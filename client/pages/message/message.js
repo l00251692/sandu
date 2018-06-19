@@ -1,6 +1,8 @@
 var app = getApp()
 import { getMessageList } from '../../utils/api'
 
+import { connectWebsocket } from '../../utils/util'
+
 var initData = {
   page: 0,
   hasMore: true,
@@ -12,16 +14,54 @@ var initData = {
 
 Page({
     data:{
-      
+
     },
-    onReady:function(){
+    onLoad: function () {
+
+      if (!getApp().globalData.loginInfo.is_login) {
+        return 
+      }
+
+      var websocketFlag = wx.getStorageSync('websocketFlag')
+      var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+      connectWebsocket({
+        user_id,
+        success(data){
+          
+        },
+        error(){
+
+        }
+      })  
+      this.initConnectWebSocket()
       this.initData()
     },
 
-    modalChange:function(e){
-        this.setData({
-            modalHidden: true
-        })
+    onReady:function(){
+    },
+
+    initConnectWebSocket(){
+      var that = this
+      wx.onSocketOpen(function (res) {
+        console.log('WebSocket连接已打开！')
+        wx.setStorageSync('websocketFlag', true)
+      })
+
+      wx.onSocketError(function (res) {
+        console.log('WebSocket连接打开失败，请检查！')
+        wx.setStorageSync('websocketFlag', false)
+      })
+
+      wx.onSocketMessage(function (res) {
+        console.log("收到socket 信息")
+        if (res.data == '连接成功') {
+          console.log('连接成功')
+        }
+        else if (res.data == '新订单') {
+          that.loadData()
+        }
+      })
     },
 
     initData(cb) {

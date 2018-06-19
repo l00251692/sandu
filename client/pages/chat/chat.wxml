@@ -1,10 +1,4 @@
-<template name="msgItem">
-  <view wx:for="{{contents}}" style="display:inline-block;white-space:pre-line">
-    <text wx:if="item.type=='text'" style="padding:0;margin:0;width:auto;" selectable>{{item.text}}</text>
-    <image wx:if="item.type=='image'" style="width:42rpx;height:42rpx;vertical-align:middle;margin:0 6rpx;" src="{{item.url}}"></image>
-  </view>
-</template>
-<scroll-view scroll-y style="height:{{scrollHeight}}rpx;background:#eee" scroll-into-view="{{toView}}">
+<scroll-view scroll-y style="height:{{scrollHeight}}rpx;background:#eee" bindscrolltoupper="scrollUpper"  scroll-into-view="{{toView}}">
   <view wx:for="{{messages}}" wx:for-item="i">
     <view id="{{i.id}}" class="padding clearfix" wx:if="{{i.me}}">
       <image class="right-Avatar padding_half" src="{{i.img}}"></image>
@@ -15,7 +9,7 @@
       
     </view>
     <view id="{{i.id}}" class="padding clearfix" wx:if="{{!i.me}}">
-      <image class="left-Avatar padding_half" src="{{i.avatar}}"></image>
+      <image class="left-Avatar padding_half" src="{{i.img}}"></image>
       <view class="left-Triangle"></view>
       <view class="left-message padding_half">
           <text>{{i.text}}</text>

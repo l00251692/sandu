@@ -1,9 +1,14 @@
 package com.changyu.foryou.controller;
 
 import java.io.IOException;
+import java.security.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -11,9 +16,16 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.changyu.foryou.service.ChatService;
+
 @Component
 public class WebSocketPushHandler implements WebSocketHandler {
     private static final List<WebSocketSession> users = new ArrayList<>();
+    
+    @Autowired
+	private ChatService chatService;
 
     // 用户进入系统监听
     @Override
@@ -36,12 +48,67 @@ public class WebSocketPushHandler implements WebSocketHandler {
         //sendMessagesToUsers(msg);
         // 给指定用户群发消息
         //sendMessageToUser(userId, msg);
-
+    	try {
+    		System.out.println("handleMessage send tp user");
+        	
+        	JSONObject obj = JSON.parseObject(message.getPayload().toString());
+        	
+       
+        	if(message.getPayloadLength()==0){
+        		return;
+        	}
+        	
+        	System.out.println("handleMessage2");
+        	
+        	String id = obj.getString("id");
+        	String from_id = obj.getString("me");
+        	String to_id = obj.getString("to");
+        	String time = obj.getString("time");
+        	String msg = obj.getString("text");
+        	
+        	//Date date = new Date(time);
+        	
+        	Map<String, Object> paramMap = new HashMap<String, Object>();
+    		
+    		paramMap.put("id", id);
+    		paramMap.put("fromId", from_id);
+    		paramMap.put("toId", to_id);
+    		paramMap.put("msg", msg);
+    		paramMap.put("time", new Date());
+    		
+    		System.out.println("handleMessage2");
+    		int flag =chatService.addMsg(paramMap);	
+    		
+    		if(flag != 0 && flag != -1)
+    		{
+    			//
+    			JSONObject to = new JSONObject();
+    			to.put("type", "userMsg");
+    			to.put("id", id);
+    			to.put("msg", msg);
+    			to.put("fromId", from_id);
+    			to.put("toId", to_id);
+    			to.put("time", time);
+    			
+    			TextMessage toMsg = new TextMessage(to.toString());
+    			
+    			System.out.println("handleMessage send begin");
+    			sendMessageToUser(to_id, toMsg);
+    		}
+    	}
+    	catch(Exception e)
+    	{
+    		e.printStackTrace();
+    	}
+    	
+		return;
     }
 
     // 后台错误信息处理方法
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+    	
+    	System.out.println("后台错误" + exception.getMessage());
 
     }
 
@@ -84,10 +151,14 @@ public class WebSocketPushHandler implements WebSocketHandler {
         for (WebSocketSession user : users) {
             if (user.getAttributes().get("user_id").equals(userId)) {
                 try {
+                	System.out.println("sendMessageToUser");
                     // isOpen()在线就发送
                     if (user.isOpen()) {
                         user.sendMessage(message);
+                        System.out.println("sendMessageToUser user open");
                     }
+                    
+                    
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

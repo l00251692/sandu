@@ -233,6 +233,27 @@ export function uploadFile(options) {
   }) 
 }
 
+export function connectWebsocket(options) {
+
+  wx.connectSocket({
+    url: `wss://${host}/webSocketServer?x=` + options.user_id,
+    data: {
+      y: '',
+    },
+    header: {
+      'content-type': 'application/x-www-form-urlencoded'
+    },
+    method: "GET",
+    success: function (res) {
+      options.success && options.success()
+    },
+    fail: function (res) {
+      options.error && options.error()
+    },
+  })
+  
+}
+
 // 提示框
 export function alert(content, callback) {
   wx.showModal({

@@ -24,12 +24,12 @@ public class MyWebSocketInterceptor implements HandshakeInterceptor {
             ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
             HttpServletRequest httpRequest = servletRequest.getServletRequest();
             String user_id = httpRequest.getParameter("x");
-            String type = httpRequest.getParameter("y");
-            System.out.println("连接到我了:" + user_id + "type=" + type);
+    
+            System.out.println("连接到我了:" + user_id );
             if(user_id != null)
             {
             	attributes.put("user_id",user_id);
-            	attributes.put("type",type);
+   
             }                
         }
   

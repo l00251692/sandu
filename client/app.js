@@ -14,6 +14,9 @@ App({
   onLaunch: function () {
     //调用API从本地缓存中获取数据
   },
+  onHide: function () {
+    //调用API从本地缓存中获取数据
+  },
   getLoginInfo: function (cb) {
     var that = this
     if (this.globalData.loginInfo.is_login) 

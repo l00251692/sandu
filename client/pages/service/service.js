@@ -50,10 +50,10 @@ Page({
   },
   onUnload: function () {
     // 页面关闭
-    this.setData({
-      websocketFlag: false
-    })
-    wx.closeSocket()
+    // this.setData({
+    //   websocketFlag: false
+    // })
+    // wx.closeSocket()
   },
   initData(cb) {
     this.setData(initData)

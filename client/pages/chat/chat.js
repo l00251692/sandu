@@ -1,5 +1,7 @@
 import { getMessage, sendMsg } from '../../utils/api'
 
+import { connectWebsocket } from '../../utils/util'
+
 var initData = {
   page: 0,
   hasMore: true,
@@ -33,7 +35,8 @@ Page({
       "466", "467", "468", "469", "470", "471", "472", "473",
       "483", "484", "485", "486", "487", "490", "491", "493", "498", "6b4"
     ],
-    emojis: []
+    emojis: [],
+    socketMsgQueue: []
   },
 
 
@@ -42,7 +45,7 @@ Page({
 
     var that = this
     this.initEmoji()
-    
+
     wx.getSystemInfo({
       success: (res) => {
         this.setData({
@@ -51,8 +54,21 @@ Page({
           scrollHeight: (res.windowHeight - 50) * 750 / res.screenWidth
         })
 
+        var websocketFlag = wx.getStorageSync('websocketFlag')
+        var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+        connectWebsocket({
+          user_id,
+          success(data) {
+            
+          },
+          error(){
+
+          }
+        })
+        that.initConnectWebSocket()
         that.initData()
-        that.loadMsg() 
+        that.loadMsg()
       }
     })
   },
@@ -76,44 +92,89 @@ Page({
     })
   },
 
+  initConnectWebSocket() {
+
+    var that = this
+    wx.onSocketOpen(function (res) {
+      console.log('WebSocket连接已打开！')
+      wx.setStorageSync('websocketFlag', true)
+
+      var { socketMsgQueue } = that.data
+
+      for (var i = 0; i < socketMsgQueue.length; i++) {
+        sendSocketMessage(JSON.stringify(socketMsgQueue[i]))
+      }
+
+      that.setData({
+        socketMsgQueue: []
+      })
+    })
+
+    wx.onSocketError(function (res) {
+      console.log('WebSocket连接打开失败，请检查！')
+      wx.setStorageSync('websocketFlag', false)
+    })
+
+    wx.onSocketMessage(function (res) {
+      console.log("收到socket 信息" + res.data)
+      var  tmp = JSON.parse(res.data)
+      var { user_id } = getApp().globalData.loginInfo.userInfo
+      if (tmp.type == "userMsg" && tmp.toId == user_id) {
+        console.log('收到给我的消息')
+      }
+      
+    })
+  },
+
   initData() {
     this.setData(initData)
   },
 
   loadMsg(cb) {
     var that = this
+    var { hasMore, page, loading } = this.data
+
+    if (loading) {
+      return
+    }
+
+    this.setData({
+      loading: true
+    })
 
     var fromid = this.fromid
-    var { page } = this.data
 
-    getMessage({
-      page,
-      fromid,
-      success(data) {
-        console.log("getMessage:" + JSON.stringify(data))
-        var { messages } = that.data
-        var { list, count, page } = data
-        messages = messages ? messages.concat(list) : list
-        that.setData({
-          messages,
-          title: data.concat_name,
-          hasMore: count == 10,
-          loading: false,
-          page: page + 1
-        })
+    if (hasMore) {
+      getMessage({
+        page,
+        fromid,
+        success(data) {
+          console.log("getMessage:" + JSON.stringify(data))
+          var { messages } = that.data
+          var { list, count, page, newId } = data
+          messages = messages ? list.concat(messages) : list
+          that.setData({
+            messages,
+            title: data.concat_name,
+            hasMore: count == 10,
+            loading: false,
+            page: page + 1
+          })
 
-        wx.setNavigationBarTitle({
-          title: that.data.title
-        })
+          wx.setNavigationBarTitle({
+            title: that.data.title
+          })
 
-        that.setData({
-          toView: "ID_9"
-        })
-      },
-      error(data) {
+          that.setData({
+            toView: newId
+          })
+        },
+        error(data) {
 
-      }
-    })
+        }
+      })
+    }
+
 
   },
 
@@ -162,34 +223,46 @@ Page({
 
   send: function () {
     var that = this
-    if (that.data.msg.trim().length > 0) {
-      sendMsg({
-        to_id: this.fromid,
-        msg: that.data.msg,
-        success(data) {
-          that.setData({
-            msg: "",//清空文本域值
-            isShow: false,
-            cfBg: false,
-            scrollTop: that.data.scrollTop + 1000,
-          })
-          that.initData()
-          that.loadMsg()
-          that.setData({
-            toView: "ID_9"
-          })
+    var concatId = this.fromid
+    var { socketMsgQueue, messages } = this.data
+    var websocketFlag = wx.getStorageSync('websocketFlag')
+    var { user_id, avatarUrl } = getApp().globalData.loginInfo.userInfo
+    var time = Date.parse(new Date())
+
+    var id = 'id_' + time / 1000;
+    var msgTmp = { id: id, time: time, me: user_id, img: avatarUrl, text: that.data.msg, to: concatId}
+
+    messages.push(msgTmp)
+
+    if (websocketFlag) {
+      wx.sendSocketMessage({
+        data: JSON.stringify(msgTmp),
+        success(res){
+          console.log("send ok," + JSON.stringify(res))
         },
-        error(data) {
-          console.log("提交评论失败，请稍后")
+        fail(res){
+          console.log("send fail," + JSON.stringify(res))
         }
       })
-
     } else {
-      that.setData({
-        msg: ""//清空文本域值
-      })
+      socketMsgQueue.push(msg)
     }
+
+    that.setData({
+      msg: "",//清空文本域值
+      isShow: false,
+      cfBg: false,
+      messages: messages
+    })
+
+    that.setData({
+      toView: id
+    })
+  },
+
+  scrollUpper(e) {
+    this.loadMsg()
   }
-  
+
 })
 

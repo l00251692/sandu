@@ -5,6 +5,8 @@ import java.util.Date;
 
 public class ChatMsg {
 	
+	private String id;
+	
 	private String fromId;
 	
 	private String toId;
@@ -83,6 +85,14 @@ public class ChatMsg {
 
 	public void setRelativeOrderId(String relativeOrderId) {
 		this.relativeOrderId = relativeOrderId;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

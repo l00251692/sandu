@@ -77,7 +77,7 @@ Page({
             orderingUserType: data.userType,
             orderingStatus: data.orderStatus
           });
-          that.scrolltxt();// 第一个字消失后立即从右边出现
+          //that.scrolltxt();// 第一个字消失后立即从右边出现
         }
         else{
           that.setData({
@@ -108,7 +108,6 @@ Page({
     {
       getApp().getCurrentAddress(address => {
         var { title, location, city, district } = address
-        console.log("getCurrentAddress:" + JSON.stringify(address))
 
         getRegSanInfo({
           success(data){
@@ -127,7 +126,6 @@ Page({
               my_latitude: location.latitude,
               success(data) {
                 var { list } = data
-                console.log("orderlist:" + JSON.stringify(data))
                 if (list != null && list.length > 0) {
                   list = list.map(item => {
                     item['depart_time_format'] = datetimeFormat(item.depart_time)
@@ -178,7 +176,7 @@ Page({
         clearInterval(interval);
         that.scrolltxt();
       }
-    }, that.data.roolinterval);
+    }, that.data.rollinterval); 
 
   },
 
@@ -186,63 +184,28 @@ Page({
     var that = this
     var websocketFlag  = wx.getStorageSync('websocketFlag')
 
-    console.log(" begin wx.connectSocket")
     var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-
-    if (websocketFlag)
-    {
-      console.log("socket 已连接")
-      that.setData({
-        tip: '您已登录商家系统，请保持小程序不要关闭'
-      })
-    }
-    else
-    {
-      wx.connectSocket({
-        url: `wss://${host}/webSocketServer?x=` + user_id,
-        data: {
-          y: '',
-        },
-        header: {
-          'content-type': 'application/x-www-form-urlencoded'
-        },
-        method: "GET"
-      })
-    }
+    wx.connectSocket({
+      url: `wss://${host}/webSocketServer?x=` + user_id,
+      data: {
+        y: '',
+      },
+      header: {
+        'content-type': 'application/x-www-form-urlencoded'
+      },
+      method: "GET"
+    })
     
   
     wx.onSocketOpen(function (res) {
-      console.log('WebSocket连接已打开！')
       wx.setStorageSync('websocketFlag', true)
-      that.setData({
-        tip:'您已登录商家系统，请保持小程序不要关闭'
-      })
     })
     wx.onSocketError(function (res) {
-      console.log('WebSocket连接打开失败，请检查！')
       wx.setStorageSync('websocketFlag', false)
     })
     
     wx.onSocketMessage(function (res) {
-      console.log("收到socket 信息")
-      if (res.data == '连接成功')
-      {
-         console.log('连接成功')
-      }
-      else if (res.data == '新订单')
-      {
-          wx.playBackgroundAudio({
-            //播放地址
-            dataUrl: 'https://img.ailogic.xin/order.mp3',
-            title: '小蓝鲸',
-            coverImgUrl: ''
-          })
-          that.setData({
-            tip: '您有新的订单，请及时处理'
-          })
-          that.loadData()        
-      }
-      
+   
     })
   },
 

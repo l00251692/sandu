@@ -1,7 +1,7 @@
 var QQMapWX = require('../../utils/qqmap-wx-jssdk.min.js');
 var qqmapsdk;
 qqmapsdk = new QQMapWX({
-  key:'DHNBZ-2ZLKK-T7IJJ-AXSQW-WX5L6-A6FJZ'
+  key:'FPOBZ-UT2K2-ZFYUC-CX67E-IOOYS-7XFQ6'
 });
 import {
   getOrderInfo, setRecvOrder

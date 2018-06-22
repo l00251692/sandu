@@ -1,6 +1,6 @@
 <!-- <text  bindtap="send">发送</text> -->
 <scroll-view scroll-y="true" >
-  <view wx:if="{{!list}}">
+  <view wx:if="{{!loading && (!list || list.length == 0)}}">
     <image src="../../images/assets/noMsg.png" mode='aspectFile' class="no_msg"></image>
   </view>
   <view class="item-avatar-md" wx:for="{{list}}" wx:key="{{i.id}}" wx:for-item="i" wx:for-index="index" data-index="{{index}}" data-name="{{i.name}}" data-id="{{i.id}}" bindtap="goPage">

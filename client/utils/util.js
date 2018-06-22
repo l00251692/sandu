@@ -60,7 +60,7 @@ export function getCurrentAddressList(options) {
       console.log(res.errMsg)
       if (res.errMsg == 'getLocation:fail auth deny' && wx.openSetting) {
         confirm({
-          content: '若不授权地理位置权限, 则无法正常使用外卖服务, 请重新授权地理位置权限',
+          content: '若不授权地理位置权限, 则无法正常使用服务, 请重新授权地理位置权限',
           cancelText: '不授权',
           confirmText: '授权',
           ok() {

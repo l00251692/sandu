@@ -1,23 +1,4 @@
 <view class="container">
-    <!-- tab导航栏 -->
-    <!-- scroll-left属性可以控制滚动条位置 -->
-    <!-- scroll-with-animation滚动添加动画过渡 -->
-    <!-- <view class="section">
-    <view class="nav-me" bindtap="showUser">
-        <image src="../../assets/images/nav-me.png"/>
-      </view>
-    <scroll-view scroll-x="true" class="nav" scroll-left="{{navScrollLeft}}" scroll-with-animation="{{true}}">
-        <block wx:for="{{navData}}" wx:for-index="id"  wx:for-item="navItem" wx:key="index">
-            <view class="nav-item {{currentTab == id ?'active':''}}"  data-name="{{navItem.name}}" data-current="{{id}}" bindtap="switchNav">{{navItem.name}}</view>
-        </block>        
-    </scroll-view>
-      <navigator url= "/pages/carts/carts" >
-     <view class="nav-all">
-      <image src="../../assets/images/nav-all.png"/>
-    </view>
-    </navigator> 
-    </view>-->
-
     <scroll-view class="horse" wx:if='{{orderingId}}' bindtap='onProcessOrder'>
         <view class="scrolltxt weui-cell__ft_in-access" >
           <view class="marquee_box">
@@ -31,7 +12,7 @@
     </scroll-view>
     
     <view class="content">
-        <view class="didi-time">出发时间:  现在  </view>
+        <view class="didi-time">出发时间: 现在  </view>
         
         <view class="circle-str"></view>
         <view bindtap="onChooseFromLocation" > 

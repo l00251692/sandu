@@ -157,7 +157,8 @@ Page({
     },
     onPullDownRefresh:function(){
         
-        util.getUser(this);
+       //刷新消息
+      this.initData()
         
     },
 

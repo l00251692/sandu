@@ -91,8 +91,6 @@ Page({
 
           getMineInfo({
             success(data) {
-              console.log("getMineInfo :")
-              console.log(data)
               if (data.phone != null && data.phone.length > 0){
                 that.setData({
                   phone: data.phone.substr(0, 3) + '****' + data.phone.substr(7),

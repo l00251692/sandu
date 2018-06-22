@@ -761,18 +761,6 @@ public class OrderControler {
 			data.put("orderId", order.getOrderId());
 			data.put("orderStatus", order.getOrderStatus());
 			
-			if(order.getCreateUser().equals(user_id))
-			{
-				data.put("userType", 1);
-			}
-			else if(order.getReceiveUser().equals(user_id))
-			{
-				data.put("userType", 2);
-			}
-			else {
-				data.put("userType", 0);
-				logger.error("getMineProcessingOrder err:user_id" + user_id);
-			}
 			
 			map.put("State", "Success");
 			map.put("data", data);	

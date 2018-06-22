@@ -16,9 +16,10 @@ import { getMineInfo, addOrder, getMineProcessingOrder } from '../../utils/api'
 const app = getApp()
 Page({
   data: {
-    currentTab: 1,
-    currentCost: 0,
-    cart: '快车',
+    address:"我的位置",
+    // currentTab: 1,
+    // currentCost: 0,
+    // cart: '快车',
     navScrollLeft: 0,
     duration: 1000,
     interval: 5000,
@@ -46,6 +47,7 @@ Page({
         address_detail: address
       })
     });
+
   },
 
   onShow() {
@@ -85,10 +87,9 @@ Page({
                     that.setData({
                       length: length,
                       orderingId: data.orderId,
-                      orderingUserType: data.userType,
                       orderingStatus: data.orderStatus
                     });
-                    that.scrolltxt();// 第一个字消失后立即从右边出现
+                    //that.scrolltxt();// 第一个字消失后立即从右边出现
                   }
                 }
               })
@@ -120,7 +121,7 @@ Page({
         clearInterval(interval);
         that.scrolltxt();
       }
-    }, that.data.roolinterval);
+    }, that.data.rollinterval);
     // }
     // else {
     //   that.setData({ marquee_margin: "1000" });//只显示一条不滚动右边间距加大，防止重复显
@@ -207,13 +208,6 @@ Page({
           longitude: destination_detail.location.longitude
         }],
         success: (res) => {
-          // console.log(res.result.elements[0].distance)
-          // var num1 = 8+1.9*(res.result.elements[0].distance/1000)
-          // var num2= 12+1.8*(res.result.elements[0].distance/1000)
-          // var num3= 16+2.9*(res.result.elements[0].distance/1000)
-          // var play1 = num1.toFixed(1)
-          // var play2 = num2.toFixed(1)
-          // var play3 = num3.toFixed(1)
           if (res.result.elements[0].distance != -1) {
             this.setData({
               distance: (res.result.elements[0].distance / 1000).toFixed(2),
@@ -290,65 +284,12 @@ Page({
     })
   },
 
-  switchNav(event) {
-
-    this.requestWaitingtime();
-    const cart = event.currentTarget.dataset.name
-    let text = this.data.navData;
-    this.setData({
-      cart,
-      isLoading: true,
-      waitingTimes: ''
-    })
-    var cur = event.currentTarget.dataset.current;
-    var singleNavWidth = this.data.windowWindth / 6;
-
-    this.setData({
-      navScrollLeft: (cur - 1) * singleNavWidth,
-      currentTab: cur,
-    })
-  },
-
-  switchCart(e) {
-    const id = e.currentTarget.dataset.index;
-    this.setData({
-      index: id,
-
-    })
-  },
-  switchTab(event) {
-    var cur = event.detail.current;
-    var singleNavWidth = 55;
-    this.setData({
-      currentTab: cur,
-      navScrollLeft: (cur - 1) * singleNavWidth
-    });
-  },
-
-  onChange(e) {
-    const currentCost = e.target.dataset.index;
-    this.setData({
-      currentCost
-    })
-
-  },
   onProcessOrder(e) {
 
-    var { orderingId, orderingUserType, orderingStatus } = this.data
+    var { orderingId, orderingStatus } = this.data
 
-    if (orderingUserType == 1) { //乘客
-      wx.navigateTo({
-        url: "/pages/order/orderPassenger?id=" + orderingId,
-      })
-    }
-    else if (orderingUserType == 2) {//司机
-      wx.navigateTo({
-        url: "/pages/order/orderService?id=" + orderingId,
-      })
-    }
-    else {
-      console.log("当前正在进行中的订单错误")
-    }
-
+    wx.navigateTo({
+      url: "/pages/order/orderPassenger?id=" + orderingId,
+    })
   }
 })

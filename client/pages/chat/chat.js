@@ -213,24 +213,39 @@ Page({
   },
   //点击表情显示隐藏表情盒子
   emojiShowHide: function () {
-    this.setData({
-      isShow: !this.data.isShow,
-      isLoad: false,
-      cfBg: !this.data.false
-    })
+    if(!this.data.isShow)
+    {
+      //设置消息scroll-view高度检出评论高度50再减去表情列表的view的高度200
+      this.setData({
+        isShow: !this.data.isShow,
+        isLoad: false,
+        cfBg: !this.data.false,
+        scrollHeight: (this.data.windowHeight -200 - 50) * this.data.pxToRpx
+      })
+    }
+    else{
+      this.setData({
+        isShow: !this.data.isShow,
+        isLoad: false,
+        cfBg: !this.data.false,
+        scrollHeight: (this.data.windowHeight - 50) * this.data.pxToRpx
+      })
+    }
   },
   //表情选择
   emojiChoose: function (e) {
     //当前输入内容和表情合并
     this.setData({
-      msg: this.data.msg + e.currentTarget.dataset.emoji
+      msg: this.data.msg + e.currentTarget.dataset.emoji,
     })
+    
   },
   //点击emoji背景遮罩隐藏emoji盒子
   cemojiCfBg: function () {
     this.setData({
       isShow: false,
-      cfBg: false
+      cfBg: false,
+      scrollHeight: (this.data.windowHeight - 50) * this.data.pxToRpx
     })
   },
 
@@ -256,6 +271,14 @@ Page({
     var { user_id, avatarUrl } = getApp().globalData.loginInfo.userInfo
     var time = Date.parse(new Date())
 
+    if(this.data.msg == null || this.data.msg.length == 0)
+    {
+      wx.showToast({
+        title: '发送消息为空',
+      })
+      return
+    }
+
     var id = 'id_' + time / 1000;
     var msgTmp = { id: id, time: time, me: user_id, img: avatarUrl, text: that.data.msg, to: concatId}
 
@@ -279,7 +302,8 @@ Page({
       msg: "",//清空文本域值
       isShow: false,
       cfBg: false,
-      messages: messages
+      messages: messages,
+      scrollHeight: (this.data.windowHeight - 50) * this.data.pxToRpx
     })
 
     that.setData({

@@ -41,9 +41,9 @@ Page({
 
     loadData(cb) {
       var that = this
-      var {
-        loading, page
-      } = this.data
+      var { loading, page} = this.data
+
+      console.log("load page=" + page)
 
       if (loading) {
         return
@@ -67,10 +67,9 @@ Page({
           that.setData({
             loading: false,
             list: list ? list.concat(list2) : list2,
-            hasMore: count == 5,
+            hasMore: count == 10,
             page: page + 1
           })
-          console.log("get list  ok")
           cb && cb()
         },
         error(data){
@@ -86,7 +85,6 @@ Page({
     },
 
     onPullDownRefresh() {
-      console.log("onPullDownRefresh")
       wx.showNavigationBarLoading()
       this.initData(() => {
         wx.hideNavigationBarLoading()

@@ -7,7 +7,7 @@ import {
   getOrderInfo, setRecvOrder
 } from '../../utils/api'
 
-import { alert, makePhoneCall, datetimeFormat, getPrevPage } from '../../utils/util'
+import { alert, makePhoneCall, datetimeFormat, getPrevPage, connectWebsocket } from '../../utils/util'
 
 const app = getApp();
 Page({
@@ -18,12 +18,24 @@ Page({
   onLoad: function (options) {
     this.id = options.id
     this.callback = options.callback || 'callback'
+
+    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+    connectWebsocket({
+      user_id,
+      success(data) {
+
+      },
+      error() {
+
+      }
+    })
     this.loadData()
   },
 
   onShow(){
     this.mapCtx = wx.createMapContext("didiMap");
     this.movetoPosition();
+    this.initConnectWebSocket()
   },
 
   onReady(){
@@ -31,6 +43,44 @@ Page({
   },
   movetoPosition: function(){
     this.mapCtx.moveToLocation();
+  },
+
+  initConnectWebSocket() {
+    var that = this
+
+    var orderId = this.id
+
+    wx.onSocketOpen(function (res) {
+      console.log('WebSocket连接已打开！')
+      wx.setStorageSync('websocketFlag', true)
+    })
+
+    wx.onSocketError(function (res) {
+      console.log('WebSocket连接打开失败，请检查！')
+      wx.setStorageSync('websocketFlag', false)
+    })
+
+    wx.onSocketMessage(function (res) {
+      console.log('收到消息onSocketMessage！')
+      var tmp = JSON.parse(res.data)
+      var { user_id } = getApp().globalData.loginInfo.userInfo
+
+      if (tmp.type == "orderMsg" && tmp.orderId == orderId) {
+        if (tmp.msg == "取消订单") {
+          wx.showModal({
+            title: '订单被用户取消',
+            content: '在行程开始3min内用户可以取消订单',
+            showCancel:false,
+            success: function (res) {
+              wx.redirectTo({
+                url: '/pages/service/service?registType=2',
+              })
+            }
+          })
+          that.loadData()
+        }
+      }
+    })
   },
  
   loadData(){

@@ -67,7 +67,6 @@ Page({
 
           }
         })
-        that.initConnectWebSocket()
         that.initData()
         that.loadMsg()
         that.setMsgRead()
@@ -75,8 +74,14 @@ Page({
     })
   },
 
+  onShow(){
+    this.initConnectWebSocket()
+  },
+
   onUnload(){
+    var that = this
     this.setMsgRead()
+    getPrevPage()[that.callback]()
   },
 
   initEmoji() {

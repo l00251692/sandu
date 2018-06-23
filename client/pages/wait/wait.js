@@ -1,7 +1,7 @@
 
 import { host } from '../../config'
 import {
-  confirm, alert, getPrevPage
+  confirm, alert, getPrevPage, connectWebsocket
 } from '../../utils/util'
 import {
   cancelOrder
@@ -19,6 +19,18 @@ Page({
   onLoad: function (options) {
     this.orderId = options.orderId
     this.callback = options.callback || 'callback'
+
+    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+    connectWebsocket({
+      user_id,
+      success(data) {
+
+      },
+      error() {
+
+      }
+    })  
+    this.initConnectWebSocket()
   },
 
   onShow: function () {
@@ -29,7 +41,6 @@ Page({
 
   onReady: function () {
     this.drawProgressbg();
-    this.connectWebsocket();
     this.countInterval();
     this.drawProgress();
   },
@@ -37,10 +48,6 @@ Page({
   onUnload: function () {
     // 页面关闭
     var that = this
-    this.setData({
-      websocketFlag: false
-    })
-    wx.closeSocket()
     getPrevPage()[that.callback]()
   },
 
@@ -49,57 +56,40 @@ Page({
       return time[1]?time:'0'+time;
   },
 
-  connectWebsocket: function () {
+  initConnectWebSocket() {
     var that = this
-    var websocketFlag = this.data.websocketFlag
 
-    console.log(" begin wx.connectSocket")
-    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-
-    if (websocketFlag) {
-      console.log("socket 已连接")
-    }
-    else {
-      wx.connectSocket({
-        url: `wss://${host}/webSocketServer?x=` + user_id + `&y=wait`,
-        data: {
-          z: '',
-        },
-        header: {
-          'content-type': 'application/x-www-form-urlencoded'
-        },
-        method: "GET"
-      })
-    }
-
+    console.log("initConnectWebSocket")
 
     wx.onSocketOpen(function (res) {
       console.log('WebSocket连接已打开！')
       wx.setStorageSync('websocketFlag', true)
-      that.setData({
-        websocketFlag: true
-      })
     })
+
     wx.onSocketError(function (res) {
       console.log('WebSocket连接打开失败，请检查！')
       wx.setStorageSync('websocketFlag', false)
     })
 
     wx.onSocketMessage(function (res) {
-      console.log("收到socket 信息")
-      if (res.data == '连接成功') {
-        console.log('连接成功')
-      }
-      else if (res.data == '订单已被接') {
-        that.setData({
-          progress_txt: "匹配成功"
-        });
-        wx.redirectTo({
-          url: "/pages/orderService/orderService",
-        });
-        clearInterval(that.countTimer);
-      }
+      console.log('收到消息onSocketMessage！')
+      var tmp = JSON.parse(res.data)
+      var { user_id } = getApp().globalData.loginInfo.userInfo
 
+      if (tmp.type == "orderMsg" && tmp.toId == user_id) {
+        if (tmp.msg == "订单被接")
+        {
+          wx.showToast({
+            title: '订单已被接，请耐心等待',
+            icon: 'success',
+            duration: 2000,
+          })
+
+          wx.redirectTo({
+            url: "/pages/order/orderPassenger?callback=callback&&id=" + tmp.orderId,
+          })
+        }
+      }
     })
   },
 

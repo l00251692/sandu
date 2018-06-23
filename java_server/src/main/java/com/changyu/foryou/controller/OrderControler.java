@@ -20,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.socket.TextMessage;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -35,6 +36,7 @@ import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.HttpRequest;
 import com.changyu.foryou.tools.PayUtil;
 import com.changyu.foryou.tools.ThreadPoolUtil;
+import com.changyu.foryou.tools.TimeUtil;
 import com.changyu.foryou.tools.ToolUtil;
 
 import cn.jpush.api.report.UsersResult.User;
@@ -136,6 +138,20 @@ public class OrderControler {
 			int flag = orderService.addOrder(paramMap);
 			if(flag != 0 && flag != -1)
 			{
+				
+				//发送消息通知用户订单已被接
+				JSONObject to = new JSONObject();
+				to.put("type", "orderMsg");
+				to.put("orderId", orderId);
+				to.put("msg", "新订单");
+				to.put("passengerId", user_id);
+		
+
+				TextMessage toMsg = new TextMessage(to.toString());
+				
+				webSocketHandler.sendMessagesToUsers(toMsg);
+				
+				
 				JSONObject obj = new JSONObject();
 				obj.put("orderId", orderId);
 				
@@ -189,6 +205,16 @@ public class OrderControler {
 			int flag = orderService.updateOrderStatus(paramMap);
 			if (flag != -1 && flag != 0)
 			{
+				//发送消息通知用户订单已被接
+				JSONObject to = new JSONObject();
+				to.put("type", "orderMsg");
+				to.put("orderId", order_id);
+				to.put("msg", "取消订单");
+				to.put("passengerId", user_id);
+
+				TextMessage toMsg = new TextMessage(to.toString());
+				webSocketHandler.sendMessagesToUsers(toMsg);
+				
 				result.put("State", "Success");
 				result.put("data", null);	
 				return result;
@@ -349,8 +375,8 @@ public class OrderControler {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			
 			paramMap.put("userId", user_id);//默认一次5条
-			paramMap.put("limit", 5);
-			paramMap.put("offset", page * 5);//默认一次5条
+			paramMap.put("limit", 10);
+			paramMap.put("offset", page * 10);//默认一次5条
 	
 			List<Order> ordersList =orderService.getPassengerOrders(paramMap);
 				
@@ -524,6 +550,19 @@ public class OrderControler {
 		int flage = orderService.updateOrderReceiver(paramMap);
 		if(flage != -1 && flage !=0)
 		{
+			//发送消息通知用户订单已被接
+			JSONObject to = new JSONObject();
+			to.put("type", "orderMsg");
+			to.put("orderId", order_id);
+			to.put("msg", "订单被接");
+			to.put("driverId", user_id);
+			to.put("toId", order.getCreateUser());
+			
+			to.put("time", TimeUtil.DateformatTime(date));
+			TextMessage toMsg = new TextMessage(to.toString());
+	
+			webSocketHandler.sendMessagesToUsers(toMsg);
+			
 			//订单已经被接手，下一个状态就是结束行程，如果用户未确认则时间到后自动结束行程
 	        ThreadPoolUtil.execute(new Runnable(){  
 	            public void run(){  
@@ -540,6 +579,8 @@ public class OrderControler {
 	                redisServie.add(Constants.REDISPREFIX+order_id, dshOrder, Constants.REDISSAVETIME);  
 	            }  
 	        });
+	        
+	        
 			map.put("State", "Success");
 			map.put("data", null);	
 		}
@@ -586,6 +627,15 @@ public class OrderControler {
 
 				paramMap.put("starByDriver",star);
 				orderService.updateOrderStarByDriver(paramMap);
+				
+				//发送消息通知用户行程完成
+				JSONObject to = new JSONObject();
+				to.put("type", "orderMsg");
+				to.put("orderId", order_id);
+				to.put("msg", "行程完成");
+
+				TextMessage toMsg = new TextMessage(to.toString());
+				webSocketHandler.sendMessageToUser(order.getCreateUser(), toMsg);
 				
 				result.put("State", "Success");
 				result.put("data", "结束订单成功");	

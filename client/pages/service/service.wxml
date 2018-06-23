@@ -1,5 +1,5 @@
 <import src="/templates/load-more.wxml" />
-<loading hidden="{{!loading}}">数据加载中</loading>
+<!-- <loading hidden="{{!loading}}">数据加载中</loading> -->
 <view>
   <view wx:if="{{registType > 1}}">
     <view class="section">

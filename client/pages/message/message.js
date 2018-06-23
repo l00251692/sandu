@@ -9,7 +9,8 @@ var initData = {
   list:[],
   modalHidden: true,
   loading: false,
-  toast1Hidden: true
+  toast1Hidden: true,
+  msgCount:0
 }
 
 Page({
@@ -22,7 +23,6 @@ Page({
         return 
       }
 
-      var websocketFlag = wx.getStorageSync('websocketFlag')
       var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
 
       connectWebsocket({
@@ -122,10 +122,12 @@ Page({
             hasMore: count == 10,
             page: page + 1
           })
+          cb && cb()
 
         },
         error(data){
           console.log("读取消息列表失败")
+          cb && cb()
         }
       })
 
@@ -156,11 +158,16 @@ Page({
             toast1Hidden: true
         })
     },
-    onPullDownRefresh:function(){
-        
-       //刷新消息
-      this.initData()
-        
+    onPullDownRefresh:function(){  
+      if (getApp().globalData.loginInfo.is_login) {
+        wx.showNavigationBarLoading()
+        this.initData(() => {
+          wx.hideNavigationBarLoading()
+          wx.stopPullDownRefresh()
+        })
+      } else {
+        wx.stopPullDownRefresh()
+      }  
     },
 
     callback(){

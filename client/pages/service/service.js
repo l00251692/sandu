@@ -4,7 +4,7 @@ import {
 } from '../../utils/api'
 
 import {
-  datetimeFormat, requestPayment, alert
+  datetimeFormat, requestPayment, alert, connectWebsocket
 } from '../../utils/util'
 
 import { host } from '../../config'
@@ -37,6 +37,18 @@ Page({
     this.setData({
       registType: this.registType
     })
+
+    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+    connectWebsocket({
+      user_id,
+      success(data) {
+
+      },
+      error() {
+
+      }
+    })
+    this.initConnectWebSocket()
     this.initData()
   },
   onReady: function () {
@@ -60,6 +72,25 @@ Page({
     this.init()
     this.loadData(cb)
     //this.connectWebsocket() 
+  },
+
+  initConnectWebSocket() {
+    var that = this
+
+    wx.onSocketOpen(function (res) {
+      wx.setStorageSync('websocketFlag', true)
+    })
+
+    wx.onSocketError(function (res) {
+      wx.setStorageSync('websocketFlag', false)
+    })
+
+    wx.onSocketMessage(function (res) {
+      var tmp = JSON.parse(res.data)
+      if (tmp.type == "orderMsg") { //有新订单或订单被接就会刷新
+        that.initData()
+      }
+    })
   },
 
   init() {
@@ -94,7 +125,9 @@ Page({
     var {
       loading, page
     } = this.data
+
     if (loading) {
+      cb && cb()
       return
     }
 
@@ -125,6 +158,7 @@ Page({
               my_longitude: location.longitude,
               my_latitude: location.latitude,
               success(data) {
+                console.log("getDistanceOrders success")
                 var { list } = data
                 if (list != null && list.length > 0) {
                   list = list.map(item => {
@@ -140,6 +174,10 @@ Page({
                   hasMore: true, //修改为需要手工刷新
                   page: 0
                 })
+                cb && cb()
+              },
+              error(){
+                cb && cb()
               }
             })
 

@@ -9,7 +9,7 @@ import {
   getOrderInfo, payOrder, cancelOrder
 } from '../../utils/api'
 
-import { alert, getPrevPage, makePhoneCall, datetimeFormat, confirm } from '../../utils/util'
+import { alert, getPrevPage, makePhoneCall, datetimeFormat, confirm, connectWebsocket } from '../../utils/util'
 
 const app = getApp();
 Page({
@@ -20,12 +20,24 @@ Page({
   onLoad: function (options) {
     this.id = options.id
     this.callback = options.callback || 'callback'
+
+    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+    connectWebsocket({
+      user_id,
+      success(data) {
+
+      },
+      error() {
+
+      }
+    })
     this.loadData()
   },
 
   onShow(){
     this.mapCtx = wx.createMapContext("didiMap");
     this.movetoPosition();
+    this.initConnectWebSocket()
   },
 
   onReady(){
@@ -33,6 +45,47 @@ Page({
   },
   movetoPosition: function(){
     this.mapCtx.moveToLocation();
+  },
+
+  initConnectWebSocket() {
+    var that = this
+
+    var orderId = this.id
+
+    wx.onSocketOpen(function (res) {
+      console.log('WebSocket连接已打开！')
+      wx.setStorageSync('websocketFlag', true)
+    })
+
+    wx.onSocketError(function (res) {
+      console.log('WebSocket连接打开失败，请检查！')
+      wx.setStorageSync('websocketFlag', false)
+    })
+
+    wx.onSocketMessage(function (res) {
+      console.log('收到消息onSocketMessage！')
+      var tmp = JSON.parse(res.data)
+      var { user_id } = getApp().globalData.loginInfo.userInfo
+
+      if (tmp.type == "orderMsg" && tmp.orderId == orderId) {
+        if (tmp.msg == "订单被接") {
+          wx.showToast({
+            title: '订单已被接，请耐心等待',
+            icon: 'success',
+            duration: 2000,
+          })
+          that.loadData()  
+        }
+        else if (tmp.msg == "行程完成"){
+          wx.showToast({
+            title: '行程已完成，请完成支付',
+            icon: 'success',
+            duration: 2000,
+          })
+          that.loadData() 
+        }
+      }
+    })
   },
  
   loadData(){
@@ -144,9 +197,9 @@ Page({
     var rcvTime = this.data.order.rcvTime
     var now = Date.parse(new Date())
 
-    if (now - rcvTime > 5 * 60 * 1000 && rcvTime > 0)
+    if (rcvTime > 0 && (now - rcvTime > 3 * 60 * 1000))
     {
-      alert("订单已被接超过5min，不能取消")
+      alert("订单已被接超过3min，不能取消")
       return
     }
   

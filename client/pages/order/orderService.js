@@ -7,7 +7,7 @@ import {
   getOrderInfo, setRecvOrder
 } from '../../utils/api'
 
-import { alert, makePhoneCall, datetimeFormat } from '../../utils/util'
+import { alert, makePhoneCall, datetimeFormat, getPrevPage } from '../../utils/util'
 
 const app = getApp();
 Page({
@@ -17,6 +17,7 @@ Page({
   },
   onLoad: function (options) {
     this.id = options.id
+    this.callback = options.callback || 'callback'
     this.loadData()
   },
 
@@ -129,7 +130,7 @@ Page({
   onMsgTap(e) {
     var { passenger } = this.data
 
-    console.log("onMsgTap:" + JSON.stringify(passenger))
+    var that = this
 
     wx.navigateTo({
       url: '../chat/chat?fromid=' + passenger.passengerId
@@ -151,7 +152,7 @@ Page({
         that.setData({
           hiddenLoading: false
         })
-
+        getPrevPage()[that.callback]()
         that.loadData()
       },
       error() {
@@ -174,8 +175,9 @@ Page({
     })
   },
   toEvaluation(){
+    var callback = this.callback
     wx.redirectTo({
-      url:"/pages/evaluation/evaluationS?id=" + this.id,
+      url: "/pages/evaluation/evaluationS?callback=" + callback + "&&id=" + this.id,
     })
   },
   onReady: function () {

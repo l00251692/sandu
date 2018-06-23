@@ -1,7 +1,7 @@
 
 import { host } from '../../config'
 import {
-   confirm, alert
+  confirm, alert, getPrevPage
 } from '../../utils/util'
 import {
   cancelOrder
@@ -18,6 +18,7 @@ Page({
   },
   onLoad: function (options) {
     this.orderId = options.orderId
+    this.callback = options.callback || 'callback'
   },
 
   onShow: function () {
@@ -35,10 +36,12 @@ Page({
 
   onUnload: function () {
     // 页面关闭
+    var that = this
     this.setData({
       websocketFlag: false
     })
     wx.closeSocket()
+    getPrevPage()[that.callback]()
   },
 
   parseTime: function(time){
@@ -142,7 +145,8 @@ Page({
   },
   toCancel(){
     var order_id = this.orderId
-
+    var that = this
+    
     confirm({
       content: `是否取消订单`,
       confirmText: '取消订单',
@@ -150,6 +154,7 @@ Page({
         cancelOrder({
           order_id,
           success(data) {
+            getPrevPage()[that.callback]()
             wx.switchTab({
               url: "/pages/index/index",
             })

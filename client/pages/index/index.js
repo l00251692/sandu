@@ -48,11 +48,12 @@ Page({
       })
     });
 
+    this.initData();
+    this.init();
+
   },
 
   onShow() {
-    this.initData();
-    this.init();
   },
 
   initData() {
@@ -258,7 +259,7 @@ Page({
                       time: "now",
                       success(data) {
                         wx.navigateTo({
-                          url: "/pages/wait/wait?orderId=" + data.orderId,
+                          url: "/pages/wait/wait?callback=callback&&orderId=" + data.orderId,
                         }),
                           wx.setTopBarText({
                             text: '等待接单'
@@ -289,7 +290,12 @@ Page({
     var { orderingId, orderingStatus } = this.data
 
     wx.navigateTo({
-      url: "/pages/order/orderPassenger?id=" + orderingId,
+      url: "/pages/order/orderPassenger?callback=callback&&id=" + orderingId,
     })
+  },
+
+  callback(){
+    this.initData();
+    this.init();
   }
 })

@@ -34,6 +34,7 @@ Page({
 
         }
       })  
+      this.initData()
     },
 
     onShow:function(){
@@ -43,7 +44,7 @@ Page({
       }
       /*socket 监听要在页面显示的时候初始化否则在离开页面后监听不到 */
       this.initConnectWebSocket()
-      this.initData()
+      
     },
 
     initConnectWebSocket(){
@@ -146,7 +147,7 @@ Page({
         })
         
         wx.navigateTo({
-          url: '../chat/chat?fromid='+e.currentTarget.dataset.id
+          url: '../chat/chat?callback=callback&&fromid='+e.currentTarget.dataset.id
         })
     },
 
@@ -160,6 +161,10 @@ Page({
        //刷新消息
       this.initData()
         
+    },
+
+    callback(){
+      this.initData()
     },
 
     send: function () {

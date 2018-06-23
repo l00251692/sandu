@@ -4,6 +4,9 @@ import {
   getOrderInfo, finishOrderByDriver
 } from '../../utils/api'
 
+
+import { getPrev2Page } from '../../utils/util'
+
 Page({
   data: {
       star: 5,
@@ -21,6 +24,7 @@ Page({
   },
   onLoad(options){
     this.id = options.id
+    this.callback = options.callback || 'callback'
     this.loadData()
     
     this.setData({
@@ -60,6 +64,7 @@ Page({
           title: '行程已结束',
           success(res){
             setTimeout(() =>{
+              getPrev2Page()[that.callback]()
               wx.switchTab({
                 url: '/pages/index/index',
               })},2000

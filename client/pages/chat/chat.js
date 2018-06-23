@@ -1,6 +1,6 @@
 import { getMessage, sendMsg, setMsgRead } from '../../utils/api'
 
-import { connectWebsocket } from '../../utils/util'
+import { connectWebsocket, getPrevPage } from '../../utils/util'
 
 var initData = {
   page: 0,
@@ -42,6 +42,7 @@ Page({
 
   onLoad(options) {
     this.fromid = options.fromid
+    this.callback = options.callback || 'callback'
 
     var that = this
     this.initEmoji()
@@ -76,7 +77,6 @@ Page({
 
   onUnload(){
     this.setMsgRead()
-    console.log("setMsgRead")
   },
 
   initEmoji() {
@@ -314,6 +314,5 @@ Page({
   scrollUpper(e) {
     this.loadMsg()
   }
-
 })
 

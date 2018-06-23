@@ -9,7 +9,7 @@ import {
   getOrderInfo, payOrder, cancelOrder
 } from '../../utils/api'
 
-import { alert, makePhoneCall, datetimeFormat, confirm } from '../../utils/util'
+import { alert, getPrevPage, makePhoneCall, datetimeFormat, confirm } from '../../utils/util'
 
 const app = getApp();
 Page({
@@ -19,6 +19,7 @@ Page({
   },
   onLoad: function (options) {
     this.id = options.id
+    this.callback = options.callback || 'callback'
     this.loadData()
   },
 
@@ -138,6 +139,7 @@ Page({
 
   toCancel(){
     var order_id = this.id
+    var that = this
 
     var rcvTime = this.data.order.rcvTime
     var now = Date.parse(new Date())
@@ -155,6 +157,7 @@ Page({
         cancelOrder({
           order_id,
           success(data) {
+            getPrevPage()[that.callback]()
             wx.switchTab({
               url: "/pages/index/index",
             })
@@ -173,8 +176,11 @@ Page({
   },
 
   toEvaluation(){
+
+    var callback = this.callback 
+    
     wx.navigateTo({
-      url:"/pages/evaluation/evaluationP?id=" + this.id,
+      url: "/pages/evaluation/evaluationP?callback=" + callback + "&&id=" + this.id,
     })
   },
   onReady: function () {

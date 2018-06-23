@@ -179,6 +179,11 @@ export function getPois(options) {
   })
 }
 
+export function getPrev2Page() {
+  const pages = getCurrentPages()
+  return pages[pages.length - 3]
+}
+
 export function getPrevPage() {
   const pages = getCurrentPages()
   return pages[pages.length - 2]

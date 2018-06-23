@@ -5,7 +5,7 @@ import {
 } from '../../utils/api'
 
 import {
-  alert, requestPayment
+  alert, getPrev2Page, requestPayment
 } from '../../utils/util'
 
 Page({
@@ -25,6 +25,7 @@ Page({
   },
   onLoad(options){
     this.id = options.id
+    this.callback = options.callback || 'callback'
     this.loadData()
     
     this.setData({
@@ -73,6 +74,8 @@ Page({
                 that.setData({
                   loading: false
                 })
+
+                getPrev2Page()[that.callback]()
                 wx.switchTab({
                   url: `/pages/index/index`
                 })

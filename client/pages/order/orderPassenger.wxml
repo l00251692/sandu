@@ -75,7 +75,7 @@
           <cover-image bindtap='onRevert' style="width: 80rpx;height: 80rpx;" src="../../images/assets/location.png"/>
     </cover-view>
     <cover-view class="ft">
-        <cover-view class="ft-cancel" wx:if="{{order.orderStatus != 4}}" bindtap="toCancel">取消订单</cover-view>
+        <cover-view class="ft-cancel" wx:if="{{(order.orderStatus != 4) && (order.orderStatus != 3)}}" bindtap="toCancel">取消订单</cover-view>
         <cover-view class="ft-cancel" wx:if="{{order.orderStatus == 3}}" bindtap="toEvaluation">去支付</cover-view>
         <cover-view class="ft-finish" wx:if="{{order.orderStatus == 2}}" bindtap="toEvaluation">结束行程</cover-view>
         <cover-view class="ft-app" bindtap="toApp">下载APP</cover-view>

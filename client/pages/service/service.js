@@ -239,8 +239,9 @@ Page({
         wx.showToast({
           title: '接单成功',
         })
+        that.initData()
         wx.navigateTo({
-          url: '/pages/order/orderService?id=' + order_id,
+          url: '/pages/order/orderService?callback=callback&&id=' + order_id,
         })
       },
       error(data) {
@@ -259,7 +260,7 @@ Page({
 
     if (orderingId != null && orderingId.length > 0) {
       wx.navigateTo({
-        url: "/pages/order/orderService?id=" + orderingId,
+        url: "/pages/order/orderService?callback=callback&&id=" + orderingId,
       })
     }
   },
@@ -287,10 +288,7 @@ Page({
     }
   },
 
-  callback(loginInfo) {
-    if (this.data.list) {
-      this.onLoad()
-    }
+  callback() {
+    this.initData()
   }
-  
 })

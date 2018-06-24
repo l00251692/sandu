@@ -12,7 +12,7 @@
               <text class="lt-time">{{item.create_time_format}}</text>
             </view>
             <view class="right">
-              <text class="rt-span" >{{item.order_price}}元</text>
+              <text class="rt-span" wx:if="{{item.order_status == 4}}" >费用：{{item.order_price}}元</text>
             </view>
           </view>
           <view class="second">

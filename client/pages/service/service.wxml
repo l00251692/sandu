@@ -1,7 +1,7 @@
 <import src="/templates/load-more.wxml" />
 <!-- <loading hidden="{{!loading}}">数据加载中</loading> -->
 <view>
-  <view wx:if="{{registType > 1}}">
+  <view wx:if="{{(registType == 2)  && !loading}}">
     <view class="section">
       <view class="nav-me" bindtap="showUser">
         <image src="../../images/assets/nav-me.png" />
@@ -56,7 +56,7 @@
       </view>
     </view>
   </view>
-  <view class="order-logout" wx:else>
+  <view class="order-logout" wx:if="{{(registType == 1) && !loading}}">
     <view class="order-logout__tip">
       请先注册信息，让其他人更容易找到你
     </view>

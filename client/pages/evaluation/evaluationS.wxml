@@ -17,8 +17,7 @@
                         <view class="phone">
                             <image style="width: 70rpx;height: 70rpx;" src="../../images/assets/phone.png"/>
                         </view>
-            </view>
-          
+            </view>    
         </view>
         <view class="cost">
             <view class="cost-number">本次订单费用：<text style="font-size:32rpx; color:red">1.0 </text>元</view>

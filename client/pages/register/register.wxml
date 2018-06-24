@@ -1,6 +1,6 @@
 <!--login.wxml-->
-<view >
-  
+<view>
+
   <view class="weui-cells">
     <view class="weui-cell weui-cell_input weui-cell_vcode">
       <view class="weui-cell__hd">
@@ -16,7 +16,7 @@
         </view>
       </view>
     </view>
-
+    
     <view class="weui-cell weui-cell_input weui-cell_vcode">
       <view class="weui-cell__hd">
         <view class="weui-label">款式</view>
@@ -31,7 +31,7 @@
         </view>
       </view>
     </view>
-    
+
     <view class="weui-cell weui-cell_input weui-cell_vcode">
       <view class="weui-cell__hd">
         <view class="weui-label">特点</view>

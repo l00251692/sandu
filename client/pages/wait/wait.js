@@ -19,6 +19,10 @@ Page({
   onLoad: function (options) {
     this.orderId = options.orderId
     this.callback = options.callback || 'callback'
+    var start = options.start
+    this.setData({
+      address: start,
+    })
 
     var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
     connectWebsocket({
@@ -34,9 +38,6 @@ Page({
   },
 
   onShow: function () {
-    this.setData({
-      address: app.globalData.currentAddress.title,
-    })
   },
 
   onReady: function () {

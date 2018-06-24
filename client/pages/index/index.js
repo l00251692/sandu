@@ -258,8 +258,9 @@ Page({
                       to_add_latitude: destination_detail.location.latitude,
                       time: "now",
                       success(data) {
+                        console.log("start=" + address_detail.title)
                         wx.navigateTo({
-                          url: "/pages/wait/wait?callback=callback&&orderId=" + data.orderId,
+                          url: "/pages/wait/wait?callback=callback&&start=" + address_detail.title + "&&orderId=" + data.orderId,
                         }),
                           wx.setTopBarText({
                             text: '等待接单'

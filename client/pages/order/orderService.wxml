@@ -31,6 +31,28 @@
             </cover-view>
           
         </cover-view>
+
+         <cover-view class="total-looking" wx:if="{{order.orderStatus == 0}}">
+            <cover-image class="looking-img" style="width: 30rpx;height: 30rpx;" src="../../images/assets/looking.png"  ></cover-image>
+            <cover-view class="looking-desc">用户创建行程，等待服务</cover-view>
+        </cover-view>
+
+        <cover-view class="total-looking" wx:elif="{{order.orderStatus == 1}}">
+            <cover-view class="looking-desc">用户行程已取消</cover-view>
+        </cover-view>
+        <!--订单进行中  -->
+        <cover-view class="total-looking" wx:elif="{{order.orderStatus == 2}}">
+            <cover-view class="looking-desc">行程进行中</cover-view>
+        </cover-view>
+        <!--等待支付  -->
+        <cover-view class="total-looking" wx:elif="{{order.orderStatus == 3}}">
+            <cover-image class="looking-img" style="width: 30rpx;height: 30rpx;" src="../../images/assets/looking.png"  ></cover-image>
+            <cover-view class="looking-desc">行程已完成，等待用户支付</cover-view>
+        </cover-view>
+        <cover-view class="total-looking" wx:elif="{{order.orderStatus == 4}}">
+            <cover-view class="looking-desc">订单完成</cover-view>
+        </cover-view>
+
         <cover-view class="total-info">
             <cover-view class="total-info-from">
               <cover-view class="circle-str"></cover-view>

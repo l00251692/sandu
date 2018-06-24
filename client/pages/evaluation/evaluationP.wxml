@@ -13,7 +13,7 @@
                    
                     <view class="detailed-Cartnumber">{{driver.color}} ☆ {{driver.style}}</view>
 
-                    <cover-view class="detailed-cart" wx:if="{{driver.feature}}">{{driver.feature}}</cover-view>
+                    <view class="detailed-cart" wx:if="{{driver.feature}}">{{driver.feature}}</view>
                 </view>
             </view>
             <view class="driver-message">

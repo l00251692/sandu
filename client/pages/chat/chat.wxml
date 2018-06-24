@@ -22,7 +22,7 @@
 <view class="comment-fixed">
   <view class="cf-box">
     <view class="emoji iconfont icon-emoji" catchtap="emojiShowHide"></view>
-    <textarea class="cf-content" bindinput="onMsgInput" bindfocus="textAreaFocus" maxlength="200" auto-height value="{{msg}}" />
+    <textarea class="cf-content" adjust-position="true" show-confirm-bar="false"  bindinput="onMsgInput" bindfocus="textAreaFocus" maxlength="200" auto-height value="{{msg}}" />
     <text class="cf-send touch-active" bindtap="send">发送</text>
   </view>
 

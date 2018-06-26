@@ -78,7 +78,7 @@ Page({
           duration: 1000
         })
         setTimeout(function () {
-          wx.navigateTo({
+          wx.redirectTo({
             url: '/pages/service/service?registType=2',
           })
         }, 1000)

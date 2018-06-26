@@ -17,6 +17,7 @@ const app = getApp()
 Page({
   data: {
     address:"我的位置",
+    depart_time:"现在",
     // currentTab: 1,
     // currentCost: 0,
     // cart: '快车',

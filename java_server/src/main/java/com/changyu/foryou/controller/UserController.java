@@ -52,9 +52,6 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	private WeChatContext context = WeChatContext.getInstance();
-
-	
 	/**
 	 * 用户登陆
 	 * @param phone
@@ -77,9 +74,9 @@ public class UserController {
 		} 
 
 		//小程序唯一标识  (在微信小程序管理后台获取) 
-		String wxspAppid = context.getAppId(); 
+		String wxspAppid = Constants.appId;
 		//小程序的 app secret (在微信小程序管理后台获取) 
-		String wxspSecret = context.getAppSecrct();
+		String wxspSecret = Constants.apiKey;
 	    //授权（必填） 
 		String grant_type = "authorization_code"; 
 	
@@ -145,8 +142,6 @@ public class UserController {
 			} catch (Exception e) {
 				System.out.println(e);
 			}
-			
-			
 			
 			map.put("State", "Success"); 
 			map.put("data", loginInfo); 

@@ -424,9 +424,9 @@ export function requestPayment(options) {
           complete && complete()
         })
       } else {
-        alert('支付失败按照成功继续', function () {
-          success && success()
-          //error && error()
+        alert('支付失败', function () { 
+          console.log("支付失败" + JSON.stringify(res))
+          error && error()
           complete && complete()
         })
       }

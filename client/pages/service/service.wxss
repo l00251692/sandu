@@ -179,6 +179,16 @@
   padding: 5px 15px 5px 0;
   text-align: right;
   border-top: 1rpx solid #e8e8e8;
+  display: flex;
+  flex-direction: row;
+}
+
+.order-item__ft_start{
+  text-align:left;
+  font-size: 32rpx;
+  color:#5cd79a;
+  line-height:2.3;
+  flex:1;
 }
 
 .order-item__content {

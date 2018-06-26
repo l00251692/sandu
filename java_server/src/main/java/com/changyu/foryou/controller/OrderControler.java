@@ -673,9 +673,6 @@ public class OrderControler {
 				result.put("info", "结束订单失败[订单信息错误]");	
 				return result;
 			}
-			
-			
-			
 
 			paramMap.put("orderStatus",Constants.orderStatusDone);
 			
@@ -724,7 +721,7 @@ public class OrderControler {
 					result.put("State", "Fail");
 					result.put("info", "结束订单失败[司机信息错误]");	
 				}
-				
+				System.out.println("向用户发送消息开始");
 				
 				//向消费用户发送模板消息                                    1
 				String url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send";
@@ -746,13 +743,21 @@ public class OrderControler {
 				buffer.append("{");
 				buffer.append(String.format("\"touser\":\"%s\"", touser)).append(",");
 				buffer.append(String.format("\"template_id\":\"%s\"", template_id)).append(",");
-				buffer.append(String.format("\"page\":\"%s\"", "pages/course/course")).append(",");
+				buffer.append(String.format("\"page\":\"%s\"", "pages/index/index")).append(",");
 				buffer.append(String.format("\"form_id\":\"%s\"", prepay_id)).append(",");
 				buffer.append("\"data\":{");
+				/*buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"},","first", "订单支付成功通知", "#173177"));
 				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"},","keyword1", curDateStr, "#173177"));
-				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"},","keyword2", order_id, "#173177"));
-				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"}","keyword3", "蜗牛系列商品", "#173177"));
-				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"}","keyword3", order.getOrderPrice(), "#173177"));
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"},","keyword2", "打伞服务", "#173177"));
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"},","keyword3", order_id, "#173177"));
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"},","keyword4", order.getOrderPrice(), "#173177"));
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\",\"color\":\"%s\"}","remark", "欢迎再次使用", "#173177"));*/
+				
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\"},","keyword1", curDateStr));
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\"},","keyword2", "打伞服务"));
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\"},","keyword3", order_id));
+				buffer.append(String.format("\"%s\": {\"value\":\"%s\"}","keyword4", order.getOrderPrice()));
+				
 				buffer.append("}");
 				buffer.append("}");
 				String params = "";
@@ -761,8 +766,10 @@ public class OrderControler {
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				};
-				
+				System.out.println(params);
 				String sr = HttpRequest.sendPost(url,params);
+				
+				System.out.println("向用户发送消息" + sr);
 				
 				return result;
 			} 

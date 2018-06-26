@@ -12,7 +12,7 @@
     </scroll-view>
     
     <view class="content">
-        <view class="didi-time">出发时间: 现在  </view>
+        <view class="didi-time">出发时间: {{depart_time}}</view>
         
         <view class="circle-str"></view>
         <view bindtap="onChooseFromLocation" > 

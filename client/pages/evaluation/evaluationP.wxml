@@ -46,6 +46,6 @@
         </view>
         <view class="ft">
             <!-- <view class="cancel">需要帮助</view> -->
-            <view class="finish" bindtap="toFinish">结束行程</view>
+            <view class="finish" bindtap="toFinish">支付</view>
         </view>
 </view>

@@ -139,7 +139,7 @@ public class OrderControler {
 			if(flag != 0 && flag != -1)
 			{
 				
-				//发送消息通知用户订单已被接
+				//发送消息通知用户新订单
 				JSONObject to = new JSONObject();
 				to.put("type", "orderMsg");
 				to.put("orderId", orderId);
@@ -149,8 +149,21 @@ public class OrderControler {
 
 				TextMessage toMsg = new TextMessage(to.toString());
 				
+				//找到同一区的用户，发送给附近的用户
+				
 				webSocketHandler.sendMessagesToUsers(toMsg);
 				
+		        ThreadPoolUtil.execute(new Runnable(){  
+		            public void run(){ 
+		            	
+		                //重新添加等待服务行程的延迟队列
+		                DSHOrder dshOrder = new DSHOrder(orderId,Constants.orderStatusCreate, Constants.WAIT_CREATE);  
+		                delayService.add(dshOrder);  
+		        
+		                //2插入到redis  
+		                redisServie.add(Constants.REDISPREFIX+orderId, dshOrder, Constants.REDISSAVETIME);  
+		            }  
+		        });
 				
 				JSONObject obj = new JSONObject();
 				obj.put("orderId", orderId);
@@ -205,7 +218,7 @@ public class OrderControler {
 			int flag = orderService.updateOrderStatus(paramMap);
 			if (flag != -1 && flag != 0)
 			{
-				//发送消息通知用户订单已被接
+				//发送消息通知用户订单已取消
 				JSONObject to = new JSONObject();
 				to.put("type", "orderMsg");
 				to.put("orderId", order_id);
@@ -214,6 +227,19 @@ public class OrderControler {
 
 				TextMessage toMsg = new TextMessage(to.toString());
 				webSocketHandler.sendMessagesToUsers(toMsg);
+				
+				
+				//订单已经取消，从redis和延迟队列删除
+		        ThreadPoolUtil.execute(new Runnable(){  
+		            public void run(){  
+		                //从delay队列删除  
+		                delayService.remove(order_id);  
+		                //从redis删除  
+		                redisServie.delete(Constants.REDISPREFIX+order_id); 
+		            }  
+		        });
+				
+				
 				
 				result.put("State", "Success");
 				result.put("data", null);	
@@ -261,16 +287,13 @@ public class OrderControler {
 			System.out.println("getDistanceOrders size:" + ordersList.size());
 			
 			
-			
 			JSONArray orderArray = new JSONArray();
 			
 			for(Order order:ordersList)
 			{
 				JSONObject obj = new JSONObject();
-				System.out.println("getDistanceOrders:1");
 				if(ToolUtil.isNearByOrder(my_longitude, my_latitude, order.getFromAddrLongitude(), order.getFromAddrLatitude()))
 				{
-					System.out.println("getDistanceOrders:2");
 					Users user = userService.selectByUserId(order.getCreateUser());
 					obj.put("create_time", order.getCreateTime());
 					obj.put("depart_time", order.getDepartTime());
@@ -332,14 +355,14 @@ public class OrderControler {
 				Users user = userService.selectByUserId(order.getCreateUser());
 				obj.put("create_time", order.getCreateTime());
 				obj.put("depart_time", order.getDepartTime());
-				obj.put("order_price", order.getOrderPrice());
+				obj.put("order_price", (order.getOrderPrice() - 0.1f));//减去0.1的手续费
 				obj.put("order_status", order.getOrderStatus());
 				obj.put("order_id", order.getOrderId());
 				obj.put("from_addr", order.getFromAddr());
 				obj.put("to_addr", order.getToAddr());
 				
 				orderArray.add(obj);
-				
+			
 			}
 			
 			JSONObject data = new JSONObject();
@@ -563,6 +586,7 @@ public class OrderControler {
 	
 			webSocketHandler.sendMessagesToUsers(toMsg);
 			
+			System.out.println("删除之前的delay队列");
 			//订单已经被接手，下一个状态就是结束行程，如果用户未确认则时间到后自动结束行程
 	        ThreadPoolUtil.execute(new Runnable(){  
 	            public void run(){  
@@ -570,13 +594,6 @@ public class OrderControler {
 	                delayService.remove(order_id);  
 	                //从redis删除  
 	                redisServie.delete(Constants.REDISPREFIX+order_id); 
-	                
-	                //重新添加等待结束行程的延迟队列
-	                DSHOrder dshOrder = new DSHOrder(order_id,Constants.orderStatusRecv, Constants.WAIT_FINISH);  
-	                delayService.add(dshOrder);  
-	        
-	                //2插入到redis  
-	                redisServie.add(Constants.REDISPREFIX+order_id, dshOrder, Constants.REDISSAVETIME);  
 	            }  
 	        });
 	        
@@ -636,6 +653,7 @@ public class OrderControler {
 
 				TextMessage toMsg = new TextMessage(to.toString());
 				webSocketHandler.sendMessageToUser(order.getCreateUser(), toMsg);
+				
 				
 				result.put("State", "Success");
 				result.put("data", "结束订单成功");	
@@ -700,7 +718,7 @@ public class OrderControler {
 					Map<String, Object> paramMap2 = new HashMap<String, Object>();
 					paramMap2.put("userId",user_id);
 					
-					float balance = user.getBallance() + pay_money;
+					float balance = user.getBallance() + (pay_money - 0.1f);//每笔订单收取0.1元手续费
 					paramMap2.put("ballance",balance);
 					
 					int flag2 = userService.updateUserBallance(paramMap2);
@@ -770,7 +788,7 @@ public class OrderControler {
 				String sr = HttpRequest.sendPost(url,params);
 				
 				System.out.println("向用户发送消息" + sr);
-				
+						
 				return result;
 			} 
 			else 

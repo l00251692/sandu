@@ -18,9 +18,9 @@
     font-size: 26rpx;
 }
 .cost-desc{
-    margin-top: 20rpx;
-    margin-left: 200rpx;
-    width: 300rpx;
+    margin-top: 40rpx;
+    padding-left:40rpx;
+    padding-right:40rpx;
     color: #666666;
 }
 .obvious{

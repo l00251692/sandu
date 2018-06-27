@@ -48,22 +48,20 @@ public class DelayService {
       
     public void add(DSHOrder order){  
         delayQueue.put(order);  
-        System.out.println("delayQueue add,size="+ delayQueue.size());
     }  
   
     public boolean remove(DSHOrder order){  
-    	System.out.println("delayQueue remove before,size="+ delayQueue.size());
         return delayQueue.remove(order);       
     }  
        
-     public void remove(String orderId){  
+     public void remove(String orderId){ 
         DSHOrder[] array = delayQueue.toArray(new DSHOrder[]{});  
         if(array == null || array.length <= 0){  
             return;  
         }  
         DSHOrder target = null;  
         for(DSHOrder order : array){  
-            if(order.getOrderId() == orderId){  
+            if(order.getOrderId().equals(orderId)){  
                 target = order;  
                 break;  
             }  

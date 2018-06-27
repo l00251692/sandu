@@ -59,9 +59,8 @@ Page({
 
   initConnectWebSocket() {
     var that = this
-
+    var orderId = this.orderId
     console.log("initConnectWebSocket")
-
     wx.onSocketOpen(function (res) {
       console.log('WebSocket连接已打开！')
       wx.setStorageSync('websocketFlag', true)
@@ -77,7 +76,7 @@ Page({
       var tmp = JSON.parse(res.data)
       var { user_id } = getApp().globalData.loginInfo.userInfo
 
-      if (tmp.type == "orderMsg" && tmp.toId == user_id) {
+      if (tmp.type == "orderMsg" && tmp.orderId == orderId) {
         if (tmp.msg == "订单被接")
         {
           wx.showToast({
@@ -88,6 +87,17 @@ Page({
 
           wx.redirectTo({
             url: "/pages/order/orderPassenger?callback=callback&&id=" + tmp.orderId,
+          })
+        }
+        else if (tmp.msg == "取消订单"){
+          wx.showToast({
+            title: '订单自动取消',
+            icon: 'success',
+            duration: 2000,
+          })
+
+          wx.switchTab({
+            url: "/pages/index/index",
           })
         }
       }

@@ -15,25 +15,23 @@ var initData = {
 
 Page({
     data:{
-      list:[]
+      list:[],
+      needRefresh:true
     },
     onLoad: function () {
 
       if (!getApp().globalData.loginInfo.is_login) {
-        return 
+        return
       }
+ 
+      // var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
 
-      var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-
-      connectWebsocket({
-        user_id,
-        success(data){
-          
-        },
-        error(){
-
-        }
-      })  
+      // connectWebsocket({
+      //   user_id,
+      //   success(data) { },
+      //   error() {
+      //   }
+      // })   
       this.initData()
     },
 
@@ -44,14 +42,26 @@ Page({
       }
       /*socket 监听要在页面显示的时候初始化否则在离开页面后监听不到 */
       this.initConnectWebSocket()
-      
+      //解决用户首次登陆后页面不刷新，在onshow刷新
+      if (this.data.needRefresh == true){
+        var websocketFlag = wx.getStorageSync('websocketFlag')
+        if (!websocketFlag) {
+          var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+          connectWebsocket({
+            user_id,
+            success(data) { },
+            error() {
+            }
+          })
+        }
+
+        this.initData()
+      }
     },
 
     initConnectWebSocket(){
       var that = this
-
-      console.log("initConnectWebSocket")
-
       wx.onSocketOpen(function (res) {
         console.log('WebSocket连接已打开！')
         wx.setStorageSync('websocketFlag', true)
@@ -77,12 +87,12 @@ Page({
             if (list[i].id == tmp.fromId)
             {
               countTmp = list[i].count
-              list.splice(i,1)
+              list.splice(i,1) //删除这个元素
               break;
             }
           }
 
-          var concatTmp = { id: tmp.fromId ,img: tmp.fromHeadUrl, time: tmp.time, count: (countTmp+1), message: tmp.msg }
+          var concatTmp = { name: tmp.name ,id: tmp.fromId ,img: tmp.fromHeadUrl, time: tmp.time, count: (countTmp+1), message: tmp.msg }
           list.unshift(concatTmp)
 
           that.setData({
@@ -105,7 +115,6 @@ Page({
 
     loadData(cb) {
       var that = this
-
       var { page, loading} = this.data
 
       if (loading) {
@@ -114,6 +123,7 @@ Page({
 
       this.setData({
         loading: true,
+        needRefresh:false
       })
 
       getMessageList({
@@ -133,7 +143,7 @@ Page({
               wx.showTabBarRedDot({
                 index: 1,
               })
-            }  
+            }
           }
 
           that.setData({
@@ -151,7 +161,6 @@ Page({
           cb && cb()
         }
       })
-
     },
 
     onReachBottom(e) {
@@ -168,7 +177,7 @@ Page({
         that.setData({
             list: newlist
         })
-        
+
         wx.navigateTo({
           url: '../chat/chat?callback=callback&&fromid='+e.currentTarget.dataset.id
         })
@@ -179,7 +188,7 @@ Page({
             toast1Hidden: true
         })
     },
-    onPullDownRefresh:function(){  
+    onPullDownRefresh:function(){
       if (getApp().globalData.loginInfo.is_login) {
         wx.showNavigationBarLoading()
         this.initData(() => {
@@ -188,7 +197,7 @@ Page({
         })
       } else {
         wx.stopPullDownRefresh()
-      }  
+      }
     },
 
     callback(){
@@ -215,6 +224,6 @@ Page({
             console.log("send fail," + JSON.stringify(res))
           }
         })
-      } 
+      }
     }
 })

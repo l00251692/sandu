@@ -10,8 +10,8 @@ import {
 import { host } from '../../config'
 
 var initData = {
-  websocketFlag:false,
-  status:0,
+  websocketFlag: false,
+  status: 0,
   page: 0,
   hasMore: true,
   loading: false,
@@ -39,16 +39,14 @@ Page({
     })
 
     var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
     connectWebsocket({
       user_id,
-      success(data) {
-
-      },
+      success(data) { },
       error() {
-
       }
     })
-    this.initConnectWebSocket()
+
     this.initData()
   },
   onReady: function () {
@@ -56,22 +54,18 @@ Page({
   },
   onShow: function () {
     // 页面显示
+    this.initConnectWebSocket()
   },
   onHide: function () {
     // 页面隐藏
   },
   onUnload: function () {
     // 页面关闭
-    // this.setData({
-    //   websocketFlag: false
-    // })
-    // wx.closeSocket()
   },
   initData(cb) {
     this.setData(initData)
     this.init()
     this.loadData(cb)
-    //this.connectWebsocket() 
   },
 
   initConnectWebSocket() {
@@ -110,14 +104,14 @@ Page({
           });
           //that.scrolltxt();// 第一个字消失后立即从右边出现
         }
-        else{
+        else {
           that.setData({
             text: "下拉刷新查看附近最新订单",
           })
         }
       }
     })
-            
+
   },
 
   loadData(cb) {
@@ -137,14 +131,13 @@ Page({
 
     var registType = this.registType
 
-    if (registType == 2)
-    {
+    if (registType == 2) {
       getApp().getCurrentAddress(address => {
         var { title, location, city, district } = address
         getRegSanInfo({
-          success(data){
+          success(data) {
             that.setData({
-              san_color:data.color,
+              san_color: data.color,
               san_style: data.style,
               san_feature: data.feature
             })
@@ -175,21 +168,21 @@ Page({
                 })
                 cb && cb()
               },
-              error(){
+              error() {
                 cb && cb()
               }
             })
 
           }
         })
-        
+
       })
-    } 
-    else{
+    }
+    else {
       this.setData({
         loading: false
       })
-    }  
+    }
   },
 
   scrolltxt: function () {
@@ -213,13 +206,13 @@ Page({
         clearInterval(interval);
         that.scrolltxt();
       }
-    }, that.data.rollinterval); 
+    }, that.data.rollinterval);
 
   },
 
   connectWebsocket: function () {
     var that = this
-    var websocketFlag  = wx.getStorageSync('websocketFlag')
+    var websocketFlag = wx.getStorageSync('websocketFlag')
 
     var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
     wx.connectSocket({
@@ -232,17 +225,17 @@ Page({
       },
       method: "GET"
     })
-    
-  
+
+
     wx.onSocketOpen(function (res) {
       wx.setStorageSync('websocketFlag', true)
     })
     wx.onSocketError(function (res) {
       wx.setStorageSync('websocketFlag', false)
     })
-    
+
     wx.onSocketMessage(function (res) {
-   
+
     })
   },
 
@@ -302,7 +295,7 @@ Page({
     }
   },
 
-  
+
   onReachBottom(e) {
     var {
       hasMore, loading

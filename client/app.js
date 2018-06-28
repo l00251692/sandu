@@ -3,7 +3,7 @@ import {
   getLoginInfo, getUserAddrs
 } from './utils/api'
 import {
-  getCurrentAddress, getUserInfo,alert,
+  getCurrentAddress, getUserInfo, alert, connectWebsocket,
   coordFormat, fetch, confirm
 } from './utils/util'
 import {
@@ -17,9 +17,31 @@ App({
   },
   onHide: function () {
     //调用API从本地缓存中获取数据
+    wx.closeSocket({
+      reason:"小程序推出关闭",
+      success(res){
+        wx.setStorageSync('websocketFlag', false)
+      }
+    })
   },
-  
+
   initSocket(){
+
+    wx.onSocketOpen(function (res) {
+      console.log('APP INIT WebSocket连接已打开！')
+      wx.setStorageSync('websocketFlag', true)
+    })
+
+    wx.onSocketError(function (res) {
+      console.log('WebSocket连接打开失败，请检查！')
+      wx.setStorageSync('websocketFlag', false)
+    })
+
+    wx.onSocketClose(function (res) {
+      console.log('WebSocket连接关闭！')
+      wx.setStorageSync('websocketFlag', false)
+    })
+
     wx.onSocketMessage(function (res) {
       console.log('收到消息onSocketMessage！')
 
@@ -41,11 +63,11 @@ App({
   ,
   getLoginInfo: function (cb) {
     var that = this
-    if (this.globalData.loginInfo.is_login) 
+    if (this.globalData.loginInfo.is_login)
     {
       cb && cb(this.globalData.loginInfo)
-    } 
-    else 
+    }
+    else
     {
       wx.getSetting({
         success: (res) => {
@@ -72,6 +94,12 @@ App({
                             getLoginInfo({
                               success(data) {
                                 getApp().setLoginInfo(data)
+                                // var { user_id } = data.userInfo
+                                // connectWebsocket({
+                                //   user_id,
+                                //   success(data) {},
+                                //   error() {}
+                                // })
                                 cb && cb(data)
                               }
                             })

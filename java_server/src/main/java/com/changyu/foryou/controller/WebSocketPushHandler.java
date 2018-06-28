@@ -39,7 +39,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
         
         users.add(session);
         String userId = session.getAttributes().get("user_id").toString();
-
+        
         //sendMessagesToUsers(new TextMessage("今天晚上服务器维护,请注意"));
         //sendMessageToUser(userId, new TextMessage("连接成功"));
     }
@@ -54,18 +54,14 @@ public class WebSocketPushHandler implements WebSocketHandler {
         //sendMessagesToUsers(msg);
         // 给指定用户群发消息
         //sendMessageToUser(userId, msg);
-    	try {
-    		System.out.println("handleMessage send tp user");
-        	
+    	try {     	
         	JSONObject obj = JSON.parseObject(message.getPayload().toString());
         	
        
         	if(message.getPayloadLength()==0){
         		return;
         	}
-        	
-        	System.out.println("handleMessage2");
-        	
+
         	String id = obj.getString("id");
         	String from_id = obj.getString("me");
         	String to_id = obj.getString("to");
@@ -83,12 +79,10 @@ public class WebSocketPushHandler implements WebSocketHandler {
     		paramMap.put("msg", msg);
     		paramMap.put("time", date);
     		
-    		System.out.println("handleMessage2");
     		int flag =chatService.addMsg(paramMap);	
     		
     		if(flag != 0 && flag != -1)
     		{
-    			//
     			JSONObject to = new JSONObject();
     			to.put("type", "userMsg");
     			to.put("id", id);
@@ -102,6 +96,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
     			if(user != null)
     			{
     				to.put("fromHeadUrl", user.getImgUrl());
+    				to.put("name", user.getNickname());
     			}
     			
     			TextMessage toMsg = new TextMessage(to.toString());

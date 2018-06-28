@@ -19,16 +19,18 @@ Page({
     this.id = options.id
     this.callback = options.callback || 'callback'
 
-    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-    connectWebsocket({
-      user_id,
-      success(data) {
+    // var websocketFlag = wx.getStorageSync('websocketFlag')
+    // if (!websocketFlag) {
+    //   var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
 
-      },
-      error() {
+    //   connectWebsocket({
+    //     user_id,
+    //     success(data) { },
+    //     error() {
+    //     }
+    //   })
+    // }
 
-      }
-    })
     this.loadData()
   },
 
@@ -39,7 +41,7 @@ Page({
   },
 
   onReady(){
-   
+
   },
   movetoPosition: function(){
     this.mapCtx.moveToLocation();
@@ -82,7 +84,7 @@ Page({
       }
     })
   },
- 
+
   loadData(){
     var that = this
     var order_id = this.id
@@ -138,17 +140,17 @@ Page({
     {
       this.setData({
         scale: --this.data.scale
-      }) 
+      })
     }
-    
-  }, 
+
+  },
 
   onScalePlus(e) {
     if (this.data.scale < 18)
     {
       this.setData({
         scale: ++this.data.scale
-      }) 
+      })
     }
   },
 
@@ -159,7 +161,7 @@ Page({
   bindregionchange: (e) => {
 
   },
-  //点击merkers  
+  //点击merkers
   bindmarkertap(e) {
     // console.log(e.markerId)
     // wx.showActionSheet({
@@ -171,7 +173,7 @@ Page({
     //     console.log(res.errMsg)
     //   }
     // })
-  }, 
+  },
 
   onPhoneTap(e) {
     makePhoneCall(this.data.passenger.phone)
@@ -194,7 +196,7 @@ Page({
     setRecvOrder({
       order_id,
       success(data) {
-        
+
         wx.showToast({
           title: '接单成功',
         })
@@ -209,13 +211,13 @@ Page({
         that.setData({
           hiddenLoading: true,
         })
-        
+
         wx.showToast({
           title: '接单失败，请联系客服处理',
         })
       }
     })
-   
+
   },
   toApp(){
     wx.showToast({
@@ -240,9 +242,9 @@ Page({
         })
       }
       })
-     
+
   },
 
-  
-  
+
+
 })

@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.swing.plaf.synth.SynthSeparatorUI;
 
+import org.apache.log4j.Logger;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +54,8 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
+	private static final Logger LOGGER = Logger.getLogger(UserController.class);
+	
 	/**
 	 * 用户登陆
 	 * @param phone
@@ -62,9 +66,7 @@ public class UserController {
 	public @ResponseBody
 	Map<String, Object> toLoginWx(@RequestParam String wx_code,@RequestParam String encryptedData,@RequestParam String iv) {
 		Map<String, Object> map = new HashMap<String, Object>();
-		
-		System.out.println("toLoginWx enter");
-		
+			
 		//登录凭证不能为空 
 		if (wx_code == null || wx_code.length() == 0) 
 		{ 
@@ -97,7 +99,6 @@ public class UserController {
 		//////////////// 2、对encryptedData加密数据进行AES解密 //////////////// 
 		try { 
 		  String result = AesCbcUtil.decrypt(encryptedData, session_key, iv, "UTF-8");
-		  System.out.println(result);
 		  if (null != result && result.length() > 0) 
 		  { 
 		
@@ -126,7 +127,6 @@ public class UserController {
 				Users users = userService.checkLogin(userInfoJSON.get("openId").toString());
 				if (users != null)
 				{
-					System.out.println("用户已存在，更新用户信息");
 					users.setImgUrl(userInfoJSON.get("avatarUrl").toString());
 					users.setNickname(userInfoJSON.get("nickName").toString());
 					users.setLastLoginDate(new Date());
@@ -170,7 +170,6 @@ public class UserController {
 		Map<String, Object> map = new HashMap<String, Object>();
 	
 		Users users=userService.selectByUserId(user_id);
-		System.out.println("getMineInfoWx:" + user_id);
 		if(users == null)
 		{
 			map.put("State", "Fail"); 
@@ -215,15 +214,14 @@ public class UserController {
         DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
         IAcsClient acsClient = new DefaultAcsClient(profile);
         
-        int codeNum = (int)(Math.random()*9999)+1000;  //每次调用生成一次四位数的随机数
-        System.out.println("phone code = " + codeNum);
+        int codeNum = (int)(Math.random()*9000)+1000;  //每次调用生成一次四位数的随机数
 
         //组装请求对象-具体描述见控制台-文档部分内容
         SendSmsRequest request = new SendSmsRequest();
         //必填:待发送手机号
         request.setPhoneNumbers(phone);
         //必填:短信签名-可在短信控制台中找到
-        request.setSignName("三度");
+        request.setSignName("2333一起打伞");
         //必填:短信模板-可在短信控制台中找到
         request.setTemplateCode("SMS_137180089");
         //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
@@ -236,26 +234,24 @@ public class UserController {
         //request.setOutId("yourOutId");
 
         //hint 此处可能会抛出异常，注意catch
-        //SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
+        SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
         
-        SendSmsResponse sendSmsResponse = new SendSmsResponse();
+        //SendSmsResponse sendSmsResponse = new SendSmsResponse();
         sendSmsResponse.setCode("OK");
         
         if(sendSmsResponse.getCode() != null && sendSmsResponse.getCode().equals("OK")) {
 
-        	System.out.println("发送成功！");
         	JSONObject obj = new JSONObject();
     		obj.put("codeNumStr", codeNum + "");
     			
     		map.put("State", "Success"); 
     		map.put("data", obj);
 		}else {
-		    System.out.println("发送失败！code=" + sendSmsResponse.getCode());
+			LOGGER.error("发送验证码失败！code=" + sendSmsResponse.getCode());
 		    map.put("State", "Fail"); 
     		map.put("data", "");
 		}
         
-		 
 		return map;
 	}
 	
@@ -271,7 +267,6 @@ public class UserController {
 		if(user_id != null && phone != null)
 		{
 			Users users=userService.selectByUserId(user_id);
-			System.out.println("getMineInfoWx:" + user_id);
 			if(users == null)
 			{
 				map.put("State", "Fail"); 
@@ -314,7 +309,7 @@ public class UserController {
 	
 
 		Users users=userService.selectByUserId(user_id);
-		System.out.println("getMineInfoWx:" + user_id);
+
 		if(users == null)
 		{
 			map.put("State", "Fail"); 

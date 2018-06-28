@@ -38,7 +38,7 @@ public class ChatController {
 	@Autowired
 	private UserService userService;
 	
-private static final Logger LOGGER = Logger.getLogger(ChatController.class);
+	private static final Logger LOGGER = Logger.getLogger(ChatController.class);
     
     /**
 	 * 获得微信支付参数
@@ -115,9 +115,7 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 	public @ResponseBody Map<String, Object> getMessageWx(@RequestParam String user_id, @RequestParam String from_id, @RequestParam Integer page){
 
 		Map<String,Object> result = new HashMap<String, Object>();
-		
-		System.out.println("getMessageWx:" + user_id + "," + from_id);
-		
+			
 		JSONObject data = new JSONObject();
 		
 		JSONArray array = new JSONArray();
@@ -126,7 +124,7 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 		
 
 		paramMap.put("userId", user_id);
-		paramMap.put("concatId", from_id);//默认一次5条
+		paramMap.put("concatId", from_id);
 		paramMap.put("limit", 10);
 		paramMap.put("offset", page * 10);
 		
@@ -138,7 +136,6 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 			
 			ChatMsg msg = msgList.get(i-1);
 			
-			String id = "ID_" + String.valueOf(page * 10 + msgList.size() - i );
 			
 			if(msg.getFromId().equals(user_id) && msg.getToId().equals(from_id))
 			{
@@ -146,17 +143,16 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 				node.put("me", user_id);
 				node.put("text", msg.getMsg());
 				node.put("time", TimeUtil.DateformatTime(msg.getTime()));
-				node.put("id", id);
+				node.put("id", msg.getId());
 			}
 			else if(msg.getFromId().equals(from_id) && msg.getToId().equals(user_id))
 			{
 				node.put("img", msg.getFromHeadUrl());
 				node.put("text", msg.getMsg());
 				node.put("time", TimeUtil.DateformatTime(msg.getTime()));
-				node.put("id", id);
+				node.put("id", msg.getId());
 			}
-	
-			
+		
 			array.add(node);
 		}
 		
@@ -170,7 +166,7 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 		data.put("list", array);
 		data.put("count", array.size());
 		data.put("page", page);
-		data.put("newId", "ID_" + String.valueOf(page * 10 + msgList.size()-1));
+		data.put("newId", msgList.get(0).getId());
 	
       	result.put("State", "Success");
         result.put("data", data);
@@ -185,8 +181,6 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 		Map<String,Object> result = new HashMap<String, Object>();
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		
-		System.out.println("sendMsgWx:" + msg);
 		
 		paramMap.put("fromId", user_id);//默认一次5条
 		paramMap.put("toId", to_id);

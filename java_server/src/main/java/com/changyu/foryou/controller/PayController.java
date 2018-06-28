@@ -81,8 +81,6 @@ public class PayController {
             //获取客户端的ip地址  
             String spbill_create_ip = StringUtil.getIpAddr(request); 
             
-            System.out.println("getPaymentWx:" + spbill_create_ip);
-              
             //组装参数，用户生成统一下单接口的签名  
             Map<String, String> packageParams = new HashMap<String, String>(); 
             String appId = Constants.appId;
@@ -133,7 +131,6 @@ public class PayController {
             String return_code = (String) map.get("return_code");//返回状态码  
         
             if(return_code=="SUCCESS"||return_code.equals(return_code)){  
-            	System.out.println("微信支付参数 success" + result);
    
         		node.put("signType", "MD5");
                 String prepay_id = (String) map.get("prepay_id");//返回的预付单信息     
@@ -186,7 +183,6 @@ public class PayController {
           
           String jine = PayUtil.changeY2F(money);
           
-          System.out.println("要提先的金额为:" + jine);
           //获取客户端的ip地址  
           String spbill_create_ip = StringUtil.getIpAddr(request); 
           
@@ -227,7 +223,6 @@ public class PayController {
         //sb为微信返回的xml  
         String notityXml = sb.toString();  
         String resXml = "";  
-        System.out.println("接收到的报文：" + notityXml);  
   
         Map map = PayUtil.doXMLParse(notityXml);  
   
@@ -251,9 +246,6 @@ public class PayController {
             resXml = "<xml>" + "<return_code><![CDATA[FAIL]]></return_code>"  
                     + "<return_msg><![CDATA[报文为空]]></return_msg>" + "</xml> ";  
         }  
-        System.out.println(resXml);  
-        System.out.println("微信支付回调数据结束");  
-  
   
         BufferedOutputStream out = new BufferedOutputStream(response.getOutputStream());  
         out.write(resXml.getBytes()); 

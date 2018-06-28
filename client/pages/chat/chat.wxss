@@ -183,8 +183,8 @@
 
 .cf-content {
   background-color: #f2f2f2;
-  padding: 8px 5px;
-  font-size: 12px;
+  padding: 1px 5px;
+  font-size: 16px;
   height: 30px;
   max-height: 40px;
   width: 100%;
@@ -206,6 +206,13 @@
 
 .cf-send.touch-active:active {
   background-color: #5ddfc9;
+}
+
+.emojiBtn{
+  width:40rpx;
+  height: 40rpx;
+  padding-top:10rpx;
+  padding-right:10rpx;
 }
 
 .emoji {

@@ -21,16 +21,16 @@ Page({
     this.id = options.id
     this.callback = options.callback || 'callback'
 
-    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-    connectWebsocket({
-      user_id,
-      success(data) {
-
-      },
-      error() {
-
-      }
-    })
+    // var websocketFlag = wx.getStorageSync('websocketFlag')
+    // if (!websocketFlag) {
+    //   var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+    //   connectWebsocket({
+    //     user_id,
+    //     success(data) { },
+    //     error() {
+    //     }
+    //   })
+    // }
     this.loadData()
   },
 
@@ -41,7 +41,7 @@ Page({
   },
 
   onReady(){
-   
+
   },
   movetoPosition: function(){
     this.mapCtx.moveToLocation();
@@ -74,7 +74,7 @@ Page({
             icon: 'success',
             duration: 2000,
           })
-          that.loadData()  
+          that.loadData()
         }
         else if (tmp.msg == "行程完成"){
           wx.showToast({
@@ -82,12 +82,12 @@ Page({
             icon: 'success',
             duration: 2000,
           })
-          that.loadData() 
+          that.loadData()
         }
       }
     })
   },
- 
+
   loadData(){
     var that = this
     var order_id = this.id
@@ -143,17 +143,17 @@ Page({
     {
       this.setData({
         scale: --this.data.scale
-      }) 
+      })
     }
-    
-  }, 
+
+  },
 
   onScalePlus(e) {
     if (this.data.scale < 18)
     {
       this.setData({
         scale: ++this.data.scale
-      }) 
+      })
     }
   },
 
@@ -164,7 +164,7 @@ Page({
   bindregionchange: (e) => {
 
   },
-  //点击merkers  
+  //点击merkers
   bindmarkertap(e) {
     // console.log(e.markerId)
     // wx.showActionSheet({
@@ -176,12 +176,12 @@ Page({
     //     console.log(res.errMsg)
     //   }
     // })
-  }, 
+  },
 
   onPhoneTap(e) {
     makePhoneCall(this.data.driver.phone)
   },
-  
+
   onMsgTap(e) {
     var { driver} = this.data
 
@@ -202,7 +202,7 @@ Page({
       alert("订单已被接超过3min，不能取消")
       return
     }
-  
+
     confirm({
       content: `是否取消订单`,
       confirmText: '取消订单',
@@ -230,8 +230,8 @@ Page({
 
   toEvaluation(){
 
-    var callback = this.callback 
-    
+    var callback = this.callback
+
     wx.navigateTo({
       url: "/pages/evaluation/evaluationP?callback=" + callback + "&&id=" + this.id,
     })
@@ -246,9 +246,9 @@ Page({
         })
       }
       })
-     
+
   },
 
-  
-  
+
+
 })

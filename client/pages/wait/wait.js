@@ -10,8 +10,8 @@ import {
 const app = getApp()
 Page({
   data: {
-  progress_txt: '已等待', 
-  count:0, 
+  progress_txt: '已等待',
+  count:0,
   waitTimer: null,
   time: '00:00',
   websocketFlag:false,
@@ -24,16 +24,17 @@ Page({
       address: start,
     })
 
-    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-    connectWebsocket({
-      user_id,
-      success(data) {
+    // var websocketFlag = wx.getStorageSync('websocketFlag')
+    // if (!websocketFlag) {
+    //   var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+    //   connectWebsocket({
+    //     user_id,
+    //     success(data) { },
+    //     error() {
+    //     }
+    //   })
+    // }
 
-      },
-      error() {
-
-      }
-    })  
     this.initConnectWebSocket()
   },
 
@@ -110,7 +111,7 @@ Page({
     var  randomTime = Math.floor(20*Math.random()) ;
     //1s为周期循环调用处理查看是否有人接单
     this.countTimer = setInterval(() => {
-      
+
         this.setData({
               time: this.parseTime(timer.getMinutes())+":"+this.parseTime(timer.getSeconds()),
         });
@@ -119,7 +120,7 @@ Page({
         curr++;
         this.drawProgress(this.data.count / (60/2))
         this.data.count++;
-        
+
       }, 1000)
   },
   drawProgressbg: function(){
@@ -132,9 +133,9 @@ Page({
    ctx.stroke();
    ctx.draw();
   },
-  
-  drawProgress: function (step){ 
-    var context = wx.createCanvasContext('canvasProgress'); 
+
+  drawProgress: function (step){
+    var context = wx.createCanvasContext('canvasProgress');
     context.setLineWidth(4);
     context.setStrokeStyle("#fbcb02");
     context.setLineCap('round')
@@ -147,7 +148,7 @@ Page({
   toCancel(){
     var order_id = this.orderId
     var that = this
-    
+
     confirm({
       content: `是否取消订单`,
       confirmText: '取消订单',
@@ -163,13 +164,13 @@ Page({
         })
       }
     })
-   
+
   },
   backIndex(){
     wx.switchTab({
       url:  "/pages/index/index",
     })
-  } 
- 
+  }
+
 
 })

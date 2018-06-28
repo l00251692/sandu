@@ -12,6 +12,7 @@ var initData = {
 Page({
   data: {
     isSpeech: false,
+    isShow: false,
     scrollHeight: 0,
     toView: '',
     windowHeight: 0,
@@ -55,18 +56,13 @@ Page({
           scrollHeight: (res.windowHeight - 50) * 750 / res.screenWidth
         })
 
-        var websocketFlag = wx.getStorageSync('websocketFlag')
         var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-
         connectWebsocket({
           user_id,
-          success(data) {
-            
-          },
-          error(){
-
-          }
+          success(data) { },
+          error() { }
         })
+
         that.initData()
         that.loadMsg()
         that.setMsgRead()
@@ -74,11 +70,11 @@ Page({
     })
   },
 
-  onShow(){
+  onShow() {
     this.initConnectWebSocket()
   },
 
-  onUnload(){
+  onUnload() {
     var that = this
     this.setMsgRead()
     getPrevPage()[that.callback]()
@@ -128,11 +124,11 @@ Page({
 
     wx.onSocketMessage(function (res) {
 
-      var  tmp = JSON.parse(res.data)
+      var tmp = JSON.parse(res.data)
       var { user_id } = getApp().globalData.loginInfo.userInfo
 
       if (tmp.type == "userMsg" && tmp.toId == user_id) {
-    
+
         var { messages } = that.data
         var msgTmp = { id: tmp.id, time: tmp.time, img: tmp.fromHeadUrl, text: tmp.msg }
         messages.push(msgTmp)
@@ -191,20 +187,27 @@ Page({
           })
         },
         error(data) {
-
+          that.setData({
+            loading:false
+          })
         }
+      })
+    }
+    else{
+      that.setData({
+        loading: false
       })
     }
 
 
   },
 
-  setMsgRead(cb){
+  setMsgRead(cb) {
     var concat_id = this.fromid
 
     setMsgRead({
       concat_id,
-      success(data){
+      success(data) {
         //
       }
     })
@@ -218,17 +221,16 @@ Page({
   },
   //点击表情显示隐藏表情盒子
   emojiShowHide: function () {
-    if(!this.data.isShow)
-    {
+    if (!this.data.isShow) {
       //设置消息scroll-view高度检出评论高度50再减去表情列表的view的高度200
       this.setData({
         isShow: !this.data.isShow,
         isLoad: false,
         cfBg: !this.data.false,
-        scrollHeight: (this.data.windowHeight -200 - 50) * this.data.pxToRpx
+        scrollHeight: (this.data.windowHeight - 200 - 50) * this.data.pxToRpx
       })
     }
-    else{
+    else {
       this.setData({
         isShow: !this.data.isShow,
         isLoad: false,
@@ -239,11 +241,12 @@ Page({
   },
   //表情选择
   emojiChoose: function (e) {
+    console.log("emojiChoose")
     //当前输入内容和表情合并
     this.setData({
       msg: this.data.msg + e.currentTarget.dataset.emoji,
     })
-    
+
   },
   //点击emoji背景遮罩隐藏emoji盒子
   cemojiCfBg: function () {
@@ -263,7 +266,7 @@ Page({
 
   onShareAppMessage: function () {
     return {
-      title: '伙伴小Q',
+      title: '2333一起打伞',
       path: '/pages/index/index'
     }
   },
@@ -272,43 +275,32 @@ Page({
     var that = this
     var concatId = this.fromid
     var { socketMsgQueue, messages } = this.data
-    var websocketFlag = wx.getStorageSync('websocketFlag')
+
     var { user_id, avatarUrl } = getApp().globalData.loginInfo.userInfo
     var time = Date.parse(new Date())
 
-    if(this.data.msg == null || this.data.msg.length == 0)
-    {
-      wx.showToast({
-        title: '发送消息为空',
-      })
+    if (this.data.msg == null || this.data.msg.length == 0) {
       return
     }
 
     var id = 'id_' + time / 1000;
-    var msgTmp = { id: id, time: time, me: user_id, img: avatarUrl, text: that.data.msg, to: concatId}
+    var msgTmp = { id: id, time: time, me: user_id, img: avatarUrl, text: that.data.msg, to: concatId }
 
     messages.push(msgTmp)
 
-    if (websocketFlag) {
-      wx.sendSocketMessage({
-        data: JSON.stringify(msgTmp),
-        success(res){
-          console.log("send ok," + JSON.stringify(res))
-        },
-        fail(res){
-          console.log("send fail," + JSON.stringify(res))
-        }
-      })
-    } else {
-      socketMsgQueue.push(msg)
-    }
+    wx.sendSocketMessage({
+      data: JSON.stringify(msgTmp),
+      success(res) {
+      },
+      fail(res) {
+        socketMsgQueue.push(msgTmp)
+      }
+    })
 
     that.setData({
       msg: "",//清空文本域值
-      isShow: false,
-      cfBg: false,
-      messages: messages,
-      scrollHeight: (this.data.windowHeight - 50) * this.data.pxToRpx
+      messages: messages
+      //scrollHeight: (this.data.windowHeight - 50) * this.data.pxToRpx
     })
 
     that.setData({

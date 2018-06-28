@@ -86,7 +86,6 @@ public class OrderControler {
 		try {
 			Map<String, Object> paramMap = new HashMap<String, Object>();
 			
-			System.out.println("addOrderWx: toaddr=" + to_add);
 			Date createTime =  new Date();
 			paramMap.put("createUser",user_id);
 			paramMap.put("cityName",city_name);
@@ -133,7 +132,6 @@ public class OrderControler {
 			String orderId = sdf.format(createTime) + result;
 			
 			paramMap.put("orderId",orderId);
-			System.out.println("[ADD ORDER]: orderId=" + orderId);
 			
 			int flag = orderService.addOrder(paramMap);
 			if(flag != 0 && flag != -1)
@@ -263,7 +261,7 @@ public class OrderControler {
 			}
 				
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 		
 		result.put("State", "Fail");
@@ -293,8 +291,6 @@ public class OrderControler {
 			paramMap.put("districtName", district_name);
 	
 			List<Order> ordersList =orderService.getNearByOrders(paramMap);
-			
-			System.out.println("getDistanceOrders size:" + ordersList.size());
 			
 			//更新我的地址信息
 			Map<String, Object> paramMap2 = new HashMap<String, Object>();
@@ -697,7 +693,7 @@ public class OrderControler {
 			}
 				
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 
 		result.put("State", "Fail");
@@ -768,7 +764,6 @@ public class OrderControler {
 					result.put("State", "Fail");
 					result.put("info", "结束订单失败[司机信息错误]");	
 				}
-				System.out.println("向用户发送消息开始");
 				
 				//向消费用户发送模板消息                                    1
 				String url = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send";
@@ -813,10 +808,8 @@ public class OrderControler {
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				};
-				System.out.println(params);
+
 				String sr = HttpRequest.sendPost(url,params);
-				
-				System.out.println("向用户发送消息" + sr);
 						
 				return result;
 			} 
@@ -828,7 +821,7 @@ public class OrderControler {
 			}
 				
 		} catch (Exception e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 
 		result.put("State", "Fail");

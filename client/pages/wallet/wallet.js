@@ -1,10 +1,10 @@
 import { ORDER_STATES } from './../order/constant'
 import {
-  getDriverOrders
+  getDriverOrders, getBalanceToWx
 } from '../../utils/api'
 
 import {
-  datetimeFormat,alert
+  datetimeFormat, alert, confirm
 } from '../../utils/util'
 
 
@@ -96,13 +96,47 @@ Page({
     },
 
     onBalanceBack(){
-      if (this.ballance > 0){
-        alert("受不可描述原因限制，提现暂未开放，请联系管理员提现")
-      }
-      else{
-        alert("余额大于0才可以提现")
-      }
-    }
+
+      confirm({
+        content: '受微信限制暂不支持提现到零钱，请联系客服留言提现',
+        cancelText: '取消',
+        confirmText: '确定',
+        ok() {
+          wx.showToast({
+            title: '谢谢您的理解',
+          })
+        }
+      })
+
+    //   var balance = this.ballance
+
+    //   console.log("tixianjie:" + balance)
+
+    //   if (parseFloat(balance) > 0.0){
+    //     confirm({
+    //       content: '将提现所有余额到微信零钱',
+    //       cancelText: '取消',
+    //       confirmText: '确定',
+    //       ok() {
+    //         getBalanceToWx({
+    //           money: balance,
+    //           success(data){
+    //             wx.showToast({
+    //               title: '提现申请成功',
+    //             })
+    //           },
+    //           error(data){}
+    //         })
+    //         wx.showToast({
+    //           title: '提现申请失败，请联系客服',
+    //         })
+    //       }
+    //     })
+    //   }
+    //   else{
+    //     alert("余额大于0才可以提现")
+    //   }
+     }
 
 });
 

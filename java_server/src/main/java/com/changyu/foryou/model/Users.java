@@ -34,7 +34,55 @@ public class Users {
     
     private Float ballance;
     
-    public Users(String phone2,  String nickname2) {
+    private String lastCity;
+    
+    private String lastDistrict;
+    
+    private String lastLongitude;
+    
+    private String lastLatitude;
+    
+    public String getLastCity() {
+		return lastCity;
+	}
+
+
+	public void setLastCity(String lastCity) {
+		this.lastCity = lastCity;
+	}
+
+
+	public String getLastDistrict() {
+		return lastDistrict;
+	}
+
+
+	public void setLastDistrict(String lastDistrict) {
+		this.lastDistrict = lastDistrict;
+	}
+
+
+	public String getLastLongitude() {
+		return lastLongitude;
+	}
+
+
+	public void setLastLongitude(String lastLongitude) {
+		this.lastLongitude = lastLongitude;
+	}
+
+
+	public String getLastLatitude() {
+		return lastLatitude;
+	}
+
+
+	public void setLastLatitude(String lastLatitude) {
+		this.lastLatitude = lastLatitude;
+	}
+
+
+	public Users(String phone2,  String nickname2) {
 		phone=phone2;
 		nickname=nickname2;
 		type=2;

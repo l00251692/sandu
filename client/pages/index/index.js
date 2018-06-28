@@ -71,7 +71,7 @@ Page({
     })
   },
 
-  init() {
+  init(cb) {
     var that = this
 
     wx.getSetting({
@@ -92,6 +92,7 @@ Page({
                       orderingStatus: data.orderStatus
                     });
                     //that.scrolltxt();// 第一个字消失后立即从右边出现
+                    cb && cb()
                   }
                 }
               })
@@ -294,6 +295,19 @@ Page({
     wx.navigateTo({
       url: "/pages/order/orderPassenger?callback=callback&&id=" + orderingId,
     })
+  },
+
+
+  onPullDownRefresh: function () {
+    if (getApp().globalData.loginInfo.is_login) {
+      wx.showNavigationBarLoading()
+      this.init(() => {
+        wx.hideNavigationBarLoading()
+        wx.stopPullDownRefresh()
+      })
+    } else {
+      wx.stopPullDownRefresh()
+    }
   },
 
   callback(){

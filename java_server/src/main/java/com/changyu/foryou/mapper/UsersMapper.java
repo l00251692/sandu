@@ -19,8 +19,12 @@ public interface UsersMapper {
     
     int updateUserBallance(Map<String, Object> paramMap);
     
+    int updateUserLocation(Map<String, Object> paramMap);
+    
     int updateUserSanReg(Users record);
 
 	Users checkLogin(String user_id);
+	
+	List<Users> getDistrictUsers(Map<String, Object> paramMap);
 
 }

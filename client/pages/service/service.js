@@ -141,7 +141,6 @@ Page({
     {
       getApp().getCurrentAddress(address => {
         var { title, location, city, district } = address
-
         getRegSanInfo({
           success(data){
             that.setData({

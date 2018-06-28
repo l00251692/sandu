@@ -10,7 +10,7 @@ var initData = {
   modalHidden: true,
   loading: false,
   toast1Hidden: true,
-  msgCount:0
+  unRead:0
 }
 
 Page({
@@ -88,6 +88,12 @@ Page({
           that.setData({
             list: list
           })
+
+          if (wx.showTabBarRedDot){
+            wx.showTabBarRedDot({
+              index: 1,
+            })
+          }
         }
       })
     },
@@ -114,10 +120,25 @@ Page({
         page,
         success(data){
           var { list } = that.data
-          var { list2, count, page } = data
+          var { list2, count, page, unReadCount } = data
+
+          if (wx.showTabBarRedDot) {
+
+            if (unReadCount == 0) {
+              wx.hideTabBarRedDot({
+                index: 1,
+              })
+            }
+            else {
+              wx.showTabBarRedDot({
+                index: 1,
+              })
+            }  
+          }
 
           that.setData({
             list: list ? list.concat(list2) : list2,
+            unRead: unReadCount,
             loading:false,
             hasMore: count == 10,
             page: page + 1

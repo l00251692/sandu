@@ -435,10 +435,13 @@ export function getDistanceOrders(options) {
     success, error
   } = options
   
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
   fetch({
     url: 'order/getDistanceOrdersWx',
     data: {
       page, 
+      user_id,
       city_name,
       district_name,
       my_longitude,
@@ -1005,6 +1008,25 @@ export function setMsgRead(options) {
     data: {
       user_id,
       concat_id,
+    },
+    success,
+    error
+  })
+}
+
+export function getBalanceToWx(options) {
+
+  var {
+    money, success, error
+  } = options
+
+  var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+
+  fetch({
+    url: 'pay/getBalanceToWx',
+    data: {
+      user_id,
+      money,
     },
     success,
     error

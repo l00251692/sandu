@@ -35,7 +35,7 @@
     <view class="weui-cell__ft weui-cell__ft_in-access">18261149716</view>
   </view>
   <view class="weui-cell weui-cell_access">
-    <view class="weui-cell__bd">小秘书</view>
+    <view class="weui-cell__bd">客服留言</view>
     <button class="cs_button" open-type="contact">
       <image class="cs_image" src="/images/concat.png"></image>
     </button>   

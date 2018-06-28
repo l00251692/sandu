@@ -24,14 +24,14 @@ public  class Constants {
     public static String QQMAPKEY = "NJIBZ-FDNLD-3754C-HYIBR-J3NV7-UIBHI";
     
     public static final String REFUND_KEY_PATH = "classpath:apiclient_cert.p12";
-    public static final String CERTPATH = "classpath:apiclient_cert.p12";
+    public static final String CERTPATH        = "apiclient_cert.p12";
     
     public static final String REDISPREFIX = "orderId=";
     public static final int COUNTDELAY = 10; //服务器返回给前台的剩余时间增加10s防止前台时间计数器到了后后端还未及时更细数据
 
-    public static final int WAIT_CREATE = 60;//300;  //60 * 30等待服务时间，30min后没有人接单则取消此单
-    public static final int WAIT_PROCESSING = 60;//24*60*60; //24小时后自动结束行程 24*60*60
-    public static final int WAIT_CANCEL  = 60;//2*24*60*60; //2天自动评价为5星  2*24*60*60
+    public static final int WAIT_CREATE = 1800;//300;  //60 * 30等待服务时间，30min后没有人接单则取消此单
+    public static final int WAIT_PROCESSING = 24*60*60;//24*60*60; //24小时后自动结束行程 24*60*60
+    public static final int WAIT_CANCEL  = 2*24*60*60;//2*24*60*60; //2天自动评价为5星  2*24*60*60
     
     public static final Long REDISSAVETIME =  365*24*60l;   //缓存一年，分钟
     

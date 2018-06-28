@@ -5,8 +5,8 @@
     </view>
     <view class="bd">
     <view class="bd_titl">
-        <text class="titl-maxdesc">正在为您寻找伞主，请耐心等待</text>
-        <text class="title-mindesc">一把伞一个朋友</text>
+        <text class="titl-maxdesc">订单需求已发送，请耐心等待</text>
+        <text class="title-mindesc">订单超过30min没有人接则会自动取消</text>
     </view>
      <view class='progress_box'>
         <canvas class="progress_bg"   canvas-id="canvasProgressbg">  </canvas>

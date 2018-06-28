@@ -54,6 +54,8 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 
 		Map<String,Object> result = new HashMap<String, Object>();
 		
+		int unReadCount = 0;
+		
 		JSONObject data = new JSONObject();
 		
 		JSONArray array = new JSONArray();
@@ -90,12 +92,15 @@ private static final Logger LOGGER = Logger.getLogger(ChatController.class);
 			node.put("count", num);
 			node.put("id", concat.getConcatId());//设置消息fromid
 			
+			unReadCount = unReadCount + num;
+			
 			array.add(node);
 		}
 		
 		data.put("list2", array);
 		data.put("page", page);
 		data.put("count", concatList.size());
+		data.put("unReadCount", unReadCount);
 	
 
       	result.put("State", "Success");

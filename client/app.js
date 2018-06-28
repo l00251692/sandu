@@ -13,10 +13,32 @@ import distance from './utils/distance'
 App({
   onLaunch: function () {
     //调用API从本地缓存中获取数据
+    this.initSocket()
   },
   onHide: function () {
     //调用API从本地缓存中获取数据
   },
+  
+  initSocket(){
+    wx.onSocketMessage(function (res) {
+      console.log('收到消息onSocketMessage！')
+
+      if (this.globalData.loginInfo.is_login)
+      {
+        var tmp = JSON.parse(res.data)
+        var { user_id } = getApp().globalData.loginInfo.userInfo
+
+        if (tmp.type == "userMsg" && tmp.toId == user_id) {
+          if (wx.showTabBarRedDot) {
+            wx.showTabBarRedDot({
+              index: 1,
+            })
+          }
+        }
+      }
+    })
+  }
+  ,
   getLoginInfo: function (cb) {
     var that = this
     if (this.globalData.loginInfo.is_login) 

@@ -151,7 +151,11 @@ public class OrderControler {
 				
 				//找到同一区的用户，发送给附近的用户
 				
-				webSocketHandler.sendMessagesToUsers(toMsg);
+				List <Users> list = userService.getNearByUsers(city_name,district_name,from_add_longitude,from_add_latitude);
+				for(Users user : list)
+				{
+					webSocketHandler.sendMessageToUser(user.getUserId(), toMsg);
+				}
 				
 		        ThreadPoolUtil.execute(new Runnable(){  
 		            public void run(){ 
@@ -226,7 +230,13 @@ public class OrderControler {
 				to.put("passengerId", user_id);
 
 				TextMessage toMsg = new TextMessage(to.toString());
-				webSocketHandler.sendMessagesToUsers(toMsg);
+				
+				List <Users> list = userService.getNearByUsers(order.getCityName(),order.getDistrictName(),
+																order.getFromAddrLongitude(),order.getFromAddrLatitude());
+				for(Users user : list)
+				{
+					webSocketHandler.sendMessageToUser(user.getUserId(), toMsg);
+				}
 				
 				
 				//订单已经取消，从redis和延迟队列删除
@@ -270,7 +280,7 @@ public class OrderControler {
 	 * @return
 	 */
 	@RequestMapping("/getDistanceOrdersWx")
-	public @ResponseBody Map<String, Object> getDistanceOrdersWx(@RequestParam String city_name,@RequestParam String district_name,
+	public @ResponseBody Map<String, Object> getDistanceOrdersWx(@RequestParam String city_name,@RequestParam String user_id, @RequestParam String district_name,
 			@RequestParam Integer page,@RequestParam String my_longitude,@RequestParam String my_latitude) {
 		Map<String, Object> map = new HashMap<String, Object>();
 
@@ -286,13 +296,24 @@ public class OrderControler {
 			
 			System.out.println("getDistanceOrders size:" + ordersList.size());
 			
+			//更新我的地址信息
+			Map<String, Object> paramMap2 = new HashMap<String, Object>();
+			
+			paramMap2.put("userId", user_id);
+			paramMap2.put("lastCity", city_name);//默认一次5条
+			paramMap2.put("lastDistrict", district_name);
+			paramMap2.put("lastLongitude", my_longitude);
+			paramMap2.put("lastLatitude", my_latitude);
+			
+			int flag = userService.updateUserLocation(paramMap2);
+			
 			
 			JSONArray orderArray = new JSONArray();
 			
 			for(Order order:ordersList)
 			{
 				JSONObject obj = new JSONObject();
-				if(ToolUtil.isNearByOrder(my_longitude, my_latitude, order.getFromAddrLongitude(), order.getFromAddrLatitude()))
+				if(ToolUtil.isNearBy(my_longitude, my_latitude, order.getFromAddrLongitude(), order.getFromAddrLatitude()))
 				{
 					Users user = userService.selectByUserId(order.getCreateUser());
 					obj.put("create_time", order.getCreateTime());
@@ -583,10 +604,19 @@ public class OrderControler {
 			
 			to.put("time", TimeUtil.DateformatTime(date));
 			TextMessage toMsg = new TextMessage(to.toString());
-	
-			webSocketHandler.sendMessagesToUsers(toMsg);
 			
-			System.out.println("删除之前的delay队列");
+			//通知订单创建人
+			webSocketHandler.sendMessageToUser(order.getCreateUser(), toMsg);
+			
+			//通知附近接单人此单已被接
+	
+			List <Users> list = userService.getNearByUsers(order.getCityName(),order.getDistrictName(),
+					order.getFromAddrLongitude(),order.getFromAddrLatitude());
+			for(Users user : list)
+			{
+				webSocketHandler.sendMessageToUser(user.getUserId(), toMsg);
+			}
+			
 			//订单已经被接手，下一个状态就是结束行程，如果用户未确认则时间到后自动结束行程
 	        ThreadPoolUtil.execute(new Runnable(){  
 	            public void run(){  
@@ -692,8 +722,7 @@ public class OrderControler {
 				return result;
 			}
 
-			paramMap.put("orderStatus",Constants.orderStatusDone);
-			
+			paramMap.put("orderStatus",Constants.orderStatusDone);	
 			JSONArray recordes = JSON.parseArray(order.getRecords());
 			JSONObject record = new JSONObject();
 			record.put("status",Constants.orderStatusDone);
@@ -711,7 +740,7 @@ public class OrderControler {
 				orderService.updateOrderStarByPassenger(paramMap);
 				
 				//更新司机账户余额信息
-				Users user = userService.selectByUserId(order.getCreateUser());
+				Users user = userService.selectByUserId(order.getReceiveUser());
 				
 				if(user != null )
 				{

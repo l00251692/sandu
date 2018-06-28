@@ -3,9 +3,13 @@ package com.changyu.foryou.controller;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import javax.servlet.ServletInputStream;
@@ -15,12 +19,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.UUIDSerializer;
+import com.changyu.foryou.model.Users;
 import com.changyu.foryou.service.DelayService;
 import com.changyu.foryou.service.OrderService;
 import com.changyu.foryou.service.PayService;
@@ -83,8 +90,8 @@ public class PayController {
             String mchKey = Constants.mchKey; //微信支付商户密钥
             String notifyUrl = Constants.notifyUrl; 
             
-            //String totalFee = PayUtil.changeY2F(pay_money);
-            String totalFee = "1";
+            String totalFee = PayUtil.changeY2F(pay_money);
+            //String totalFee = "1";
             
             packageParams.put("appid", appId);  
             packageParams.put("mch_id", mchId);//微信支付商家号
@@ -159,13 +166,40 @@ public class PayController {
      * @return
 	 * @throws Exception 
      */
-	@RequestMapping("/ballanceBackWx")
-    public @ResponseBody Map<String, Object> ballanceBackWx(@RequestParam String user_id,@RequestParam String money) throws Exception {
+	@RequestMapping("/getBalanceToWx")
+    public @ResponseBody Map<String, Object> getBalanceToWx(@RequestParam String user_id,@RequestParam String money, HttpServletRequest request) throws Exception {
           Map<String,Object> result = new HashMap<String,Object>();
           
-          String orderId = UUID.randomUUID().toString();
+          //String orderId = UUID.randomUUID().toString();
           
-          boolean flag = PayUtil.enterprisePayment(user_id, orderId,"xxxdefined","100","提现","192.145.23.2");
+          SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+          Random random = new Random();  
+          String tmp="";  
+          for (int i=0;i<4;i++)  
+          {  
+        	  tmp+=random.nextInt(10);  
+          }  
+          String orderId = sdf.format(new Date()) + tmp;
+          
+          //商品名称  
+          String desc = "余额提现";  
+          
+          String jine = PayUtil.changeY2F(money);
+          
+          System.out.println("要提先的金额为:" + jine);
+          //获取客户端的ip地址  
+          String spbill_create_ip = StringUtil.getIpAddr(request); 
+          
+          Users user = userService.selectByUserId(user_id);
+          
+          if(user == null)
+          {
+        	  result.put("State", "Fail");
+              result.put("info", "提现失败，未找到用户信息");
+              return result;   
+          }
+             
+          boolean flag = PayUtil.enterprisePayment(user_id, orderId,user.getNickname(),jine,desc,spbill_create_ip);
           
           if(flag)
           {

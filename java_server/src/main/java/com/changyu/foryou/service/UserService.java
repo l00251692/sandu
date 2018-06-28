@@ -17,8 +17,12 @@ public interface UserService {
 	int updateUserSanInfo(Users users);
 	
 	int updateUserBallance(Map<String, Object> paramMap);
+	
+	int updateUserLocation(Map<String, Object> paramMap);
 
 	Users checkLogin(String user_id);
+	
+	List<Users> getNearByUsers(String cityName,String districtName,String longitude,String latitude);
 	
 
 }

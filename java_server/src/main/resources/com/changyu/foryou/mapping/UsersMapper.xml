@@ -19,6 +19,10 @@
 		<result column="passenger_star" property="passengerStar" jdbcType="REAL" />
 		<result column="driver_star" property="driverStar" jdbcType="REAL" />
 		<result column="ballance" property="ballance" jdbcType="REAL" />
+		<result column="last_city" property="lastCity" jdbcType="VARCHAR" />
+		<result column="last_district" property="lastDistrict" jdbcType="VARCHAR" />
+		<result column="last_longtitude" property="lastLongitude" jdbcType="VARCHAR" />
+		<result column="last_latitude" property="lastLatitude" jdbcType="VARCHAR" />
 	</resultMap>
 	<sql id="Base_Column_List">
 		user_id,phone, type, nickname, img_url,
@@ -157,6 +161,34 @@
 		</set>
 		where user_id = #{userId,jdbcType=VARCHAR}
 	</update>
+	
+	
+	<update id="updateUserLocation" >
+		update users
+		<set>
+			<if test="lastCity != null">
+				last_city = #{lastCity,jdbcType=VARCHAR},
+			</if>
+			<if test="lastDistrict !=null">
+				last_district=#{lastDistrict,jdbcType=VARCHAR},
+			</if>
+			<if test="lastLongitude !=null">
+				last_longitude=#{lastLongitude,jdbcType=VARCHAR},
+			</if>
+			<if test="lastLatitude !=null">
+				last_latitude=#{lastLatitude,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where user_id = #{userId,jdbcType=VARCHAR}
+	</update>
+	
+	<select id="getDistrictUsers" resultMap="BaseResultMap" flushCache="true" useCache="false">
+		select
+		*
+		from users
+		where last_city = #{lastCity,jdbcType=VARCHAR} 
+		and last_district = #{lastDistrict,jdbcType=VARCHAR}
+	</select>
 	
 	
 </mapper>

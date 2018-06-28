@@ -5,7 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 
 public class ToolUtil {
 	
-	public static Boolean isNearByOrder(String from_longitude,String from_latitude, String to_longitude,String to_latitude){
+	public static Boolean isNearBy(String from_longitude,String from_latitude, String to_longitude,String to_latitude){
 		
 		////////////////1、向微信服务器 使用登录凭证 code 获取 session_key 和 openid //////////////// 
 		//请求参数 

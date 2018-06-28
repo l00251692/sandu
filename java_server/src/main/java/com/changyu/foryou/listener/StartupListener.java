@@ -20,11 +20,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.changyu.foryou.controller.WebSocketPushHandler;
 import com.changyu.foryou.model.DSHOrder;
 import com.changyu.foryou.model.Order;
+import com.changyu.foryou.model.Users;
 import com.changyu.foryou.service.DelayService;
 import com.changyu.foryou.service.OrderService;
 import com.changyu.foryou.service.PayService;
 import com.changyu.foryou.service.DelayService.OnDelayedListener;
 import com.changyu.foryou.service.RedisService;
+import com.changyu.foryou.service.UserService;
 import com.changyu.foryou.tools.Constants;
 import com.changyu.foryou.tools.ThreadPoolUtil;
 
@@ -40,6 +42,8 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
     RedisService redisService;
     @Autowired
     OrderService orderService;   
+    @Autowired
+    UserService userService; 
     
     @Resource  
     private WebSocketPushHandler webSocketHandler;  
@@ -90,9 +94,16 @@ public class StartupListener implements ApplicationListener<ContextRefreshedEven
 								to.put("passengerId", order.getCreateUser());
 
 								TextMessage toMsg = new TextMessage(to.toString());
-								webSocketHandler.sendMessagesToUsers(toMsg);
+								
+								List <Users> list = userService.getNearByUsers(order.getCityName(),order.getDistrictName(),
+										order.getFromAddrLongitude(),order.getFromAddrLatitude());
+								for(Users user : list)
+								{
+									webSocketHandler.sendMessageToUser(user.getUserId(), toMsg);
+								}
 							}
 						} 
+						
 						redisService.delete(Constants.REDISPREFIX + orderId);  
                         log.info("订单自动处理，删除redis："+orderId);
                         return;

@@ -22,7 +22,7 @@
         <view class="cost">
             <view class="cost-number">本次订单预计收入：<text style="font-size:36rpx; color:red">0.9 </text>元</view>
              <view class="cost-desc">
-                <text class="obvious">说明：每笔订单将收取0.1元的服务费，用于支付转账手续费和服务器运行费用，感谢您的理解</text>
+                <text class="obvious">说明：平台不以盈利为目的，每笔订单收取0.1元的服务费，用于支付转账手续费和服务器运行费用，感谢您的理解</text>
             </view> 
         </view>
         <view class="evaluation">

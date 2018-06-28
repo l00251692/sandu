@@ -42,7 +42,7 @@ import org.jdom.Document;
 import org.jdom.Element;  
 import org.jdom.JDOMException;  
 import org.jdom.input.SAXBuilder;
-
+import org.springframework.util.ClassUtils;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -437,8 +437,9 @@ public class PayUtil {
                     + "</xml>"; 
             
             // ZHENGSHU
-            CloseableHttpClient httpclient = certificateValidation(Constants.CERTPATH,
-            		Constants.mchId);
+            
+            String zspath = ClassUtils.getDefaultClassLoader().getResource("").getPath() + Constants.CERTPATH;
+            CloseableHttpClient httpclient = certificateValidation(zspath,Constants.mchId);
 
             HttpPost httppost = new HttpPost(
                     "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers");
@@ -466,8 +467,9 @@ public class PayUtil {
             Map map = PayUtil.doXMLParse(strhuxml.toString()); 
             
             String return_code = (String) map.get("return_code");//返回状态码  
-            //TODO:微信商户申请下来后需要再调试
-            if(return_code=="SUCCESS"||return_code.equals(return_code)){ 
+
+            if(return_code=="SUCCESS"){ 
+            	System.out.println("提现申请成功");
             	getSuccess = true;
             }
             else

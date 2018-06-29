@@ -414,18 +414,15 @@ export function requestPayment(options) {
     'paySign': data.paySign,
     complete(res) {
       if (res.errMsg == 'requestPayment:ok') {
-        alert('支付成功', function () {
           success && success()
-          complete && complete()
-        })
+          complete && complete() 
       } else if (res.errMsg == 'requestPayment:fail cancel') {
-        alert('用户取消支付', function () {
+        alert('取消支付', function () {
           error && error()
           complete && complete()
         })
       } else {
         alert('支付失败', function () { 
-          console.log("支付失败" + JSON.stringify(res))
           error && error()
           complete && complete()
         })

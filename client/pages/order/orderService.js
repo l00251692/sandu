@@ -1,7 +1,7 @@
 var QQMapWX = require('../../utils/qqmap-wx-jssdk.min.js');
 var qqmapsdk;
 qqmapsdk = new QQMapWX({
-  key:'FPOBZ-UT2K2-ZFYUC-CX67E-IOOYS-7XFQ6'
+  key: 'FPOBZ-UT2K2-ZFYUC-CX67E-IOOYS-7XFQ6'
 });
 import {
   getOrderInfo, setRecvOrder
@@ -13,37 +13,34 @@ const app = getApp();
 Page({
   data: {
     scale: 14,
-    hiddenLoading:false
+    hiddenLoading: false
   },
   onLoad: function (options) {
     this.id = options.id
     this.callback = options.callback || 'callback'
-
-    // var websocketFlag = wx.getStorageSync('websocketFlag')
-    // if (!websocketFlag) {
-    //   var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-
-    //   connectWebsocket({
-    //     user_id,
-    //     success(data) { },
-    //     error() {
-    //     }
-    //   })
-    // }
-
     this.loadData()
   },
 
-  onShow(){
+  onShow() {
     this.mapCtx = wx.createMapContext("didiMap");
     this.movetoPosition();
+
+    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+    connectWebsocket({
+      user_id,
+      success(data) { },
+      error() {
+      }
+    })
+    
     this.initConnectWebSocket()
   },
 
-  onReady(){
+  onReady() {
 
   },
-  movetoPosition: function(){
+
+  movetoPosition: function () {
     this.mapCtx.moveToLocation();
   },
 
@@ -72,7 +69,7 @@ Page({
           wx.showModal({
             title: '订单被用户取消',
             content: '在行程开始3min内用户可以取消订单',
-            showCancel:false,
+            showCancel: false,
             success: function (res) {
               wx.redirectTo({
                 url: '/pages/service/service?registType=2',
@@ -82,10 +79,17 @@ Page({
           that.loadData()
         }
       }
+      else if (tmp.type == "userMsg" && tmp.toId == user_id) {
+        wx.showToast({
+          title: '您收到新消息',
+          duration: 5000,
+          icon: 'success'
+        })
+      }
     })
   },
 
-  loadData(){
+  loadData() {
     var that = this
     var order_id = this.id
 
@@ -135,9 +139,8 @@ Page({
     })
   },
 
-  onScaleSub(e){
-    if (this.data.scale > 0)
-    {
+  onScaleSub(e) {
+    if (this.data.scale > 0) {
       this.setData({
         scale: --this.data.scale
       })
@@ -146,15 +149,14 @@ Page({
   },
 
   onScalePlus(e) {
-    if (this.data.scale < 18)
-    {
+    if (this.data.scale < 18) {
       this.setData({
         scale: ++this.data.scale
       })
     }
   },
 
-  onRevert(e){
+  onRevert(e) {
     this.mapCtx.moveToLocation();
   },
 
@@ -189,7 +191,7 @@ Page({
     })
   },
 
-  toRecv(){
+  toRecv() {
     var order_id = this.id
     var that = this
 
@@ -219,14 +221,14 @@ Page({
     })
 
   },
-  toApp(){
+  toApp() {
     wx.showToast({
       title: '暂不支持',
       icon: 'success',
       duration: 1000
     })
   },
-  toEvaluation(){
+  toEvaluation() {
     var callback = this.callback
     wx.redirectTo({
       url: "/pages/evaluation/evaluationS?callback=" + callback + "&&id=" + this.id,
@@ -235,13 +237,13 @@ Page({
   onReady: function () {
     wx.getLocation({
       type: "gcj02",
-      success:(res)=>{
+      success: (res) => {
         this.setData({
-          longitude:res.longitude,
+          longitude: res.longitude,
           latitude: res.latitude
         })
       }
-      })
+    })
 
   },
 

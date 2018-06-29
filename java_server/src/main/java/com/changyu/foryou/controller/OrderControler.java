@@ -741,7 +741,7 @@ public class OrderControler {
 				if(user != null )
 				{
 					Map<String, Object> paramMap2 = new HashMap<String, Object>();
-					paramMap2.put("userId",user_id);
+					paramMap2.put("userId",order.getReceiveUser());
 					
 					float balance = user.getBallance() + (pay_money - 0.1f);//每笔订单收取0.1元手续费
 					paramMap2.put("ballance",balance);

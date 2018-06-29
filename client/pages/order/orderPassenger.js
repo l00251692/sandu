@@ -1,7 +1,7 @@
 var QQMapWX = require('../../utils/qqmap-wx-jssdk.min.js');
 var qqmapsdk;
 qqmapsdk = new QQMapWX({
-  key:'FPOBZ-UT2K2-ZFYUC-CX67E-IOOYS-7XFQ6'
+  key: 'FPOBZ-UT2K2-ZFYUC-CX67E-IOOYS-7XFQ6'
 });
 
 
@@ -15,35 +15,34 @@ const app = getApp();
 Page({
   data: {
     scale: 14,
-    hiddenLoading:false
+    hiddenLoading: false
   },
   onLoad: function (options) {
     this.id = options.id
     this.callback = options.callback || 'callback'
-
-    // var websocketFlag = wx.getStorageSync('websocketFlag')
-    // if (!websocketFlag) {
-    //   var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-    //   connectWebsocket({
-    //     user_id,
-    //     success(data) { },
-    //     error() {
-    //     }
-    //   })
-    // }
     this.loadData()
   },
 
-  onShow(){
+  onShow() {
     this.mapCtx = wx.createMapContext("didiMap");
     this.movetoPosition();
+
+    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+    connectWebsocket({
+      user_id,
+      success(data) { },
+      error() {
+      }
+    })
+    
     this.initConnectWebSocket()
   },
 
-  onReady(){
+  onReady() {
 
   },
-  movetoPosition: function(){
+
+  movetoPosition: function () {
     this.mapCtx.moveToLocation();
   },
 
@@ -76,7 +75,7 @@ Page({
           })
           that.loadData()
         }
-        else if (tmp.msg == "行程完成"){
+        else if (tmp.msg == "行程完成") {
           wx.showToast({
             title: '行程已完成，请完成支付',
             icon: 'success',
@@ -85,10 +84,17 @@ Page({
           that.loadData()
         }
       }
+      else if (tmp.type == "userMsg" && tmp.toId == user_id){
+        wx.showToast({
+          title: '您收到新消息',
+          duration:5000,
+          icon: 'success'
+        })
+      }
     })
   },
 
-  loadData(){
+  loadData() {
     var that = this
     var order_id = this.id
 
@@ -138,9 +144,8 @@ Page({
     })
   },
 
-  onScaleSub(e){
-    if (this.data.scale > 0)
-    {
+  onScaleSub(e) {
+    if (this.data.scale > 0) {
       this.setData({
         scale: --this.data.scale
       })
@@ -149,15 +154,14 @@ Page({
   },
 
   onScalePlus(e) {
-    if (this.data.scale < 18)
-    {
+    if (this.data.scale < 18) {
       this.setData({
         scale: ++this.data.scale
       })
     }
   },
 
-  onRevert(e){
+  onRevert(e) {
     this.mapCtx.moveToLocation();
   },
 
@@ -183,22 +187,21 @@ Page({
   },
 
   onMsgTap(e) {
-    var { driver} = this.data
+    var { driver } = this.data
 
     wx.navigateTo({
       url: '../chat/chat?fromid=' + driver.driverId
     })
   },
 
-  toCancel(){
+  toCancel() {
     var order_id = this.id
     var that = this
 
     var rcvTime = this.data.order.rcvTime
     var now = Date.parse(new Date())
 
-    if (rcvTime > 0 && (now - rcvTime > 3 * 60 * 1000))
-    {
+    if (rcvTime > 0 && (now - rcvTime > 3 * 60 * 1000)) {
       alert("订单已被接超过3min，不能取消")
       return
     }
@@ -220,7 +223,7 @@ Page({
     })
   },
 
-  toApp(){
+  toApp() {
     wx.showToast({
       title: '暂不支持',
       icon: 'success',
@@ -228,7 +231,7 @@ Page({
     })
   },
 
-  toEvaluation(){
+  toEvaluation() {
 
     var callback = this.callback
 
@@ -239,13 +242,13 @@ Page({
   onReady: function () {
     wx.getLocation({
       type: "gcj02",
-      success:(res)=>{
+      success: (res) => {
         this.setData({
-          longitude:res.longitude,
+          longitude: res.longitude,
           latitude: res.latitude
         })
       }
-      })
+    })
 
   },
 

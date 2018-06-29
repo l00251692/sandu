@@ -7,7 +7,7 @@ qqmapsdk = new QQMapWX({
 
 import {
   alert,
-  getCurrentAddress, reverseGeocoder,
+  getCurrentAddress, reverseGeocoder, connectWebsocket,
   getPrevPage
 } from '../../utils/util'
 
@@ -48,14 +48,13 @@ Page({
         address_detail: address
       })
     });
+  },
 
+  onShow() { 
     this.initData();
     this.init();
-
   },
 
-  onShow() {
-  },
 
   initData() {
     this.setData({
@@ -73,7 +72,6 @@ Page({
 
   init(cb) {
     var that = this
-
     wx.getSetting({
       success: (res) => {
         if (res.authSetting['scope.userInfo']) {
@@ -95,6 +93,14 @@ Page({
                     cb && cb()
                   }
                 }
+              })
+
+              var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+              console.log("connect socket")
+              connectWebsocket({
+                user_id,
+                success(res) {  },
+                error(res) {  }
               })
             }
           })
@@ -161,7 +167,6 @@ Page({
 
   onChooseDestLocation(e) {
     var that = this
-
     wx.chooseLocation({
       success: function (res) {
         var {

@@ -250,10 +250,10 @@ export function connectWebsocket(options) {
     },
     method: "GET",
     success: function (res) {
-      options.success && options.success()
+      options.success && options.success(res)
     },
     fail: function (res) {
-      options.error && options.error()
+      options.error && options.error(res)
     },
   })
   

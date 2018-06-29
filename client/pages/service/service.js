@@ -37,7 +37,13 @@ Page({
     this.setData({
       registType: this.registType
     })
-
+    this.initData()
+  },
+  onReady: function () {
+    // 页面渲染完成
+  },
+  onShow: function () {
+    // 页面显示
     var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
 
     connectWebsocket({
@@ -46,22 +52,10 @@ Page({
       error() {
       }
     })
-
-    this.initData()
-  },
-  onReady: function () {
-    // 页面渲染完成
-  },
-  onShow: function () {
-    // 页面显示
+    
     this.initConnectWebSocket()
   },
-  onHide: function () {
-    // 页面隐藏
-  },
-  onUnload: function () {
-    // 页面关闭
-  },
+  
   initData(cb) {
     this.setData(initData)
     this.init()
@@ -305,8 +299,8 @@ Page({
     }
   },
   onPullDownRefresh() {
-    console.log("onPullDownRefresh")
-    if (getApp().globalData.loginInfo.is_login) {
+    var registType = this.data.registType
+    if (getApp().globalData.loginInfo.is_login && registType == 2) {
       wx.showNavigationBarLoading()
       this.initData(() => {
         wx.hideNavigationBarLoading()
@@ -316,6 +310,8 @@ Page({
     } else {
       wx.stopPullDownRefresh()
     }
+
+
   },
 
   callback() {

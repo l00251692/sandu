@@ -23,18 +23,13 @@ Page({
     this.setData({
       address: start,
     })
-
-    // var websocketFlag = wx.getStorageSync('websocketFlag')
-    // if (!websocketFlag) {
-    //   var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-    //   connectWebsocket({
-    //     user_id,
-    //     success(data) { },
-    //     error() {
-    //     }
-    //   })
-    // }
-
+    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+    connectWebsocket({
+      user_id,
+      success(data) { },
+      error() {
+      }
+    }) 
     this.initConnectWebSocket()
   },
 
@@ -49,8 +44,13 @@ Page({
 
   onUnload: function () {
     // 页面关闭
+    console.log("wait onUnload")
     var that = this
     getPrevPage()[that.callback]()
+  },
+
+  onHide: function () {
+    // 页面关闭
   },
 
   parseTime: function(time){

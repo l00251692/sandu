@@ -15,16 +15,7 @@ App({
     //调用API从本地缓存中获取数据
     this.initSocket()
   },
-  onHide: function () {
-    //调用API从本地缓存中获取数据
-    wx.closeSocket({
-      reason:"小程序推出关闭",
-      success(res){
-        wx.setStorageSync('websocketFlag', false)
-      }
-    })
-  },
-
+  
   initSocket(){
 
     wx.onSocketOpen(function (res) {
@@ -33,19 +24,19 @@ App({
     })
 
     wx.onSocketError(function (res) {
-      console.log('WebSocket连接打开失败，请检查！')
+      console.log('APP INIT WebSocket连接打开失败，请检查！')
       wx.setStorageSync('websocketFlag', false)
     })
 
     wx.onSocketClose(function (res) {
-      console.log('WebSocket连接关闭！')
+      console.log('APP INIT WebSocket连接关闭！')
       wx.setStorageSync('websocketFlag', false)
     })
 
     wx.onSocketMessage(function (res) {
-      console.log('收到消息onSocketMessage！')
+      console.log('APP INIT 收到消息onSocketMessage！')
 
-      if (this.globalData.loginInfo.is_login)
+      if (getApp().globalData.loginInfo.is_login)
       {
         var tmp = JSON.parse(res.data)
         var { user_id } = getApp().globalData.loginInfo.userInfo

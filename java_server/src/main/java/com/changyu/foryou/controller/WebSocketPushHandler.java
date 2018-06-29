@@ -5,9 +5,14 @@ import java.security.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
@@ -25,13 +30,15 @@ import com.changyu.foryou.tools.TimeUtil;
 
 @Component
 public class WebSocketPushHandler implements WebSocketHandler {
-    private static final List<WebSocketSession> users = new ArrayList<>();
+    private static final Set<WebSocketSession> users = new HashSet<>();
     
     @Autowired
 	private ChatService chatService;
     
     @Autowired
 	private UserService userService;
+    
+    private static final Logger logger = LoggerFactory.getLogger(WebSocketHandler.class);
 
     // 用户进入系统监听
     @Override
@@ -116,7 +123,7 @@ public class WebSocketPushHandler implements WebSocketHandler {
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
     	
-    	System.out.println("后台错误" + exception.getMessage());
+    	//logger.error("handleTransportError:" + exception.toString());
 
     }
 
@@ -125,12 +132,10 @@ public class WebSocketPushHandler implements WebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus closeStatus) throws Exception {
         if (session.isOpen()) {
             session.close();
+            users.remove(session);
         }
-        users.remove(session);
-        System.out.println("安全退出了系统" + closeStatus.toString());
-
     }
-
+    
     @Override
     public boolean supportsPartialMessages() {
         return false;
@@ -159,11 +164,9 @@ public class WebSocketPushHandler implements WebSocketHandler {
         for (WebSocketSession user : users) {
             if (user.getAttributes().get("user_id").equals(userId)) {
                 try {
-                	System.out.println("sendMessageToUser");
                     // isOpen()在线就发送
                     if (user.isOpen()) {
                         user.sendMessage(message);
-                        System.out.println("sendMessageToUser user open");
                     }
                     
                     

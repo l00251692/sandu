@@ -55,14 +55,6 @@ Page({
           pxToRpx: 750 / res.screenWidth,
           scrollHeight: (res.windowHeight - 50) * 750 / res.screenWidth
         })
-
-        var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-        connectWebsocket({
-          user_id,
-          success(data) { },
-          error() { }
-        })
-
         that.initData()
         that.loadMsg()
         that.setMsgRead()
@@ -71,6 +63,13 @@ Page({
   },
 
   onShow() {
+    var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
+    connectWebsocket({
+      user_id,
+      success(data) { },
+      error() { }
+    })
+    
     this.initConnectWebSocket()
   },
 

@@ -30,10 +30,11 @@ Page({
       error() {
       }
     }) 
-    this.initConnectWebSocket()
+    
   },
 
   onShow: function () {
+    this.initConnectWebSocket()
   },
 
   onReady: function () {
@@ -61,7 +62,7 @@ Page({
   initConnectWebSocket() {
     var that = this
     var orderId = this.orderId
-    console.log("initConnectWebSocket")
+
     wx.onSocketOpen(function (res) {
       console.log('WebSocket连接已打开！')
       wx.setStorageSync('websocketFlag', true)
@@ -101,6 +102,13 @@ Page({
             url: "/pages/index/index",
           })
         }
+      }
+      else if (tmp.type == "userMsg" && tmp.toId == user_id) {
+        wx.showToast({
+          title: '您收到新消息',
+          duration: 5000,
+          icon: 'success'
+        })
       }
     })
   },

@@ -90,17 +90,17 @@ Page({
                       orderingStatus: data.orderStatus
                     });
                     //that.scrolltxt();// 第一个字消失后立即从右边出现
-                    cb && cb()
                   }
+                  
+                  cb && cb()
+                  var { user_id, user_token } = loginInfo.userInfo
+                  console.log("connect socket")
+                  connectWebsocket({
+                    user_id,
+                    success(res) { },
+                    error(res) { }
+                  })
                 }
-              })
-
-              var { user_id, user_token } = getApp().globalData.loginInfo.userInfo
-              console.log("connect socket")
-              connectWebsocket({
-                user_id,
-                success(res) {  },
-                error(res) {  }
               })
             }
           })
